@@ -33,10 +33,29 @@ else
 AUXILIARY_GSW_LIBS += -lWebObjects -lWOExtensions
 endif
 
+BUNDLE_NAME = OTWTests
+
+OTWTests_OBJC_FILES = \
+	test/TestApp.m \
+	test/TestSession.m \
+	test/TestDirectAction.m \
+	test/TestMain.m \
+	OTWApp.m \
+	Session.m \
+	DirectAction.m \
+	Main.m
+
+OTWTests_BUNDLE_LIBS = \
+	-lXCTest \
+	-framework WebObjects \
+	-framework WOExtensions
 
 -include Makefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/gswapp.make
-
+include $(GNUSTEP_MAKEFILES)/bundle.make
 -include Makefile.postamble
 
+internal-check:: $(GNUSTEP_BUILD_DIR)/OTWTests.bundle
+	DYLD_LIBRARY_PATH=/usr/local/lib:$(DYLD_LIBRARY_PATH) \
+	/usr/local/bin/xctest $(GNUSTEP_BUILD_DIR)/OTWTests.bundle

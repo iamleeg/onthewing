@@ -24,6 +24,34 @@
 
 @implementation OTWApp
 
+extern int GSWebNamingConv;
+
++ (void)initialize {
+  if (self == [OTWApp class]) {
+    GSWebNamingConv = 1; // WONAMES_INDEX
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *d = @{
+      @"WOAdaptor" : @"WODefaultAdaptor",
+      @"GSWAdaptor" : @"WODefaultAdaptor",
+      @"WODirectActionRequestHandlerKey" : @"wa",
+      @"GSWDirectActionRequestHandlerKey" : @"dr",
+      @"WOComponentRequestHandlerKey" : @"wo",
+      @"GSWComponentRequestHandlerKey" : @"cr",
+      @"WOResourceRequestHandlerKey" : @"wr",
+      @"GSWResourceRequestHandlerKey" : @"rr",
+      @"WOPingActionRequestHandlerKey" : @"wlb",
+      @"GSWPingActionRequestHandlerKey" : @"lb",
+      @"WOStreamActionRequestHandlerKey" : @"wis",
+      @"GSWStreamActionRequestHandlerKey" : @"sr",
+      @"AjaxRequestHandlerKey" : @"ja",
+      @"GSWContextClassName" : @"WOContext",
+      @"WOContextClassName" : @"WOContext"
+    };
+    [defaults registerDefaults:d];
+    [defaults synchronize];
+  }
+}
+
 - (id)init {
   if ((self = [super init])) {
     [WOMessage setDefaultEncoding:NSUTF8StringEncoding];
@@ -38,6 +66,10 @@
 
 + (NSNumber *)sessionTimeOut {
   return [NSNumber numberWithInt:60];
+}
+
+- (NSString *)contextClassName {
+  return @"WOContext";
 }
 
 @end
