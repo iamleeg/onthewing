@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: onthewing-ingress
+  annotations:
+    # To add SSL later, you can add cert-manager annotations here
+spec:
+  ingressClassName: "nginx" # If using Nginx Ingress Controller (common in Linode/Minikube)
+  rules:
+    - host: onthewing.local # Change this to your actual domain for production
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: onthewing-svc
+                port:
+                  number: 80

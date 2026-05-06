@@ -47,8 +47,7 @@ OTWTests_OBJC_FILES = \
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \
-	-framework WebObjects \
-	-framework WOExtensions
+	$(AUXILIARY_GSW_LIBS)
 
 -include Makefile.preamble
 
