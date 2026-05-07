@@ -1,6 +1,6 @@
 steps:
   build-and-test-and-push:
-    image: woodpeckerci/plugin-docker-buildx
+    image: woodpeckerci/plugin-kaniko
     settings:
       dockerfile: Containerfile
       registry: quay.io
