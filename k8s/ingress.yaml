@@ -3,9 +3,15 @@ kind: Ingress
 metadata:
   name: onthewing-ingress
   annotations:
-    # To add SSL later, you can add cert-manager annotations here
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: "nginx" # If using Nginx Ingress Controller (common in Linode/Minikube)
+  ingressClassName: "nginx"
+  tls:
+    - hosts:
+        - journalonthewing.co.uk
+        - www.journalonthewing.co.uk
+      secretName: onthewing-tls
   rules:
     - http:
         paths:
