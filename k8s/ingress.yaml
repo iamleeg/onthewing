@@ -13,6 +13,26 @@ spec:
         - www.journalonthewing.co.uk
       secretName: onthewing-tls
   rules:
+    - host: journalonthewing.co.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: onthewing-svc
+                port:
+                  number: 80
+    - host: www.journalonthewing.co.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: onthewing-svc
+                port:
+                  number: 80
     - http:
         paths:
           - path: /
