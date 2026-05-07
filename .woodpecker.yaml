@@ -4,7 +4,7 @@ steps:
     settings:
       dockerfile: Containerfile
       registry: quay.io
-      repo: quay.io/iamleeg/onthewing
+      repo: iamleeg/onthewing
       tags:
         - latest
         - ${CI_COMMIT_SHA}
