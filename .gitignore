@@ -2,3 +2,4 @@
 obj
 OnTheWing.gswa
 OTWTests.bundle
+k8s/cluster-issuer.yaml
