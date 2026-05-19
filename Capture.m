@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// Main.m - Landing Page
+// Capture.m - Page for capturing new observations
 // Copyright (C) 2026 Graham Lee
 //
 // This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,8 @@
 #include <GNUstepBase/GNUstep.h>
 #endif
 
-#import "Main.h"
+#import "Capture.h"
 
-@implementation Main
-
-- (id)capture {
-  return [self pageWithName:@"Capture"];
-}
+@implementation Capture
 
 @end

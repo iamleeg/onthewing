@@ -17,6 +17,7 @@ spec:
       containers:
         - name: onthewing
           image: quay.io/iamleeg/onthewing
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           readinessProbe:

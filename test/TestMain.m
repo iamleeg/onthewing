@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+#import "Capture.h"
 #import "Main.h"
 #import "OTWApp.h"
 #import <XCTest/XCTest.h>
@@ -28,14 +29,27 @@
 - (void)testMainInstantiation {
   OTWApp *app = [[OTWApp alloc] init];
   WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
-                                                  uri:@"/"
-                                          httpVersion:@"HTTP/1.1"
-                                              headers:nil
-                                              content:nil
-                                             userInfo:nil];
+                                                 uri:@"/"
+                                         httpVersion:@"HTTP/1.1"
+                                             headers:nil
+                                             content:nil
+                                            userInfo:nil];
   WOContext *ctx = [[WOContext alloc] initWithRequest:req];
   Main *m = [[Main alloc] initWithContext:ctx];
   XCTAssertNotNil(m);
+}
+
+- (void)testMainReturnsCapturePage {
+  OTWApp *app = [[OTWApp alloc] init];
+  WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
+                                                 uri:@"/"
+                                         httpVersion:@"HTTP/1.1"
+                                             headers:nil
+                                             content:nil
+                                            userInfo:nil];
+  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
+  Main *m = [[Main alloc] initWithContext:ctx];
+  XCTAssertEqualObjects([[m capture] class], [Capture class]);
 }
 
 @end

@@ -77,4 +77,4 @@ EXPOSE 8080
 
 # GSWeb apps usually take arguments like -WOPort 8080
 ENTRYPOINT ["/app/OnTheWing.gswa/OnTheWing"]
-CMD ["-WOPort", "8080", "-WOHost", "0.0.0.0"]
+CMD ["-WOPort", "8080", "-WOHost", "0.0.0.0", "-WOCGIAdaptorURL", "/WebObjects", "-WOApplicationName", "OnTheWing"]

@@ -3,9 +3,6 @@ kind: Config
 metadata:
   name: onthewing
 build:
-  tagPolicy:
-    customTemplate:
-      template: "dev"
   local:
     push: false
   artifacts:
