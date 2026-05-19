@@ -24,8 +24,8 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m
+OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo
 
 ifneq ($(FOUNDATION_LIB),gnu)
 AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions
@@ -40,11 +40,13 @@ OTWTests_OBJC_FILES = \
 	test/TestSession.m \
 	test/TestDirectAction.m \
 	test/TestMain.m \
+	test/TestAGPLFooter.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \
 	Main.m \
-	Capture.m
+	Capture.m \
+	AGPLFooter.m
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \

@@ -1,1 +1,2 @@
 capture_link:WOHyperlink { action = capture; }
+AGPLFooter:AGPLFooter {}
