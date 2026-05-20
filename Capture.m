@@ -25,4 +25,32 @@
 
 @implementation Capture
 
+- (void)dealloc {
+  [_location release];
+  [_locationError release];
+  [super dealloc];
+}
+
+- (void)setCapturedLocation:(ObservationLocation *)loc {
+  if (_location != loc) {
+    [_location release];
+    _location = [loc retain];
+  }
+}
+
+- (void)setLocationError:(NSString *)error {
+  if (_locationError != error) {
+    [_locationError release];
+    _locationError = [error copy];
+  }
+}
+
+- (ObservationLocation *)capturedLocation {
+  return _location;
+}
+
+- (NSString *)locationError {
+  return _locationError;
+}
+
 @end

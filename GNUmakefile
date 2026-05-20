@@ -24,8 +24,9 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m
+OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo
+OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js
 
 ifneq ($(FOUNDATION_LIB),gnu)
 AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions
@@ -41,12 +42,17 @@ OTWTests_OBJC_FILES = \
 	test/TestDirectAction.m \
 	test/TestMain.m \
 	test/TestAGPLFooter.m \
+	test/TestObservationLocation.m \
+	test/TestCapture.m \
+	test/TestLocationCapture.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \
 	Main.m \
 	Capture.m \
-	AGPLFooter.m
+	AGPLFooter.m \
+	ObservationLocation.m \
+	LocationCapture.m
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \
@@ -58,6 +64,7 @@ include $(GNUSTEP_MAKEFILES)/gswapp.make
 include $(GNUSTEP_MAKEFILES)/bundle.make
 -include Makefile.postamble
 
-internal-check:: $(GNUSTEP_BUILD_DIR)/OTWTests.bundle
+internal-check:: OTWTests
 	DYLD_LIBRARY_PATH=/usr/local/lib:$(DYLD_LIBRARY_PATH) \
-	/usr/local/bin/xctest $(GNUSTEP_BUILD_DIR)/OTWTests.bundle
+	/usr/local/bin/xctest ./OTWTests.bundle
+	npm install && npm test

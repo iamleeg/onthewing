@@ -12,6 +12,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libxml2-dev \
     libffi-dev \
     ca-certificates \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Symlink GCC's objc headers so Clang can find them natively on Debian

@@ -1,0 +1,17 @@
+<div id="location-capture-container">
+    <!-- Trigger Button -->
+    <button type="button" onclick="DeviceCapture.captureAndSend()">Capture Location</button>
+
+    <!-- JavaScript delivery -->
+    <webobject name="captureScript"></webobject>
+
+    <!-- Form using WOForm component -->
+    <webobject name="locationForm">
+        <webobject name="latitude"></webobject>
+        <webobject name="longitude"></webobject>
+        <webobject name="accuracy"></webobject>
+        <webobject name="bearing"></webobject>
+        <webobject name="locationError"></webobject>
+        <webobject name="bearingError"></webobject>
+    </webobject>
+</div>

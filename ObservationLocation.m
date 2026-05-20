@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// Session.h - Session class
+// ObservationLocation.m - DTO encapsulating captured location data.
 // Copyright (C) 2026 Graham Lee
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef GNUSTEP
-#include <GNUstepBase/GNUstep.h>
-#endif
+#import "ObservationLocation.h"
 
-#include <WebObjects/WebObjects.h>
+@implementation ObservationLocation
 
-#import "LocationPermission.h"
+@synthesize latitude;
+@synthesize longitude;
+@synthesize accuracy;
+@synthesize bearing;
 
-@interface Session : WOSession {
-    LocationPermissionState locationPermissionState;
+- (void)dealloc {
+    [latitude release];
+    [longitude release];
+    [accuracy release];
+    [bearing release];
+    [super dealloc];
 }
-
-@property (nonatomic, assign) LocationPermissionState locationPermissionState;
 
 @end

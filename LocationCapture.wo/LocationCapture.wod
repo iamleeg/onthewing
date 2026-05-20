@@ -1,0 +1,39 @@
+captureScript:WOString {
+    value = deviceCaptureScriptTag;
+    escapeHTML = NO;
+}
+
+locationForm:WOForm {
+    action = recordLocationAndBearing;
+    id = "location-capture-form";
+}
+
+latitude:WOHiddenField {
+    value = latitude;
+    id = "latitude";
+}
+
+longitude:WOHiddenField {
+    value = longitude;
+    id = "longitude";
+}
+
+accuracy:WOHiddenField {
+    value = accuracy;
+    id = "accuracy";
+}
+
+bearing:WOHiddenField {
+    value = bearing;
+    id = "bearing";
+}
+
+locationError:WOHiddenField {
+    value = locationError;
+    id = "locationError";
+}
+
+bearingError:WOHiddenField {
+    value = bearingError;
+    id = "bearingError";
+}

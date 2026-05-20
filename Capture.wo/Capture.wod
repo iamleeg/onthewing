@@ -1,1 +1,2 @@
 AGPLFooter:AGPLFooter {}
+locationCapture:LocationCapture {nextComponent="Capture";}

@@ -20,11 +20,14 @@
 
 @implementation Session
 
+@synthesize locationPermissionState;
+
 - (id)init {
   self = [super init];
   if (self) {
     [self setStoresIDsInCookies:YES];
     [self setStoresIDsInURLs:NO];
+    locationPermissionState = LocationPermissionUndetermined;
   }
   return self;
 }
