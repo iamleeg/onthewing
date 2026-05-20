@@ -44,6 +44,6 @@
 @property (nonatomic, copy) NSString *nextComponent;
 
 - (id)recordLocationAndBearing;
-- (NSString *)deviceCaptureScriptTag;
+- (NSString *)deviceCaptureScriptName;
 
 @end

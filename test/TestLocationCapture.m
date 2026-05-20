@@ -47,9 +47,8 @@
   XCTAssertNil([lc locationError]);
   XCTAssertNil([lc bearingError]);
   XCTAssertNil([lc nextComponent]);
-  // deviceCaptureScriptTag always returns a non-nil string (falls back to a comment if
-  // there is no resource manager, which is expected in a test-harness context).
-  XCTAssertNotNil([lc deviceCaptureScriptTag]);
+  // deviceCaptureScriptName always returns a non-nil string
+  XCTAssertNotNil([lc deviceCaptureScriptName]);
 
   [lc release];
 }

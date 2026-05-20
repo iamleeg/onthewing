@@ -77,12 +77,8 @@
     return page;
 }
 
-- (NSString *)deviceCaptureScriptTag {
-    NSString *url = [[self context] _urlForResourceNamed:@"DeviceCapture.js" inFramework:nil];
-    if (url == nil) {
-        return @"<!-- DeviceCapture.js resource not found -->";
-    }
-    return [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@\"></script>", url];
+- (NSString *)deviceCaptureScriptName {
+    return @"DeviceCapture.js";
 }
 
 @end

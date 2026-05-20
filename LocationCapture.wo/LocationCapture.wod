@@ -1,6 +1,5 @@
-captureScript:WOString {
-    value = deviceCaptureScriptTag;
-    escapeHTML = NO;
+captureScript:WOJavaScript {
+    scriptSource = deviceCaptureScriptName;
 }
 
 locationForm:WOForm {
