@@ -28,11 +28,14 @@ steps:
       - git add k8s/deployment.yaml
       # Commit changes and use [skip ci] to prevent build loops
       - 'git commit -m "ci: update image tag to ${CI_COMMIT_SHA} [skip ci]"'
+      # Verify if the secret is successfully injected by Woodpecker
+      - '[ -z "$$CODEBERG_TOKEN" ] && echo "ERROR: CODEBERG_TOKEN is empty!" || echo "CODEBERG_TOKEN is set."'
       # Push back to Codeberg repository using the oauth token
       - 'git push https://leeg:$$CODEBERG_TOKEN@codeberg.org/leeg/onthewing.git main'
     when:
       branch: main
       event: [push, manual]
+
 
 
 
