@@ -14,7 +14,7 @@ steps:
         from_secret: quay_password
     when:
       branch: main
-      event: push
+      event: [push, manual]
 
 # Note: The actual tests (`make internal-check`) run automatically 
 # during the `builder` stage inside the Containerfile. 
