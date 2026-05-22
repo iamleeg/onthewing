@@ -24,9 +24,10 @@ ENV GNUSTEP_MAKEFILES=/usr/share/GNUstep/Makefiles
 ENV CC=clang
 ENV CXX=clang++
 
-# Build and install GSWeb from source
+# Build and install GSWeb from source: needs my patched version
 WORKDIR /src
-RUN git clone https://github.com/gnustep/libs-gsweb.git && \
+RUN git clone https://github.com/iamleeg/libs-gsweb.git && \
+    git switch fix-wojavascript-assertion-failure && \
     cd libs-gsweb && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure && \
