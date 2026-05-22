@@ -19,6 +19,12 @@
 #import <Foundation/Foundation.h>
 
 @interface ObservationLocation : NSObject
+{
+    NSNumber *_latitude;
+    NSNumber *_longitude;
+    NSNumber *_accuracy;
+    NSNumber *_bearing;
+}
 
 @property (nonatomic, retain) NSNumber *latitude;
 @property (nonatomic, retain) NSNumber *longitude;

@@ -20,16 +20,16 @@
 
 @implementation ObservationLocation
 
-@synthesize latitude;
-@synthesize longitude;
-@synthesize accuracy;
-@synthesize bearing;
+@synthesize latitude = _latitude;
+@synthesize longitude = _longitude;
+@synthesize accuracy = _accuracy;
+@synthesize bearing = _bearing;
 
 - (void)dealloc {
-    [latitude release];
-    [longitude release];
-    [accuracy release];
-    [bearing release];
+    [_latitude release];
+    [_longitude release];
+    [_accuracy release];
+    [_bearing release];
     [super dealloc];
 }
 
