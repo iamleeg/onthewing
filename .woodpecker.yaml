@@ -29,10 +29,11 @@ steps:
       # Commit changes and use [skip ci] to prevent build loops
       - 'git commit -m "ci: update image tag to ${CI_COMMIT_SHA} [skip ci]"'
       # Push back to Codeberg repository using the oauth token
-      - 'git push https://oauth2:$$CODEBERG_TOKEN@codeberg.org/leeg/onthewing.git main'
+      - 'git push https://leeg:$$CODEBERG_TOKEN@codeberg.org/leeg/onthewing.git main'
     when:
       branch: main
       event: [push, manual]
+
 
 
 
