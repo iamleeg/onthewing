@@ -68,3 +68,6 @@ internal-check:: OTWTests
 	DYLD_LIBRARY_PATH=/usr/local/lib:$(DYLD_LIBRARY_PATH) \
 	/usr/local/bin/xctest ./OTWTests.bundle
 	npm install && npm test
+
+podman-check:
+	podman build --progress=plain --target builder -f Containerfile .

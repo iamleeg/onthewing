@@ -67,7 +67,14 @@
     }
 
     id page = [self pageWithName:[self nextComponent]];
-    if ([page conformsToProtocol:@protocol(LocationUsing)]) {
+    // Use NSProtocolFromString rather than @protocol() to look up the canonical
+    // protocol object via the runtime's name table. On GNUstep/libobjc2 the
+    // same @protocol declaration compiled into multiple translation units can
+    // produce distinct pointers; conformsToProtocol: uses pointer equality, so
+    // the @protocol() literal from this TU may not match the one embedded in
+    // Capture's class record, causing the check to silently return NO.
+    Protocol *locationUsingProtocol = NSProtocolFromString(@"LocationUsing");
+    if ([page conformsToProtocol:locationUsingProtocol]) {
         id<LocationUsing> locationPage = (id<LocationUsing>)page;
         [locationPage setCapturedLocation:loc];
         if (loc == nil) {

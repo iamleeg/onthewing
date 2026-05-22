@@ -50,7 +50,7 @@ RUN . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
 
 # Run the test suite
 RUN . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
-    make internal-check
+    make check
 
 # -------------------------
 # Stage 2: Runtime

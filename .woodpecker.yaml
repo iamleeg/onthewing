@@ -15,7 +15,3 @@ steps:
     when:
       branch: main
       event: [push, manual]
-
-# Note: The actual tests (`make internal-check`) run automatically 
-# during the `builder` stage inside the Containerfile. 
-# If the tests fail, the image build fails and the pipeline stops.
