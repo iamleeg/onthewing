@@ -4,3 +4,8 @@ OnTheWing.gswa
 OTWTests.bundle
 k8s/cluster-issuer.yaml
 node_modules
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
