@@ -1,0 +1,11 @@
+hasLocation:WOConditional { value = hasValidCoordinates; }
+noLocation:WOConditional { value = hasValidCoordinates; negate = yes; }
+leafletJS:WOJavaScript { src = "/leaflet/leaflet.js"; }
+observationMapJS:WOJavaScript { src = "/WebServerResources/ObservationMap.js"; }
+mapContainer:WOGenericContainer { 
+    tagName = "div"; 
+    id = "observation-map"; 
+    "data-lat" = latitude; 
+    "data-lng" = longitude; 
+}
+noLocationMessage:WOString { value = "No location captured"; }

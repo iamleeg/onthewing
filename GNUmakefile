@@ -24,8 +24,8 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m
+OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo
 OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js
 
 ifneq ($(FOUNDATION_LIB),gnu)
@@ -45,6 +45,7 @@ OTWTests_OBJC_FILES = \
 	test/TestObservationLocation.m \
 	test/TestCapture.m \
 	test/TestLocationCapture.m \
+	test/TestObservationMap.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \
@@ -52,7 +53,8 @@ OTWTests_OBJC_FILES = \
 	Capture.m \
 	AGPLFooter.m \
 	ObservationLocation.m \
-	LocationCapture.m
+	LocationCapture.m \
+	ObservationMap.m
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \
