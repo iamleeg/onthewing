@@ -6,3 +6,5 @@
 {"id":"int-2c0a9d7c","kind":"field_change","created_at":"2026-05-28T08:48:25.230535Z","actor":"Graham Lee","issue_id":"onthewing-ea6","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-a7c6b58b","kind":"field_change","created_at":"2026-05-28T08:50:19.718431Z","actor":"Graham Lee","issue_id":"onthewing-6js","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-f3280190","kind":"field_change","created_at":"2026-05-28T09:26:05.623074Z","actor":"Graham Lee","issue_id":"onthewing-3lm","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-590276d2","kind":"field_change","created_at":"2026-05-28T11:37:25.484516Z","actor":"Graham Lee","issue_id":"onthewing-pfd","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-a2bc969d","kind":"field_change","created_at":"2026-05-28T11:37:33.384103Z","actor":"Graham Lee","issue_id":"onthewing-wyd","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}

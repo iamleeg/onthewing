@@ -20,6 +20,8 @@
 
 @implementation ObservationMap
 
+@synthesize location = _location;
+
 - (BOOL)hasValidCoordinates {
     return (self.location != nil && 
             self.location.latitude != nil && 
