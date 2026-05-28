@@ -8,6 +8,12 @@ function initObservationMap() {
     if (lat && lng) {
         const coordinates = [parseFloat(lat), parseFloat(lng)];
         
+        // Configure Leaflet's default image path to the flat resource directory,
+        // which avoids the GSWeb framework-parsing bug when using subdirectories.
+        if (L.Icon && L.Icon.Default) {
+            L.Icon.Default.imagePath = '/WebObjects/OnTheWing.woa/0/wr/';
+        }
+
         // Initialize the Leaflet map
         const map = L.map('observation-map').setView(coordinates, 13);
 

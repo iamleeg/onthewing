@@ -24,9 +24,9 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo
-OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m
+OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo
+OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js leaflet.js leaflet.css marker-icon.png marker-icon-2x.png marker-shadow.png layers.png layers-2x.png
 
 ifneq ($(FOUNDATION_LIB),gnu)
 AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions
@@ -46,6 +46,7 @@ OTWTests_OBJC_FILES = \
 	test/TestCapture.m \
 	test/TestLocationCapture.m \
 	test/TestObservationMap.m \
+	test/TestOTWStyleSheet.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \
@@ -54,7 +55,8 @@ OTWTests_OBJC_FILES = \
 	AGPLFooter.m \
 	ObservationLocation.m \
 	LocationCapture.m \
-	ObservationMap.m
+	ObservationMap.m \
+	OTWStyleSheet.m
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \
@@ -65,6 +67,7 @@ OTWTests_BUNDLE_LIBS = \
 include $(GNUSTEP_MAKEFILES)/gswapp.make
 include $(GNUSTEP_MAKEFILES)/bundle.make
 -include Makefile.postamble
+
 
 internal-check:: OTWTests
 	DYLD_LIBRARY_PATH=/usr/local/lib:$(DYLD_LIBRARY_PATH) \

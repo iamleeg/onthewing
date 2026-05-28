@@ -25,10 +25,22 @@
 @implementation OTWApp
 
 extern int GSWebNamingConv;
+extern NSDictionary* globalMime;
 
 + (void)initialize {
   if (self == [OTWApp class]) {
     GSWebNamingConv = 1; // WONAMES_INDEX
+    
+    // Register custom MIME types for CSS and JS
+    NSMutableDictionary *mimes = [globalMime mutableCopy];
+    if (mimes == nil) {
+      mimes = [[NSMutableDictionary alloc] init];
+    }
+    [mimes setObject:@"text/css" forKey:@"css"];
+    [mimes setObject:@"application/javascript" forKey:@"js"];
+    globalMime = [mimes copy];
+    [mimes release];
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *d = @{
       @"WOAdaptor" : @"WODefaultAdaptor",
