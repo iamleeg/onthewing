@@ -25,7 +25,7 @@ OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
 OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m CompassSVGGenerator.m Compass.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo
+OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo
 OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js leaflet.js leaflet.css marker-icon.png marker-icon-2x.png marker-shadow.png layers.png layers-2x.png
 
 ifneq ($(FOUNDATION_LIB),gnu)
