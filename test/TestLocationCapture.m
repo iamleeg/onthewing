@@ -114,4 +114,30 @@
   [lc release];
 }
 
+- (void)testRecordLocationAndBearingEmptyBearing {
+  OTWApp *app = [[OTWApp alloc] init];
+  WORequest *req = [[WORequest alloc] initWithMethod:@"POST"
+                                                 uri:@"/"
+                                         httpVersion:@"HTTP/1.1"
+                                             headers:nil
+                                             content:nil
+                                            userInfo:nil];
+  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
+  LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
+  
+  [lc setLatitude:@"51.5074"];
+  [lc setLongitude:@"-0.1278"];
+  [lc setBearing:@""]; // Empty string, simulating failed JS capture
+  [lc setNextComponent:@"Capture"];
+  
+  id next = [lc recordLocationAndBearing];
+  Capture *capturePage = (Capture *)next;
+  ObservationLocation *loc = [capturePage capturedLocation];
+  
+  XCTAssertNotNil(loc);
+  XCTAssertNil([loc bearing], @"Bearing should be nil when provided as an empty string");
+  
+  [lc release];
+}
+
 @end

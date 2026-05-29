@@ -61,7 +61,7 @@
         if ([self accuracy]) {
             [loc setAccuracy:[NSNumber numberWithDouble:[[self accuracy] doubleValue]]];
         }
-        if ([self bearing]) {
+        if ([self bearing] && [[self bearing] length] > 0) {
             [loc setBearing:[NSNumber numberWithDouble:[[self bearing] doubleValue]]];
         }
     }
