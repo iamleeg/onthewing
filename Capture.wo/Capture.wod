@@ -1,3 +1,4 @@
 AGPLFooter:AGPLFooter {}
 locationCapture:LocationCapture {nextComponent="Capture";}
 observationMap:ObservationMap { location = capturedLocation; }
+compass:Compass { location = capturedLocation; }
