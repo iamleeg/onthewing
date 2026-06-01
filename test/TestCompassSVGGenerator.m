@@ -35,7 +35,7 @@
     CompassSVGGenerator *gen = [[CompassSVGGenerator alloc] init];
     NSNumber *bearing = [NSNumber numberWithDouble:0.0];
     NSString *svg = [gen svgForBearing:bearing];
-    XCTAssertTrue([svg containsString:@"rotate(0.00, 50, 50)"]);
+    XCTAssertTrue([svg containsString:@"transform=\"rotate(0.00, 50, 50)\""]);
     [gen release];
 }
 
@@ -43,7 +43,7 @@
     CompassSVGGenerator *gen = [[CompassSVGGenerator alloc] init];
     NSNumber *bearing = [NSNumber numberWithDouble:90.0];
     NSString *svg = [gen svgForBearing:bearing];
-    XCTAssertTrue([svg containsString:@"rotate(90.00, 50, 50)"]);
+    XCTAssertTrue([svg containsString:@"transform=\"rotate(90.00, 50, 50)\""]);
     [gen release];
 }
 
@@ -51,7 +51,7 @@
     CompassSVGGenerator *gen = [[CompassSVGGenerator alloc] init];
     NSNumber *bearing = [NSNumber numberWithDouble:180.0];
     NSString *svg = [gen svgForBearing:bearing];
-    XCTAssertTrue([svg containsString:@"rotate(180.00, 50, 50)"]);
+    XCTAssertTrue([svg containsString:@"transform=\"rotate(180.00, 50, 50)\""]);
     [gen release];
 }
 
@@ -59,7 +59,7 @@
     CompassSVGGenerator *gen = [[CompassSVGGenerator alloc] init];
     NSNumber *bearing = [NSNumber numberWithDouble:270.0];
     NSString *svg = [gen svgForBearing:bearing];
-    XCTAssertTrue([svg containsString:@"rotate(270.00, 50, 50)"]);
+    XCTAssertTrue([svg containsString:@"transform=\"rotate(270.00, 50, 50)\""]);
     [gen release];
 }
 

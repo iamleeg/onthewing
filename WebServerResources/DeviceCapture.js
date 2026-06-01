@@ -71,7 +71,7 @@ const DeviceCapture = {
         setVal('locationError', locationResult.error !== null ? locationResult.error : "");
         setVal('bearing', bearing !== null ? bearing : "");
         setVal('bearingError', bearing === null ? "1" : "");
-        
+
         const form = document.getElementById('location-capture-form') || document.forms[0];
         if (form) {
             form.submit();
