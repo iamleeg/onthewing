@@ -14,14 +14,9 @@ build:
           paths:
             - "**/*"
 manifests:
-  rawYaml:
-    - k8s/deployment.yaml
-    - k8s/service.yaml
-    - k8s/ingress.yaml
-  patches:
-    - op: replace
-      path: /spec/template/spec/containers/0/imagePullPolicy
-      value: Never
+  kustomize:
+    paths:
+      - k8s
 deploy:
   kubectl: {}
 portForward:
