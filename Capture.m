@@ -22,20 +22,16 @@
 #endif
 
 #import "Capture.h"
+#import "Observation.h"
 
 @implementation Capture
 
+@synthesize observation = _observation;
+
 - (void)dealloc {
-  [_location release];
+  [_observation release];
   [_locationError release];
   [super dealloc];
-}
-
-- (void)setCapturedLocation:(ObservationLocation *)loc {
-  if (_location != loc) {
-    [_location release];
-    _location = [loc retain];
-  }
 }
 
 - (void)setLocationError:(NSString *)error {
@@ -43,10 +39,6 @@
     [_locationError release];
     _locationError = [error copy];
   }
-}
-
-- (ObservationLocation *)capturedLocation {
-  return _location;
 }
 
 - (NSString *)locationError {

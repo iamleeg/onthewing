@@ -88,6 +88,8 @@
                                             userInfo:nil];
   WOContext *ctx = [[WOContext alloc] initWithRequest:req];
   LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
+  [lc setObservation: [[Observation alloc] init]];
+
   Session *session = (Session *)[lc session];
   
   [session setLocationPermissionState:LocationPermissionUndetermined];
@@ -103,7 +105,7 @@
   XCTAssertEqualObjects([next class], [Capture class]);
   
   Capture *capturePage = (Capture *)next;
-  ObservationLocation *loc = [capturePage capturedLocation];
+  ObservationLocation *loc = [[capturePage observation] location];
   
   XCTAssertNotNil(loc);
   XCTAssertEqualWithAccuracy([[loc latitude] doubleValue], 51.5074, 0.0001);
@@ -124,7 +126,7 @@
                                             userInfo:nil];
   WOContext *ctx = [[WOContext alloc] initWithRequest:req];
   LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
-  
+  [lc setObservation: [[Observation alloc] init]];
   [lc setLatitude:@"51.5074"];
   [lc setLongitude:@"-0.1278"];
   [lc setBearing:@""]; // Empty string, simulating failed JS capture
@@ -132,7 +134,7 @@
   
   id next = [lc recordLocationAndBearing];
   Capture *capturePage = (Capture *)next;
-  ObservationLocation *loc = [capturePage capturedLocation];
+  ObservationLocation *loc = [[capturePage observation] location];
   
   XCTAssertNotNil(loc);
   XCTAssertNil([loc bearing], @"Bearing should be nil when provided as an empty string");

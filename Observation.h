@@ -30,3 +30,7 @@
 @property (nonatomic, strong) ObservationLocation *location;
 
 @end
+
+@protocol ObservationUsing <NSObject>
+- (void)setObservation:(Observation *)loc;
+@end

@@ -40,21 +40,8 @@
   WOContext *ctx = [self dummyContext];
   Capture *capture = [[Capture alloc] initWithContext:ctx];
   XCTAssertNotNil(capture);
-  XCTAssertNil([capture capturedLocation]);
+  XCTAssertNil([capture observation]);
   XCTAssertNil([capture locationError]);
-  [capture release];
-  [ctx release];
-}
-
-- (void)testSetCapturedLocation {
-  WOContext *ctx = [self dummyContext];
-  Capture *capture = [[Capture alloc] initWithContext:ctx];
-  ObservationLocation *loc = [[ObservationLocation alloc] init];
-  
-  [capture setCapturedLocation:loc];
-  XCTAssertEqual([capture capturedLocation], loc);
-  
-  [loc release];
   [capture release];
   [ctx release];
 }
@@ -67,26 +54,6 @@
   [capture setLocationError:error];
   XCTAssertEqualObjects([capture locationError], error);
   
-  [capture release];
-  [ctx release];
-}
-
-- (void)testCapturedLocationAndErrorInteraction {
-  WOContext *ctx = [self dummyContext];
-  Capture *capture = [[Capture alloc] initWithContext:ctx];
-  ObservationLocation *loc = [[ObservationLocation alloc] init];
-  NSString *error = @"Invalid location";
-  
-  [capture setCapturedLocation:loc];
-  XCTAssertEqual([capture capturedLocation], loc);
-  XCTAssertNil([capture locationError]);
-  
-  [capture setLocationError:error];
-  XCTAssertEqualObjects([capture locationError], error);
-  // Location should still be there if it was set
-  XCTAssertEqual([capture capturedLocation], loc);
-  
-  [loc release];
   [capture release];
   [ctx release];
 }

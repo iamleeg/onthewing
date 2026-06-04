@@ -18,14 +18,13 @@
 
 #import <WebObjects/WebObjects.h>
 
-@class ObservationLocation;
+#import "Observation.h"
 
-@protocol LocationUsing <NSObject>
-- (void)setCapturedLocation:(ObservationLocation *)loc;
+@protocol LocationUsing <ObservationUsing>
 - (void)setLocationError:(NSString *)error;
 @end
 
-@interface LocationCapture : GSWComponent {
+@interface LocationCapture : GSWComponent <ObservationUsing> {
     NSString *latitude;
     NSString *longitude;
     NSString *accuracy;
@@ -33,6 +32,7 @@
     NSString *locationError;
     NSString *bearingError;
     NSString *nextComponent;
+    Observation *_observation;
 }
 
 @property (nonatomic, copy) NSString *latitude;
@@ -42,6 +42,7 @@
 @property (nonatomic, copy) NSString *locationError;
 @property (nonatomic, copy) NSString *bearingError;
 @property (nonatomic, copy) NSString *nextComponent;
+@property (nonatomic, strong) Observation *observation;
 
 - (id)recordLocationAndBearing;
 - (NSString *)deviceCaptureScriptName;

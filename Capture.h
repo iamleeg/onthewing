@@ -20,14 +20,16 @@
 
 #import "LocationCapture.h"
 
+@class Observation;
+
 @interface Capture : GSWComponent <LocationUsing> {
-    ObservationLocation *_location;
+    Observation *_observation;
     NSString *_locationError;
 }
 
-- (void)setCapturedLocation:(ObservationLocation *)loc;
+@property (nonatomic, strong) Observation *observation;
+
 - (void)setLocationError:(NSString *)error;
-- (ObservationLocation *)capturedLocation;
 - (NSString *)locationError;
 
 @end
