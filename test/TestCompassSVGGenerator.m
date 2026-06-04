@@ -18,6 +18,9 @@
 
 #import "CompassSVGGenerator.h"
 #import <XCTest/XCTest.h>
+#include <locale.h>
+#include <string.h>
+#include <stdlib.h>
 
 @interface TestCompassSVGGenerator : XCTestCase
 @end
@@ -69,6 +72,41 @@
     NSString *svg = [gen svgForBearing:bearing];
     XCTAssertTrue([svg containsString:@"<polygon"]);
     [gen release];
+}
+
+- (void)testBearingFormattingWithCommaLocale {
+    char *originalLocale = setlocale(LC_NUMERIC, NULL);
+    if (originalLocale) {
+        originalLocale = strdup(originalLocale);
+    }
+    
+    char *newLocale = setlocale(LC_NUMERIC, "de_DE.UTF-8");
+    if (!newLocale) {
+        newLocale = setlocale(LC_NUMERIC, "fr_FR.UTF-8");
+    }
+    if (!newLocale) {
+        newLocale = setlocale(LC_NUMERIC, "de_DE");
+    }
+    if (!newLocale) {
+        newLocale = setlocale(LC_NUMERIC, "fr_FR");
+    }
+    
+    if (newLocale) {
+        @try {
+            CompassSVGGenerator *gen = [[CompassSVGGenerator alloc] init];
+            NSNumber *bearing = [NSNumber numberWithDouble:284.21];
+            NSString *svg = [gen svgForBearing:bearing];
+            XCTAssertTrue([svg containsString:@"transform=\"rotate(284.21, 50, 50)\""]);
+            [gen release];
+        } @finally {
+            if (originalLocale) {
+                setlocale(LC_NUMERIC, originalLocale);
+                free(originalLocale);
+            }
+        }
+    } else {
+        NSLog(@"Could not set a localized numeric locale, skipping locale-specific test.");
+    }
 }
 
 @end

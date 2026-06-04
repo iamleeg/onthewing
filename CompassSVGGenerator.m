@@ -30,7 +30,7 @@
     // We use a 100x100 coordinate system. Center is at (50, 50).
     // North is Up (angle 0), which corresponds to the negative Y axis in SVG.
     
-    return [NSString stringWithFormat:
+    return [[[NSString alloc] initWithFormat:
         @"<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">"
         @"  <!-- Compass Circle -->"
         @"  <circle cx=\"50\" cy=\"50\" r=\"45\" fill=\"none\" stroke=\"#666\" stroke-width=\"2\" />"
@@ -48,8 +48,9 @@
         @"    <!-- Arrowhead at the tip (North) -->"
         @"    <polygon points=\"46,30 54,30 50,20\" fill=\"#f00\" stroke=\"#000\" stroke-width=\"1\" />"
         @"  </g>"
-        @"</svg>",
-        angle];
+        @"</svg>"
+        locale:nil,
+        angle] autorelease];
 }
 
 @end
