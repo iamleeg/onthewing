@@ -10,3 +10,4 @@
 {"id":"int-a2bc969d","kind":"field_change","created_at":"2026-05-28T11:37:33.384103Z","actor":"Graham Lee","issue_id":"onthewing-wyd","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-2229f38f","kind":"field_change","created_at":"2026-06-04T14:54:23.859305Z","actor":"Graham Lee","issue_id":"onthewing-cul","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-1b46da0d","kind":"field_change","created_at":"2026-06-04T16:01:20.326307Z","actor":"Graham Lee","issue_id":"onthewing-ei0","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-6221ad54","kind":"field_change","created_at":"2026-06-04T16:12:32.437427Z","actor":"Graham Lee","issue_id":"onthewing-gof","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}

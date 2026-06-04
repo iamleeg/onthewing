@@ -41,21 +41,45 @@ const DeviceCapture = {
 
     async getCompassBearing() { 
         return new Promise((resolve) => {
+            let bestHeading = null;
+            
             const handleOrientation = (event) => {
                 let heading = event.webkitCompassHeading;
+                let accuracy = event.webkitCompassAccuracy;
+                
                 if (heading === undefined && event.alpha !== null) {
                     heading = 360 - event.alpha;
                 }
+                
                 if (heading !== undefined && heading !== null) {
-                    window.removeEventListener('deviceorientation', handleOrientation);
-                    resolve(heading);
+                    // If accuracy is not supported/provided (e.g. non-iOS or test environment),
+                    // resolve immediately to maintain compatibility and speed.
+                    if (accuracy === undefined || accuracy === null) {
+                        window.removeEventListener('deviceorientation', handleOrientation);
+                        resolve(heading);
+                        return;
+                    }
+                    
+                    // If accuracy is supported, we check if it is calibrated (accuracy > 0)
+                    if (accuracy > 0) {
+                        // Calibrated reading! Resolve immediately with it.
+                        window.removeEventListener('deviceorientation', handleOrientation);
+                        resolve(heading);
+                        return;
+                    }
+                    
+                    // If accuracy is <= 0 (e.g., -1 meaning uncalibrated), we keep track of the heading,
+                    // but we don't resolve yet, hoping for a calibrated event to arrive.
+                    if (bestHeading === null) {
+                        bestHeading = heading;
+                    }
                 }
             };
             window.addEventListener('deviceorientation', handleOrientation);
             setTimeout(() => {
                 window.removeEventListener('deviceorientation', handleOrientation);
-                resolve(null);
-            }, 2000);
+                resolve(bestHeading);
+            }, 1000);
         });
     },
 

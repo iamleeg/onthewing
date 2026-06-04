@@ -113,7 +113,7 @@ describe('DeviceCapture', () => {
             expect(res).toBe(270); // 360 - 90
         });
 
-        it('should time out after 2 seconds and return null', async () => {
+        it('should time out after 1 second and return null if no event is fired', async () => {
             let orientationHandler;
             global.window.addEventListener = jest.fn((event, handler) => {
                 if (event === 'deviceorientation') {
@@ -124,10 +124,52 @@ describe('DeviceCapture', () => {
             const bearingPromise = DeviceCapture.getCompassBearing();
 
             // Fast forward timers
-            jest.advanceTimersByTime(2000);
+            jest.advanceTimersByTime(1000);
 
             const res = await bearingPromise;
             expect(res).toBeNull();
+            expect(global.window.removeEventListener).toHaveBeenCalledWith('deviceorientation', orientationHandler);
+        });
+
+        it('should wait for calibrated reading if initial reading is uncalibrated', async () => {
+            let orientationHandler;
+            global.window.addEventListener = jest.fn((event, handler) => {
+                if (event === 'deviceorientation') {
+                    orientationHandler = handler;
+                }
+            });
+
+            const bearingPromise = DeviceCapture.getCompassBearing();
+
+            // First event: uncalibrated (accuracy = -1)
+            orientationHandler({ webkitCompassHeading: 120, webkitCompassAccuracy: -1, alpha: null });
+            
+            // Second event: calibrated (accuracy = 15)
+            orientationHandler({ webkitCompassHeading: 150, webkitCompassAccuracy: 15, alpha: null });
+
+            const res = await bearingPromise;
+            expect(res).toBe(150); // Resolved to the calibrated heading!
+            expect(global.window.removeEventListener).toHaveBeenCalledWith('deviceorientation', orientationHandler);
+        });
+
+        it('should resolve with uncalibrated reading if timeout is reached and no calibrated reading was received', async () => {
+            let orientationHandler;
+            global.window.addEventListener = jest.fn((event, handler) => {
+                if (event === 'deviceorientation') {
+                    orientationHandler = handler;
+                }
+            });
+
+            const bearingPromise = DeviceCapture.getCompassBearing();
+
+            // Fire uncalibrated event
+            orientationHandler({ webkitCompassHeading: 120, webkitCompassAccuracy: -1, alpha: null });
+
+            // Fast forward timers
+            jest.advanceTimersByTime(1000);
+
+            const res = await bearingPromise;
+            expect(res).toBe(120); // Resolved to the uncalibrated heading
             expect(global.window.removeEventListener).toHaveBeenCalledWith('deviceorientation', orientationHandler);
         });
     });
