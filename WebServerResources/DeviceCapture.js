@@ -14,8 +14,10 @@ const DeviceCapture = {
                 }
             }
 
-            const locationResult = await this.getLocation();
-            const bearing = await this.getCompassBearing().catch(() => null);
+            const [locationResult, bearing] = await Promise.all([
+                this.getLocation(),
+                this.getCompassBearing().catch(() => null)
+            ]);
             
             this.submitForm(locationResult, bearing);
             return { success: true };
@@ -42,29 +44,37 @@ const DeviceCapture = {
     async getCompassBearing() { 
         return new Promise((resolve) => {
             let bestHeading = null;
+            let gotCompass = false;
+            let eventCount = 0;
+            let timeoutId = null;
+            
+            const resolveBearing = (val) => {
+                window.removeEventListener('deviceorientation', handleOrientation);
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                resolve(val);
+            };
             
             const handleOrientation = (event) => {
+                eventCount++;
                 let heading = event.webkitCompassHeading;
                 let accuracy = event.webkitCompassAccuracy;
                 
-                if (heading === undefined && event.alpha !== null) {
-                    heading = 360 - event.alpha;
-                }
-                
                 if (heading !== undefined && heading !== null) {
+                    gotCompass = true;
+                    
                     // If accuracy is not supported/provided (e.g. non-iOS or test environment),
                     // resolve immediately to maintain compatibility and speed.
                     if (accuracy === undefined || accuracy === null) {
-                        window.removeEventListener('deviceorientation', handleOrientation);
-                        resolve(heading);
+                        resolveBearing(heading);
                         return;
                     }
                     
-                    // If accuracy is supported, we check if it is calibrated (accuracy > 0)
+                    // If accuracy is supported, check if it is calibrated (accuracy > 0)
                     if (accuracy > 0) {
                         // Calibrated reading! Resolve immediately with it.
-                        window.removeEventListener('deviceorientation', handleOrientation);
-                        resolve(heading);
+                        resolveBearing(heading);
                         return;
                     }
                     
@@ -73,12 +83,28 @@ const DeviceCapture = {
                     if (bestHeading === null) {
                         bestHeading = heading;
                     }
+                } else if (!gotCompass) {
+                    // Fallback to alpha if compass heading is not available
+                    if (event.alpha !== null && event.alpha !== undefined) {
+                        let alphaHeading = 360 - event.alpha;
+                        bestHeading = alphaHeading;
+                        
+                        // If we've received multiple events and still no compass heading,
+                        // assume the compass sensor is not responding/supported and fallback to alpha.
+                        // We wait for at least 10 events (approx 160ms at 60Hz) to allow iOS compass initialization.
+                        if (eventCount > 9) {
+                            resolveBearing(bestHeading);
+                            return;
+                        }
+                    }
                 }
             };
+            
             window.addEventListener('deviceorientation', handleOrientation);
-            setTimeout(() => {
-                window.removeEventListener('deviceorientation', handleOrientation);
-                resolve(bestHeading);
+            
+            // Wait up to 1000ms for stable/calibrated readings.
+            timeoutId = setTimeout(() => {
+                resolveBearing(bestHeading);
             }, 1000);
         });
     },

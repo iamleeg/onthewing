@@ -106,8 +106,10 @@ describe('DeviceCapture', () => {
 
             const bearingPromise = DeviceCapture.getCompassBearing();
 
-            // Simulate the event firing
-            orientationHandler({ webkitCompassHeading: undefined, alpha: 90 });
+            // Simulate multiple events firing to trigger the alpha fallback
+            for (let i = 0; i < 10; i++) {
+                orientationHandler({ webkitCompassHeading: undefined, alpha: 90 });
+            }
 
             const res = await bearingPromise;
             expect(res).toBe(270); // 360 - 90
