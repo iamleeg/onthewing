@@ -16,7 +16,7 @@ build:
 manifests:
   kustomize:
     paths:
-      - k8s
+      - local-dev
 deploy:
   kubectl: {}
 portForward:
