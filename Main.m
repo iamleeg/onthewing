@@ -22,11 +22,16 @@
 #endif
 
 #import "Main.h"
+#import "Observation.h"
 
 @implementation Main
 
 - (id)capture {
-  return [self pageWithName:@"Capture"];
+  id <ObservationUsing> capturePage = (id <ObservationUsing>)[self pageWithName:@"Capture"];
+  id observation = [[Observation alloc] init];
+  [observation setCaptureDate: [NSDate date]];
+  [capturePage setObservation: observation];
+  return capturePage;
 }
 
 @end

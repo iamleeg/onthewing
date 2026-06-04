@@ -49,7 +49,9 @@
                                             userInfo:nil];
   WOContext *ctx = [[WOContext alloc] initWithRequest:req];
   Main *m = [[Main alloc] initWithContext:ctx];
-  XCTAssertEqualObjects([[m capture] class], [Capture class]);
+  Capture *capture = [m capture];
+  XCTAssertEqualObjects([capture class], [Capture class]);
+  XCTAssertNotNil([[capture observation] captureDate]);
 }
 
 @end
