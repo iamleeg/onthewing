@@ -24,4 +24,10 @@
 @synthesize captureDate = _captureDate;
 @synthesize location = _location;
 
+- (void)dealloc {
+    [_captureDate release];
+    [_location release];
+    [super dealloc];
+}
+
 @end
