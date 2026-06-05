@@ -21,6 +21,10 @@
 #import <XCTest/XCTest.h>
 
 @interface TestObservationMap : XCTestCase
+{
+    WOContext *_ctx;
+    ObservationMap *_map;
+}
 @end
 
 @implementation TestObservationMap
@@ -32,77 +36,66 @@
                                                headers:nil
                                                content:nil
                                               userInfo:nil];
-    return [[WOContext alloc] initWithRequest:req];
+    return [[[WOContext alloc] initWithRequest:req] autorelease];
+}
+
+- (void)setUp {
+    _ctx = [[self dummyContext] retain];
+    _map = [[ObservationMap alloc] initWithContext:_ctx];
+}
+
+- (void)tearDown {
+    [_ctx release]; _ctx = nil;
+    [_map release]; _map = nil;
 }
 
 - (void)testHasValidCoordinatesBothPresent {
-    WOContext *ctx = [self dummyContext];
-    ObservationMap *map = [[ObservationMap alloc] initWithContext:ctx];
     ObservationLocation *loc = [[ObservationLocation alloc] init];
     [loc setLatitude:[NSNumber numberWithDouble:51.5074]];
     [loc setLongitude:[NSNumber numberWithDouble:-0.1278]];
     
-    [map setLocation:loc];
-    XCTAssertTrue([map hasValidCoordinates]);
+    [_map setLocation:loc];
+    XCTAssertTrue([_map hasValidCoordinates]);
     
-    XCTAssertEqualObjects([map latitude], @"51.5074");
-    XCTAssertEqualObjects([map longitude], @"-0.1278");
+    XCTAssertEqualObjects([_map latitude], @"51.5074");
+    XCTAssertEqualObjects([_map longitude], @"-0.1278");
     
     [loc release];
-    [map release];
-    [ctx release];
 }
 
 - (void)testHasValidCoordinatesLatitudeOnly {
-    WOContext *ctx = [self dummyContext];
-    ObservationMap *map = [[ObservationMap alloc] initWithContext:ctx];
     ObservationLocation *loc = [[ObservationLocation alloc] init];
     [loc setLatitude:[NSNumber numberWithDouble:51.5074]];
     
-    [map setLocation:loc];
-    XCTAssertFalse([map hasValidCoordinates]);
+    [_map setLocation:loc];
+    XCTAssertFalse([_map hasValidCoordinates]);
     
     [loc release];
-    [map release];
-    [ctx release];
 }
 
 - (void)testHasValidCoordinatesLongitudeOnly {
-    WOContext *ctx = [self dummyContext];
-    ObservationMap *map = [[ObservationMap alloc] initWithContext:ctx];
     ObservationLocation *loc = [[ObservationLocation alloc] init];
     [loc setLongitude:[NSNumber numberWithDouble:-0.1278]];
     
-    [map setLocation:loc];
-    XCTAssertFalse([map hasValidCoordinates]);
+    [_map setLocation:loc];
+    XCTAssertFalse([_map hasValidCoordinates]);
     
     [loc release];
-    [map release];
-    [ctx release];
 }
 
 - (void)testHasValidCoordinatesNeitherPresent {
-    WOContext *ctx = [self dummyContext];
-    ObservationMap *map = [[ObservationMap alloc] initWithContext:ctx];
     ObservationLocation *loc = [[ObservationLocation alloc] init];
     
-    [map setLocation:loc];
-    XCTAssertFalse([map hasValidCoordinates]);
+    [_map setLocation:loc];
+    XCTAssertFalse([_map hasValidCoordinates]);
     
     [loc release];
-    [map release];
-    [ctx release];
 }
 
 - (void)testHasValidCoordinatesNoLocation {
-    WOContext *ctx = [self dummyContext];
-    ObservationMap *map = [[ObservationMap alloc] initWithContext:ctx];
-    XCTAssertFalse([map hasValidCoordinates]);
-    XCTAssertNil([map latitude]);
-    XCTAssertNil([map longitude]);
-    
-    [map release];
-    [ctx release];
+    XCTAssertFalse([_map hasValidCoordinates]);
+    XCTAssertNil([_map latitude]);
+    XCTAssertNil([_map longitude]);
 }
 
 @end

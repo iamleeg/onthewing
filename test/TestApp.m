@@ -20,12 +20,20 @@
 #import <XCTest/XCTest.h>
 
 @interface TestApp : XCTestCase
+{
+  OTWApp *_app;
+}
 @end
 
 @implementation TestApp
 
 - (void)setUp {
-  [super setUp];
+  _app = [[OTWApp alloc] init];
+}
+
+- (void)tearDown {
+  [_app release];
+  _app = nil;
 }
 
 - (void)testSessionTimeOut {
@@ -34,16 +42,13 @@
 }
 
 - (void)testInitSetsDefaultRequestHandler {
-  OTWApp *app = [[OTWApp alloc] init];
   NSString *directActionHandlerKey =
-      [[app class] directActionRequestHandlerKey];
-  WORequestHandler *handler = [app requestHandlerForKey:directActionHandlerKey];
-  XCTAssertEqualObjects([app defaultRequestHandler], handler);
+      [[_app class] directActionRequestHandlerKey];
+  WORequestHandler *handler = [_app requestHandlerForKey:directActionHandlerKey];
+  XCTAssertEqualObjects([_app defaultRequestHandler], handler);
 }
 
 - (void)testInitSetsMessageEncoding {
-  OTWApp *app = [[OTWApp alloc] init];
-  (void)app; // just to silence unused variable if needed
   XCTAssertEqual([WOMessage defaultEncoding],
                  (NSStringEncoding)NSUTF8StringEncoding);
 }

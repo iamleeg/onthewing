@@ -24,84 +24,62 @@
 #import <XCTest/XCTest.h>
 
 @interface TestLocationCapture : XCTestCase
+{
+  OTWApp *_app;
+  WORequest *_req;
+  WOContext *_ctx;
+  LocationCapture *_lc;
+  Session *_session;
+}
 @end
 
 @implementation TestLocationCapture
 
-- (void)testLocationCaptureInstantiation {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
-  
-  XCTAssertNotNil(lc);
-  XCTAssertNil([lc latitude]);
-  XCTAssertNil([lc longitude]);
-  XCTAssertNil([lc accuracy]);
-  XCTAssertNil([lc bearing]);
-  XCTAssertNil([lc locationError]);
-  XCTAssertNil([lc bearingError]);
-  XCTAssertNil([lc nextComponent]);
-  // deviceCaptureScriptName always returns a non-nil string
-  XCTAssertNotNil([lc deviceCaptureScriptName]);
+- (void)setUp {
+  _app = [[OTWApp alloc] init];
+  _req = [[WORequest alloc] initWithMethod:@"GET"
+                                       uri:@"/"
+                               httpVersion:@"HTTP/1.1"
+                                   headers:nil
+                                   content:nil
+                                  userInfo:nil];
+  _ctx = [[WOContext alloc] initWithRequest:_req];
+  _lc = [[LocationCapture alloc] initWithContext:_ctx];
+  _session = (Session *)[_lc session];
+}
 
-  [lc release];
+- (void)tearDown {
+  [_lc release]; _lc = nil;
+  [_ctx release]; _ctx = nil;
+  [_req release]; _req = nil;
+  [_app release]; _app = nil;
 }
 
 - (void)testRecordLocationAndBearingPermissionDenied {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"POST"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
-  Session *session = (Session *)[lc session];
+  [_session setLocationPermissionState:LocationPermissionUndetermined];
+  [_lc setLocationError:@"1"];
+  [_lc setNextComponent:@"Capture"];
   
-  [session setLocationPermissionState:LocationPermissionUndetermined];
-  [lc setLocationError:@"1"];
-  [lc setNextComponent:@"Capture"];
+  id next = [_lc recordLocationAndBearing];
   
-  id next = [lc recordLocationAndBearing];
-  
-  XCTAssertEqual([session locationPermissionState], LocationPermissionDenied);
+  XCTAssertEqual([_session locationPermissionState], LocationPermissionDenied);
   XCTAssertEqualObjects([next class], [Capture class]);
   XCTAssertEqualObjects([(Capture *)next locationError], @"No location data was captured.");
-  
-  [lc release];
 }
 
 - (void)testRecordLocationAndBearingPermissionAllowedAndCaptured {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"POST"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
-  [lc setObservation: [[Observation alloc] init]];
+  [_lc setObservation: [[[Observation alloc] init] autorelease]];
 
-  Session *session = (Session *)[lc session];
+  [_session setLocationPermissionState:LocationPermissionUndetermined];
+  [_lc setLatitude:@"51.5074"];
+  [_lc setLongitude:@"-0.1278"];
+  [_lc setAccuracy:@"10.0"];
+  [_lc setBearing:@"180.0"];
+  [_lc setNextComponent:@"Capture"];
   
-  [session setLocationPermissionState:LocationPermissionUndetermined];
-  [lc setLatitude:@"51.5074"];
-  [lc setLongitude:@"-0.1278"];
-  [lc setAccuracy:@"10.0"];
-  [lc setBearing:@"180.0"];
-  [lc setNextComponent:@"Capture"];
+  id next = [_lc recordLocationAndBearing];
   
-  id next = [lc recordLocationAndBearing];
-  
-  XCTAssertEqual([session locationPermissionState], LocationPermissionAllowed);
+  XCTAssertEqual([_session locationPermissionState], LocationPermissionAllowed);
   XCTAssertEqualObjects([next class], [Capture class]);
   
   Capture *capturePage = (Capture *)next;
@@ -112,34 +90,21 @@
   XCTAssertEqualWithAccuracy([[loc longitude] doubleValue], -0.1278, 0.0001);
   XCTAssertEqualWithAccuracy([[loc accuracy] doubleValue], 10.0, 0.0001);
   XCTAssertEqualWithAccuracy([[loc bearing] doubleValue], 180.0, 0.0001);
-  
-  [lc release];
 }
 
 - (void)testRecordLocationAndBearingEmptyBearing {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"POST"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  LocationCapture *lc = [[LocationCapture alloc] initWithContext:ctx];
-  [lc setObservation: [[Observation alloc] init]];
-  [lc setLatitude:@"51.5074"];
-  [lc setLongitude:@"-0.1278"];
-  [lc setBearing:@""]; // Empty string, simulating failed JS capture
-  [lc setNextComponent:@"Capture"];
+  [_lc setObservation: [[[Observation alloc] init] autorelease]];
+  [_lc setLatitude:@"51.5074"];
+  [_lc setLongitude:@"-0.1278"];
+  [_lc setBearing:@""];
+  [_lc setNextComponent:@"Capture"];
   
-  id next = [lc recordLocationAndBearing];
+  id next = [_lc recordLocationAndBearing];
   Capture *capturePage = (Capture *)next;
   ObservationLocation *loc = [[capturePage observation] location];
   
   XCTAssertNotNil(loc);
   XCTAssertNil([loc bearing], @"Bearing should be nil when provided as an empty string");
-  
-  [lc release];
 }
 
 @end

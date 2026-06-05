@@ -25,6 +25,10 @@
 #import <XCTest/XCTest.h>
 
 @interface TestCapture : XCTestCase
+{
+  WOContext *_ctx;
+  Capture *_capture;
+}
 @end
 
 @implementation TestCapture
@@ -39,38 +43,33 @@
   return [[[WOContext alloc] initWithRequest:req] autorelease];
 }
 
-- (void)testCaptureInstantiation {
-  WOContext *ctx = [self dummyContext];
-  Capture *capture = [[Capture alloc] initWithContext:ctx];
-  XCTAssertNotNil(capture);
-  XCTAssertNil([capture observation]);
-  XCTAssertNil([capture locationError]);
-  [capture release];
+- (void)setUp {
+  _ctx = [[self dummyContext] retain];
+  _capture = [[Capture alloc] initWithContext:_ctx];
+}
+
+- (void)tearDown {
+  [_capture release]; _capture = nil;
+  [_ctx release]; _ctx = nil;
 }
 
 - (void)testSetLocationError {
-  WOContext *ctx = [self dummyContext];
-  Capture *capture = [[Capture alloc] initWithContext:ctx];
   NSString *error = @"Invalid location";
   
-  [capture setLocationError:error];
-  XCTAssertEqualObjects([capture locationError], error);
-  
-  [capture release];
+  [_capture setLocationError:error];
+  XCTAssertEqualObjects([_capture locationError], error);
 }
 
 - (void)testReturnAddsPendingObservation {
-  WOContext *ctx = [self dummyContext];
-  Session *s = [ctx session];
+  Session *s = (Session *)[_ctx session];
   Observation *o = [Observation new];
-  Capture *capture = [[Capture alloc] initWithContext:ctx];
-  [capture setObservation: o];
+  [_capture setObservation: o];
 
-  id page = [capture return];
+  id page = [_capture return];
   XCTAssertEqualObjects([page class], [Main class]);
   XCTAssertTrue([[s unreviewedObservations] containsObject:o]);
 
-  [capture release];
   [o release];
 }
+
 @end

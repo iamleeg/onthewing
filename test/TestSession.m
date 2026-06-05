@@ -24,28 +24,33 @@
 #import <XCTest/XCTest.h>
 
 @interface TestSession : XCTestCase
+{
+  Session *_s;
+}
 @end
 
 @implementation TestSession
 
+- (void)setUp {
+  _s = [[Session alloc] init];
+}
+
+- (void)tearDown {
+  [_s release];
+}
+
 - (void)testSessionIDsInCookies {
-  Session *s = [[Session alloc] init];
-  XCTAssertTrue([s storesIDsInCookies]);
-  [s release];
+  XCTAssertTrue([_s storesIDsInCookies]);
 }
 
 - (void)testSessionIDsInURLs {
-  Session *s = [[Session alloc] init];
-  XCTAssertFalse([s storesIDsInURLs]);
-  [s release];
+  XCTAssertFalse([_s storesIDsInURLs]);
 }
 
 - (void)testAddingAnUnreviewedObservation {
-  Session *s = [[Session alloc] init];
   Observation *o = [[Observation alloc] init];
-  [s addObservationForReview:o];
-  XCTAssertTrue([[s unreviewedObservations] containsObject:o]);
-  [s release];
+  [_s addObservationForReview:o];
+  XCTAssertTrue([[_s unreviewedObservations] containsObject:o]);
   [o release];
 }
 
