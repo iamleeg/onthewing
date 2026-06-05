@@ -18,6 +18,9 @@
 
 #import "Session.h"
 #import "OTWApp.h"
+
+#import "Observation.h"
+
 #import <XCTest/XCTest.h>
 
 @interface TestSession : XCTestCase
@@ -28,11 +31,22 @@
 - (void)testSessionIDsInCookies {
   Session *s = [[Session alloc] init];
   XCTAssertTrue([s storesIDsInCookies]);
+  [s release];
 }
 
 - (void)testSessionIDsInURLs {
   Session *s = [[Session alloc] init];
   XCTAssertFalse([s storesIDsInURLs]);
+  [s release];
+}
+
+- (void)testAddingAnUnreviewedObservation {
+  Session *s = [[Session alloc] init];
+  Observation *o = [[Observation alloc] init];
+  [s addObservationForReview:o];
+  XCTAssertTrue([[s unreviewedObservations] containsObject:o]);
+  [s release];
+  [o release];
 }
 
 @end

@@ -20,15 +20,29 @@
 
 @implementation Session
 
-@synthesize locationPermissionState;
+@synthesize locationPermissionState = _locationPermissionState;
 
 - (id)init {
   self = [super init];
   if (self) {
     [self setStoresIDsInCookies:YES];
     [self setStoresIDsInURLs:NO];
-    locationPermissionState = LocationPermissionUndetermined;
+    _locationPermissionState = LocationPermissionUndetermined;
+    _unreviewedObservations = [[NSMutableArray array] retain];
   }
   return self;
+}
+
+- (void)addObservationForReview:(Observation *)observation {
+  [_unreviewedObservations addObject: observation];
+}
+
+- (NSArray *)unreviewedObservations {
+  return [[_unreviewedObservations copy] autorelease];
+}
+
+- (void)dealloc {
+  [_unreviewedObservations release];
+  [super dealloc];
 }
 @end
