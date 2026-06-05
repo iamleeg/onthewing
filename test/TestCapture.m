@@ -18,7 +18,10 @@
 //
 
 #import "Capture.h"
+#import "Main.h"
+#import "Observation.h"
 #import "ObservationLocation.h"
+#import "Session.h"
 #import <XCTest/XCTest.h>
 
 @interface TestCapture : XCTestCase
@@ -33,7 +36,7 @@
                                                headers:nil
                                                content:nil
                                               userInfo:nil];
-  return [[WOContext alloc] initWithRequest:req];
+  return [[[WOContext alloc] initWithRequest:req] autorelease];
 }
 
 - (void)testCaptureInstantiation {
@@ -43,7 +46,6 @@
   XCTAssertNil([capture observation]);
   XCTAssertNil([capture locationError]);
   [capture release];
-  [ctx release];
 }
 
 - (void)testSetLocationError {
@@ -55,7 +57,20 @@
   XCTAssertEqualObjects([capture locationError], error);
   
   [capture release];
-  [ctx release];
 }
 
+- (void)testReturnAddsPendingObservation {
+  WOContext *ctx = [self dummyContext];
+  Session *s = [ctx session];
+  Observation *o = [Observation new];
+  Capture *capture = [[Capture alloc] initWithContext:ctx];
+  [capture setObservation: o];
+
+  id page = [capture return];
+  XCTAssertEqualObjects([page class], [Main class]);
+  XCTAssertTrue([[s unreviewedObservations] containsObject:o]);
+
+  [capture release];
+  [o release];
+}
 @end

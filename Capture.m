@@ -23,6 +23,7 @@
 
 #import "Capture.h"
 #import "Observation.h"
+#import "Session.h"
 
 @implementation Capture
 
@@ -43,6 +44,13 @@
 
 - (NSString *)locationError {
   return _locationError;
+}
+
+- (id)return {
+  Session *session = (Session *)[self session];
+  [session addObservationForReview:_observation];
+  id nextPage = [self pageWithName:@"Main"];
+  return nextPage;
 }
 
 @end

@@ -31,5 +31,6 @@
 
 - (void)setLocationError:(NSString *)error;
 - (NSString *)locationError;
+- (id)return;
 
 @end
