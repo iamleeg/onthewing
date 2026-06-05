@@ -1,2 +1,4 @@
 capture_link:WOHyperlink { action = capture; }
+has_observations:WOConditional { condition = hasObservations; }
+count_observations:WOString { value = reportPendingObservations; }
 AGPLFooter:AGPLFooter {}

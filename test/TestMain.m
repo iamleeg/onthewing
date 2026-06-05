@@ -18,40 +18,71 @@
 
 #import "Capture.h"
 #import "Main.h"
+#import "Observation.h"
 #import "OTWApp.h"
+#import "Session.h"
 #import <XCTest/XCTest.h>
 
 @interface TestMain : XCTestCase
+{
+  OTWApp *_app;
+  WORequest *_req;
+  WOContext *_ctx;
+  Session *_s;
+  Main *_m;
+}
 @end
 
 @implementation TestMain
 
-- (void)testMainInstantiation {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  Main *m = [[Main alloc] initWithContext:ctx];
-  XCTAssertNotNil(m);
+- (void)setUp {
+  _app = [[OTWApp alloc] init];
+  _req = [[WORequest alloc] initWithMethod:@"GET"
+                                       uri:@"/"
+                               httpVersion:@"HTTP/1.1"
+                                   headers:nil
+                                   content:nil
+                                  userInfo:nil];
+  _ctx = [[WOContext alloc] initWithRequest:_req];
+  _s = (Session *)[_ctx session];
+  _m = [[Main alloc] initWithContext:_ctx];
+
+}
+- (void)tearDown {
+  [_m release]; _m = nil;
+  [_ctx release]; _ctx = nil;
+  _s = nil;
+  [_req release]; _req = nil;
+  [_app release]; _app = nil;
 }
 
 - (void)testMainReturnsCapturePage {
-  OTWApp *app = [[OTWApp alloc] init];
-  WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
-                                                 uri:@"/"
-                                         httpVersion:@"HTTP/1.1"
-                                             headers:nil
-                                             content:nil
-                                            userInfo:nil];
-  WOContext *ctx = [[WOContext alloc] initWithRequest:req];
-  Main *m = [[Main alloc] initWithContext:ctx];
-  Capture *capture = [m capture];
+  Capture *capture = [_m capture];
   XCTAssertEqualObjects([capture class], [Capture class]);
   XCTAssertNotNil([[capture observation] captureDate]);
 }
 
+- (void)testMainWithEmptySessionHasNoObservations {
+  XCTAssertFalse([_m hasObservations]);
+}
+
+- (void)testMainWithPendingObservationsInSessionHasObservations {
+  Observation *o = [[[Observation alloc] init] autorelease];
+  [_s addObservationForReview:o];
+  XCTAssertTrue([_m hasObservations]);
+}
+
+- (void)testMainWithOnePendingObservationReportsIt {
+  Observation *o = [[[Observation alloc] init] autorelease];
+  [_s addObservationForReview:o];
+  XCTAssertEqualObjects([_m reportPendingObservations], @"There's an observation you can add to your journal!");
+}
+
+- (void)testMainWithTwoPendingObservationsReportsThem {
+  Observation *o1 = [[[Observation alloc] init] autorelease];
+  Observation *o2 = [[[Observation alloc] init] autorelease];
+  [_s addObservationForReview:o1];
+  [_s addObservationForReview:o2];
+  XCTAssertEqualObjects([_m reportPendingObservations], @"You have 2 observations you can add to your journal!");
+}
 @end

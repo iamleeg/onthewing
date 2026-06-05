@@ -21,4 +21,8 @@
 @interface Main : GSWComponent {
 }
 
+- capture;
+- (BOOL)hasObservations;
+- (NSString *)reportPendingObservations;
+
 @end

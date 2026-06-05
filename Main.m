@@ -23,6 +23,7 @@
 
 #import "Main.h"
 #import "Observation.h"
+#import "Session.h"
 
 @implementation Main
 
@@ -32,6 +33,22 @@
   [observation setCaptureDate: [NSDate date]];
   [capturePage setObservation: observation];
   return capturePage;
+}
+
+- (BOOL)hasObservations {
+  Session *session = (Session *)[self session];
+  return ([[session unreviewedObservations] count] > 0);
+}
+
+- (NSString *)reportPendingObservations {
+  Session *session = (Session *)[self session];
+  NSUInteger count = [[session unreviewedObservations] count];
+  NSAssert(count > 0, @"Don't show pending observations if there aren't any");
+  if (count == 1) {
+    return @"There's an observation you can add to your journal!";
+  } else {
+    return [NSString stringWithFormat: @"You have %lu observations you can add to your journal!", count];
+  }
 }
 
 @end
