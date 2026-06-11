@@ -17,10 +17,12 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #import "Session.h"
+#import "User.h"
 
 @implementation Session
 
 @synthesize locationPermissionState = _locationPermissionState;
+@synthesize user = _user;
 
 - (id)init {
   self = [super init];
@@ -29,6 +31,7 @@
     [self setStoresIDsInURLs:NO];
     _locationPermissionState = LocationPermissionUndetermined;
     _unreviewedObservations = [[NSMutableArray array] retain];
+    _user = nil;
   }
   return self;
 }
@@ -42,6 +45,7 @@
 }
 
 - (void)dealloc {
+  [_user release];
   [_unreviewedObservations release];
   [super dealloc];
 }

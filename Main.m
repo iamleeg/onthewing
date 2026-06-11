@@ -51,4 +51,9 @@
   }
 }
 
+- (BOOL)hasUser {
+  Session *session = (Session *)[self session];
+  return [session user] != nil;
+}
+
 @end

@@ -25,14 +25,17 @@
 #import "LocationPermission.h"
 
 @class Observation;
+@class User;
 
 @interface Session : WOSession {
     LocationPermissionState _locationPermissionState;
     NSMutableArray *_unreviewedObservations;
+    User *_user;
 }
 
 @property (nonatomic, assign) LocationPermissionState locationPermissionState;
 @property (nonatomic, readonly) NSArray *unreviewedObservations;
+@property (nonatomic, retain) User *user;
 
 - (void)addObservationForReview:(Observation *)observation;
 

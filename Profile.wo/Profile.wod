@@ -1,0 +1,25 @@
+FirebaseScript: OTWFirebaseScript {}
+
+hasAvatar: WOConditional {
+    condition = hasAvatar;
+}
+
+avatarImage: WOImage {
+    src = avatarUrl;
+    alt = "User Avatar";
+}
+
+userName: WOString {
+    value = userName;
+}
+
+userEmail: WOString {
+    value = userEmail;
+}
+
+backLink: WOHyperlink {
+    action = showMain;
+    class = "btn btn-secondary";
+}
+
+AGPLFooter: AGPLFooter {}

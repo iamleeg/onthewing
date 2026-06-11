@@ -1,0 +1,8 @@
+profileLink: WOHyperlink {
+    action = showProfile;
+}
+
+logoutForm: WOForm {
+    action = logout;
+    id = "logout-form";
+}

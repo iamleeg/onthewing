@@ -6,13 +6,29 @@
 </head>
 
 <body>
+    <webobject name="FirebaseScript" />
+
+    <div style="float: right; margin: 10px;">
+        <webobject name="no_user">
+            <webobject name="loginComponent"/>
+        </webobject>
+        <webobject name="has_user">
+            <webobject name="profileComponent"/>
+        </webobject>
+    </div>
+
     <h1>On the Wing</h1>
-    Did you see something interesting? <webobject name=capture_link>Capture it</webobject> for your nature journal!
+    
+    <p>
+        Did you see something interesting? <webobject name=capture_link>Capture it</webobject> for your nature journal!
+    </p>
+    
     <p>
         <webobject name="has_observations">
             <webobjects name="count_observations"/>
         </webobject>
     </p>
+    
     <webobject name=AGPLFooter />
 </body>
 

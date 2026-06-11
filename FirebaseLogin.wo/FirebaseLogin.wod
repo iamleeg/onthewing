@@ -1,0 +1,29 @@
+loginForm: WOForm {
+    action = login;
+    id = "firebase-login-form";
+}
+
+uidInput: WOHiddenField {
+    value = uid;
+    id = "login-uid";
+}
+
+nameInput: WOHiddenField {
+    value = displayName;
+    id = "login-name";
+}
+
+emailInput: WOHiddenField {
+    value = email;
+    id = "login-email";
+}
+
+avatarUrlInput: WOHiddenField {
+    value = avatarUrl;
+    id = "login-avatarUrl";
+}
+
+tokenInput: WOHiddenField {
+    value = token;
+    id = "login-token";
+}

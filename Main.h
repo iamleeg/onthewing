@@ -24,5 +24,6 @@
 - capture;
 - (BOOL)hasObservations;
 - (NSString *)reportPendingObservations;
+- (BOOL)hasUser;
 
 @end

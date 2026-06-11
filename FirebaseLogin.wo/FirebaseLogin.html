@@ -1,0 +1,155 @@
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.auth-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    box-sizing: border-box;
+    border: 1px solid #eaeaea;
+}
+.auth-card h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+}
+.input-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4a4a4a;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-group input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    outline: none;
+}
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.btn-primary {
+    background-color: #4f46e5;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #4338ca;
+}
+.btn-primary:active {
+    transform: scale(0.98);
+}
+.auth-switch {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: #666666;
+}
+.auth-switch a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 500;
+}
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+.auth-error {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+    text-align: left;
+    word-break: break-word;
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 id="auth-title">Sign In</h2>
+        
+        <div id="auth-error-message" class="auth-error" style="display: none;"></div>
+
+        <!-- Email/Password Login Section -->
+        <div id="signin-section">
+            <div class="input-group">
+                <label for="email-input">Email Address</label>
+                <input type="email" id="email-input" placeholder="you@example.com" required />
+            </div>
+            <div class="input-group">
+                <label for="password-input">Password</label>
+                <input type="password" id="password-input" placeholder="********" required />
+            </div>
+            <button class="btn btn-primary" onclick="FirebaseAuth.loginWithEmail(document.getElementById('email-input').value, document.getElementById('password-input').value)">Sign In</button>
+            <p class="auth-switch">Don't have an account? <a href="#" onclick="toggleAuthMode(true); return false;">Create one</a></p>
+        </div>
+
+        <!-- Registration Section -->
+        <div id="register-section" style="display: none;">
+            <div class="input-group">
+                <label for="reg-name-input">Name</label>
+                <input type="text" id="reg-name-input" placeholder="Your Name" />
+            </div>
+            <div class="input-group">
+                <label for="reg-email-input">Email Address</label>
+                <input type="email" id="reg-email-input" placeholder="you@example.com" required />
+            </div>
+            <div class="input-group">
+                <label for="reg-password-input">Password</label>
+                <input type="password" id="reg-password-input" placeholder="At least 6 characters" required />
+            </div>
+            <button class="btn btn-primary" onclick="FirebaseAuth.registerWithEmail(document.getElementById('reg-email-input').value, document.getElementById('reg-password-input').value, document.getElementById('reg-name-input').value)">Register</button>
+            <p class="auth-switch">Already have an account? <a href="#" onclick="toggleAuthMode(false); return false;">Sign In</a></p>
+        </div>
+    </div>
+
+    <!-- Hidden Form for WO Integration -->
+    <webobject name="loginForm">
+        <webobject name="uidInput" />
+        <webobject name="nameInput" />
+        <webobject name="emailInput" />
+        <webobject name="avatarUrlInput" />
+        <webobject name="tokenInput" />
+    </webobject>
+</div>
+
+<script>
+function toggleAuthMode(showRegister) {
+    document.getElementById('signin-section').style.display = showRegister ? 'none' : 'block';
+    document.getElementById('register-section').style.display = showRegister ? 'block' : 'none';
+    document.getElementById('auth-title').textContent = showRegister ? 'Create Account' : 'Sign In';
+    FirebaseAuth.clearErrors();
+}
+</script>
