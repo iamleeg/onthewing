@@ -1,20 +1,12 @@
 capture_link:WOHyperlink { action = capture; }
 has_observations:WOConditional { condition = hasObservations; }
 count_observations:WOString { value = reportPendingObservations; }
+is_logged_in:WOConditional { condition = hasUser; }
+not_logged_in:WOConditional { condition = hasUser; negate = true; }
+review_link:WOHyperlink { action = reviewObservations; }
 AGPLFooter:AGPLFooter {}
 
 FirebaseScript: OTWFirebaseScript {}
 
-no_user: WOConditional {
-    condition = hasUser;
-    negate = true;
-}
-
-has_user: WOConditional {
-    condition = hasUser;
-}
-
-loginComponent: FirebaseLogin {}
-
-profileComponent: FirebaseProfile {}
+FirebaseAuthUI: FirebaseAuthUI {}
 

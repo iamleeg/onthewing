@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>On the Wing: Review Observations</title>
+</head>
+<body>
+    <webobject name="FirebaseScript" />
+    <webobject name="FirebaseAuthUI" />
+
+    <h1>Review Observations</h1>
+
+    <webobject name="hasLocations">
+        <h3>Observations Map</h3>
+        <webobject name="observationMap" />
+    </webobject>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Time / Date</th>
+                <th>Bearing</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <webobject name="observationLoop">
+                <tr>
+                    <td><webobject name="observationTime"/></td>
+                    <td>
+                        <webobject name="hasBearing">
+                            <webobject name="compass" />
+                        </webobject>
+                        <webobject name="noBearing">
+                            No bearing recorded
+                        </webobject>
+                    </td>
+                    <td>
+                        <webobject name="deleteLink">Delete</webobject>
+                    </td>
+                </tr>
+            </webobject>
+        </tbody>
+    </table>
+
+    <p>
+        <webobject name="backLink">Return to Main Page</webobject>
+    </p>
+
+    <webobject name="AGPLFooter" />
+</body>
+</html>

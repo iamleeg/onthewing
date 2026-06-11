@@ -40,6 +40,10 @@
   [_unreviewedObservations addObject: observation];
 }
 
+- (void)removeObservationForReview:(Observation *)observation {
+  [_unreviewedObservations removeObject: observation];
+}
+
 - (NSArray *)unreviewedObservations {
   return [[_unreviewedObservations copy] autorelease];
 }

@@ -29,6 +29,8 @@
 @property (nonatomic, strong) NSDate *captureDate;
 @property (nonatomic, strong) ObservationLocation *location;
 
+- (NSComparisonResult)compareChronologically:(Observation *)other;
+
 @end
 
 @protocol ObservationUsing <NSObject>

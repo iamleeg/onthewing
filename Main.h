@@ -22,6 +22,7 @@
 }
 
 - capture;
+- (id)reviewObservations;
 - (BOOL)hasObservations;
 - (NSString *)reportPendingObservations;
 - (BOOL)hasUser;

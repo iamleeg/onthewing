@@ -19,6 +19,7 @@
 #import "Capture.h"
 #import "Main.h"
 #import "Observation.h"
+#import "ReviewObservations.h"
 #import "OTWApp.h"
 #import "Session.h"
 #import <XCTest/XCTest.h>
@@ -84,5 +85,10 @@
   [_s addObservationForReview:o1];
   [_s addObservationForReview:o2];
   XCTAssertEqualObjects([_m reportPendingObservations], @"You have 2 observations you can add to your journal!");
+}
+
+- (void)testReviewObservationsAction {
+  id page = [_m reviewObservations];
+  XCTAssertEqualObjects([page class], [ReviewObservations class]);
 }
 @end

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// ObservationMap.h - Map view for observations
+// ReviewObservations.h - Page for reviewing captured observations
 // Copyright (C) 2026 Graham Lee
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,20 +16,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#include <WebObjects/WebObjects.h>
-#import "ObservationLocation.h"
+#ifndef GNUSTEP
+#include <GNUstepBase/GNUstep.h>
+#endif
 
-@interface ObservationMap : GSWComponent {
-    ObservationLocation *_location;
-    NSArray *_observations;
+#include <WebObjects/WebObjects.h>
+
+@class Observation;
+
+@interface ReviewObservations : GSWComponent {
+    Observation *_currentObservation;
 }
 
-@property (nonatomic, retain) ObservationLocation *location;
-@property (nonatomic, retain) NSArray *observations;
+@property (nonatomic, retain) Observation *currentObservation;
 
-- (BOOL)hasValidCoordinates;
-- (NSString *)latitude;
-- (NSString *)longitude;
-- (NSString *)markersJSON;
+- (NSArray *)sortedObservations;
+- (id)deleteObservation;
+- (id)backToMain;
+
+- (BOOL)hasAnyLocation;
+- (NSString *)formattedCaptureDate;
+- (BOOL)hasCurrentBearing;
 
 @end

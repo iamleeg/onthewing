@@ -9,5 +9,6 @@ mapContainer:WOGenericContainer {
     style = "height: 300px; width: 100%;";
     data-lat = latitude; 
     data-lng = longitude; 
+    data-markers = markersJSON;
 }
 noLocationMessage:WOString { value = "No location captured"; }

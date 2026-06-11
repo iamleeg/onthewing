@@ -35,6 +35,10 @@
   return capturePage;
 }
 
+- (id)reviewObservations {
+  return [self pageWithName:@"ReviewObservations"];
+}
+
 - (BOOL)hasObservations {
   Session *session = (Session *)[self session];
   return ([[session unreviewedObservations] count] > 0);

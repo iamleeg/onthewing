@@ -1,0 +1,12 @@
+no_user: WOConditional {
+    condition = hasUser;
+    negate = true;
+}
+
+has_user: WOConditional {
+    condition = hasUser;
+}
+
+loginComponent: FirebaseLogin {}
+
+profileComponent: FirebaseProfile {}

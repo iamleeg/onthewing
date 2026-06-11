@@ -38,5 +38,6 @@
 @property (nonatomic, retain) User *user;
 
 - (void)addObservationForReview:(Observation *)observation;
+- (void)removeObservationForReview:(Observation *)observation;
 
 @end

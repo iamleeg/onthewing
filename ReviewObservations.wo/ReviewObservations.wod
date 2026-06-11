@@ -1,0 +1,42 @@
+FirebaseScript: OTWFirebaseScript {}
+FirebaseAuthUI: FirebaseAuthUI {}
+
+hasLocations: WOConditional {
+    condition = hasAnyLocation;
+}
+
+observationMap: ObservationMap {
+    observations = sortedObservations;
+}
+
+observationLoop: WORepetition {
+    list = sortedObservations;
+    item = currentObservation;
+}
+
+observationTime: WOString {
+    value = formattedCaptureDate;
+}
+
+hasBearing: WOConditional {
+    condition = hasCurrentBearing;
+}
+
+compass: Compass {
+    location = currentObservation.location;
+}
+
+noBearing: WOConditional {
+    condition = hasCurrentBearing;
+    negate = true;
+}
+
+deleteLink: WOHyperlink {
+    action = deleteObservation;
+}
+
+backLink: WOHyperlink {
+    action = backToMain;
+}
+
+AGPLFooter: AGPLFooter {}

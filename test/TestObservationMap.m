@@ -18,6 +18,7 @@
 
 #import "ObservationMap.h"
 #import "ObservationLocation.h"
+#import "Observation.h"
 #import <XCTest/XCTest.h>
 
 @interface TestObservationMap : XCTestCase
@@ -96,6 +97,67 @@
     XCTAssertFalse([_map hasValidCoordinates]);
     XCTAssertNil([_map latitude]);
     XCTAssertNil([_map longitude]);
+}
+
+- (void)testSetLocationWrapsInObservationsAndMarkersJSON {
+    ObservationLocation *loc = [[ObservationLocation alloc] init];
+    [loc setLatitude:[NSNumber numberWithDouble:51.5074]];
+    [loc setLongitude:[NSNumber numberWithDouble:-0.1278]];
+    
+    [_map setLocation:loc];
+    XCTAssertNotNil([_map observations]);
+    XCTAssertEqual([[_map observations] count], (NSUInteger)1);
+    
+    NSString *expectedJSON = @"[{&quot;lat&quot;:51.507400,&quot;lng&quot;:-0.127800}]";
+    XCTAssertEqualObjects([_map markersJSON], expectedJSON);
+    
+    [loc release];
+}
+
+- (void)testMultipleObservationsInMap {
+    Observation *o1 = [[[Observation alloc] init] autorelease];
+    ObservationLocation *loc1 = [[[ObservationLocation alloc] init] autorelease];
+    [loc1 setLatitude:[NSNumber numberWithDouble:51.5074]];
+    [loc1 setLongitude:[NSNumber numberWithDouble:-0.1278]];
+    [o1 setLocation:loc1];
+    
+    NSDateComponents *comp1 = [[[NSDateComponents alloc] init] autorelease];
+    [comp1 setYear:2026];
+    [comp1 setMonth:6];
+    [comp1 setDay:11];
+    [comp1 setHour:13];
+    [comp1 setMinute:56];
+    [comp1 setSecond:0];
+    [o1 setCaptureDate:[[NSCalendar currentCalendar] dateFromComponents:comp1]];
+    
+    Observation *o2 = [[[Observation alloc] init] autorelease];
+    
+    Observation *o3 = [[[Observation alloc] init] autorelease];
+    ObservationLocation *loc3 = [[[ObservationLocation alloc] init] autorelease];
+    [loc3 setLatitude:[NSNumber numberWithDouble:48.8566]];
+    [loc3 setLongitude:[NSNumber numberWithDouble:2.3522]];
+    [o3 setLocation:loc3];
+    
+    NSDateComponents *comp3 = [[[NSDateComponents alloc] init] autorelease];
+    [comp3 setYear:2026];
+    [comp3 setMonth:6];
+    [comp3 setDay:11];
+    [comp3 setHour:15];
+    [comp3 setMinute:30];
+    [comp3 setSecond:0];
+    [o3 setCaptureDate:[[NSCalendar currentCalendar] dateFromComponents:comp3]];
+    
+    NSArray *obs = [NSArray arrayWithObjects:o1, o2, o3, nil];
+    [_map setObservations:obs];
+    
+    XCTAssertTrue([_map hasValidCoordinates]);
+    XCTAssertEqualObjects([_map latitude], @"51.5074");
+    XCTAssertEqualObjects([_map longitude], @"-0.1278");
+    
+    NSString *json = [_map markersJSON];
+    XCTAssertTrue([json rangeOfString:@"{&quot;lat&quot;:51.507400,&quot;lng&quot;:-0.127800,&quot;title&quot;:&quot;Observation 1 at 13:56&quot;}"].location != NSNotFound);
+    XCTAssertTrue([json rangeOfString:@"{&quot;lat&quot;:48.856600,&quot;lng&quot;:2.352200,&quot;title&quot;:&quot;Observation 3 at 15:30&quot;}"].location != NSNotFound);
+    XCTAssertTrue([json rangeOfString:@"Observation 2"].location == NSNotFound);
 }
 
 @end

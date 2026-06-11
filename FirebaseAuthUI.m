@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// ObservationMap.h - Map view for observations
+// FirebaseAuthUI.m - Reusable authentication header component
 // Copyright (C) 2026 Graham Lee
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,20 +16,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#include <WebObjects/WebObjects.h>
-#import "ObservationLocation.h"
+#import "FirebaseAuthUI.h"
+#import "Session.h"
 
-@interface ObservationMap : GSWComponent {
-    ObservationLocation *_location;
-    NSArray *_observations;
+@implementation FirebaseAuthUI
+
+- (BOOL)hasUser {
+    Session *session = (Session *)[self session];
+    return [session user] != nil;
 }
-
-@property (nonatomic, retain) ObservationLocation *location;
-@property (nonatomic, retain) NSArray *observations;
-
-- (BOOL)hasValidCoordinates;
-- (NSString *)latitude;
-- (NSString *)longitude;
-- (NSString *)markersJSON;
 
 @end

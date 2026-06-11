@@ -8,14 +8,7 @@
 <body>
     <webobject name="FirebaseScript" />
 
-    <div style="float: right; margin: 10px;">
-        <webobject name="no_user">
-            <webobject name="loginComponent"/>
-        </webobject>
-        <webobject name="has_user">
-            <webobject name="profileComponent"/>
-        </webobject>
-    </div>
+    <webobject name="FirebaseAuthUI" />
 
     <h1>On the Wing</h1>
     
@@ -25,7 +18,12 @@
     
     <p>
         <webobject name="has_observations">
-            <webobjects name="count_observations"/>
+            <webobject name="is_logged_in">
+                <webobject name="review_link"><webobject name="count_observations"/></webobject>
+            </webobject>
+            <webobject name="not_logged_in">
+                <webobject name="count_observations"/>
+            </webobject>
         </webobject>
     </p>
     

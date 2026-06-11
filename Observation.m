@@ -24,6 +24,24 @@
 @synthesize captureDate = _captureDate;
 @synthesize location = _location;
 
+- (NSComparisonResult)compareChronologically:(Observation *)other {
+    if (other == nil) {
+        return NSOrderedDescending;
+    }
+    NSDate *d1 = [self captureDate];
+    NSDate *d2 = [other captureDate];
+    if (d1 == nil && d2 == nil) {
+        return NSOrderedSame;
+    }
+    if (d1 == nil) {
+        return NSOrderedAscending;
+    }
+    if (d2 == nil) {
+        return NSOrderedDescending;
+    }
+    return [d1 compare:d2];
+}
+
 - (void)dealloc {
     [_captureDate release];
     [_location release];
