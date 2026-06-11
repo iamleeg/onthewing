@@ -78,11 +78,11 @@ bd close <id>         # Complete work
 1. **File issues for remaining work** - Create issues for anything that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
-4. **Clean up** - Clear stashes, prune remote branches
+4. **Clean up** - Clear stashes, prune remote branches, remove debugging code and temporary files
 5. **Verify** - All changes committed and ready for review
 6. **Hand off** - Provide context for next session and explicitly wait for user review/approval
 
 **CRITICAL RULES:**
-- NEVER push code to remote without explicit user approval after a review.
+- NEVER commit or push code to remote without explicit user approval after a review.
 - Always present your changes and verify they meet the requirements before suggesting completion.
 <!-- END BEADS INTEGRATION -->
