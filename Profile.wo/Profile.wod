@@ -9,17 +9,35 @@ avatarImage: WOImage {
     alt = "User Avatar";
 }
 
-userName: WOString {
-    value = userName;
+profileForm: WOForm {
+    id = "profile-form";
 }
 
-userEmail: WOString {
-    value = userEmail;
+nameInput: WOTextField {
+    value = updatedName;
+    id = "profile-name";
+}
+
+emailInput: WOTextField {
+    value = updatedEmail;
+    id = "profile-email";
+}
+
+updateButton: WOSubmitButton {
+    action = updateProfile;
+    class = "btn btn-primary";
+    value = "Update Profile";
 }
 
 backLink: WOHyperlink {
     action = showMain;
     class = "btn btn-secondary";
+}
+
+deleteForm: WOForm {
+    action = deleteAccount;
+    id = "delete-account-form";
+    style = "display: none;";
 }
 
 AGPLFooter: AGPLFooter {}

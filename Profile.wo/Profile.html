@@ -51,36 +51,65 @@
         border-bottom: 1px solid #eaeaea;
         padding: 1rem 0;
     }
-    .detail-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.75rem 0;
+    .input-group {
+        margin-bottom: 1.25rem;
+        text-align: left;
     }
-    .detail-label {
+    .input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4a4a4a;
+        font-size: 0.875rem;
         font-weight: 500;
-        color: #666666;
-        font-size: 0.95rem;
     }
-    .detail-value {
-        color: #1a1a1a;
-        font-weight: 600;
-        font-size: 0.95rem;
+    .input-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #cccccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .btn-secondary {
+    .input-group input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        outline: none;
+    }
+    .btn {
         display: inline-block;
         padding: 0.75rem 1.5rem;
         font-size: 0.95rem;
         font-weight: 600;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+    .btn-primary {
+        background-color: #4f46e5;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #4338ca;
+    }
+    .btn-secondary {
         color: #4b5563;
         background-color: #f3f4f6;
-        border-radius: 6px;
-        text-decoration: none;
-        transition: background-color 0.2s, color 0.2s;
         border: 1px solid #e5e7eb;
     }
     .btn-secondary:hover {
         background-color: #e5e7eb;
         color: #1f2937;
+    }
+    .btn-danger {
+        background-color: #dc2626;
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #b91c1c;
     }
     </style>
     
@@ -94,22 +123,58 @@
             
             <h2>User Profile</h2>
             
-            <div class="profile-details">
-                <div class="detail-row">
-                    <span class="detail-label">Name</span>
-                    <span class="detail-value"><webobject name="userName" /></span>
+            <webobject name="profileForm">
+                <div class="profile-details">
+                    <div class="input-group">
+                        <label for="profile-name">Name</label>
+                        <webobject name="nameInput" />
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-email">Email</label>
+                        <webobject name="emailInput" />
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Email</span>
-                    <span class="detail-value"><webobject name="userEmail" /></span>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem;">
+                    <webobject name="updateButton">Update Profile</webobject>
+                    <webobject name="backLink">Back to Journal</webobject>
                 </div>
+            </webobject>
+
+            <div style="margin-top: 2rem; border-top: 1px solid #eaeaea; padding-top: 1.5rem;">
+                <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; text-align: left;">
+                    Warning: Deleting your account will permanently remove all your data from our database and Firebase.
+                </p>
+                <button class="btn btn-danger" style="width: 100%;" onclick="deleteUserAccount(); return false;">Delete Account</button>
             </div>
-            
-            <webobject name="backLink">Back to Journal</webobject>
+
+            <!-- Hidden Form for Delete Account WO Integration -->
+            <webobject name="deleteForm">
+            </webobject>
         </div>
     </div>
     
     <webobject name="AGPLFooter" />
+
+    <script>
+    async function deleteUserAccount() {
+        if (confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone.")) {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    const user = firebase.auth().currentUser;
+                    if (user) {
+                        await user.delete();
+                    }
+                }
+            } catch (error) {
+                console.error("Firebase Auth user deletion failed/ignored:", error);
+                alert("Firebase deletion failed: " + error.message + "\nProceeding with database deletion.");
+            }
+            // Submit the database deletion form
+            document.getElementById('delete-account-form').submit();
+        }
+    }
+    </script>
 </body>
 
 </html>

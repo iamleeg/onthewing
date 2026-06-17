@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// User.m - User model representation
+// Observer.m - Observer model representation
 // Copyright (C) 2026 Graham Lee
 //
 
-#import "User.h"
+#import "Observer.h"
+#import <EOControl/EOObserver.h>
 
-@implementation User
+@implementation Observer
 
 @synthesize uid = _uid;
 @synthesize name = _name;
@@ -30,6 +31,36 @@
     return self;
 }
 
+- (void)setUid:(NSString *)uid {
+    [self willChange];
+    [_uid release];
+    _uid = [uid copy];
+}
+
+- (void)setName:(NSString *)name {
+    [self willChange];
+    [_name release];
+    _name = [name copy];
+}
+
+- (void)setEmail:(NSString *)email {
+    [self willChange];
+    [_email release];
+    _email = [email copy];
+}
+
+- (void)setAvatarUrl:(NSString *)avatarUrl {
+    [self willChange];
+    [_avatarUrl release];
+    _avatarUrl = [avatarUrl copy];
+}
+
+- (void)setToken:(NSString *)token {
+    [self willChange];
+    [_token release];
+    _token = [token copy];
+}
+
 - (void)dealloc {
     [_uid release];
     [_name release];
@@ -40,3 +71,4 @@
 }
 
 @end
+

@@ -6,12 +6,20 @@
 
 #import <WebObjects/WebObjects.h>
 
-@interface Profile : GSWComponent
+@interface Profile : GSWComponent {
+    NSString *_updatedName;
+    NSString *_updatedEmail;
+}
+
+@property (nonatomic, copy) NSString *updatedName;
+@property (nonatomic, copy) NSString *updatedEmail;
 
 - (id)showMain;
 - (BOOL)hasAvatar;
 - (NSString *)userName;
 - (NSString *)userEmail;
 - (NSString *)avatarUrl;
+- (id)updateProfile;
+- (id)deleteAccount;
 
 @end

@@ -17,7 +17,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #import "Session.h"
-#import "User.h"
+#import "Observer.h"
+#import <EOControl/EOEditingContext.h>
 
 @implementation Session
 
@@ -34,6 +35,10 @@
     _user = nil;
   }
   return self;
+}
+
+- (EOEditingContext *)editingContext {
+  return [self defaultEditingContext];
 }
 
 - (void)addObservationForReview:(Observation *)observation {

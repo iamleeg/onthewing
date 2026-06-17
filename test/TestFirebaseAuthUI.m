@@ -18,7 +18,7 @@
 
 #import "FirebaseAuthUI.h"
 #import "Session.h"
-#import "User.h"
+#import "Observer.h"
 #import "OTWApp.h"
 #import <XCTest/XCTest.h>
 
@@ -61,7 +61,7 @@
 }
 
 - (void)testHasUserWithUser {
-    User *user = [[[User alloc] init] autorelease];
+    Observer *user = [[[Observer alloc] init] autorelease];
     [_s setUser:user];
     XCTAssertTrue([_authUI hasUser]);
 }

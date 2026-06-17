@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// TestUser.m - Tests for the User class and its session storage
+// TestObserver.m - Tests for the Observer class and its session storage
 // Copyright (C) 2026 Graham Lee
 //
 
-#import "User.h"
+#import "Observer.h"
 #import "Session.h"
 #import <XCTest/XCTest.h>
 
-@interface TestUser : XCTestCase
+@interface TestObserver : XCTestCase
 @end
 
-@implementation TestUser
+@implementation TestObserver
 
-- (void)testUserInitialization {
-    User *user = [[User alloc] initWithUid:@"test-uid-123"
+- (void)testObserverInitialization {
+    Observer *user = [[Observer alloc] initWithUid:@"test-uid-123"
                                       name:@"John Doe"
                                      email:@"john@example.com"
                                  avatarUrl:@"http://example.com/avatar.jpg"
@@ -29,11 +29,11 @@
     [user release];
 }
 
-- (void)testSessionStoresUser {
+- (void)testSessionStoresObserver {
     Session *session = [[Session alloc] init];
     XCTAssertNil([session user]);
     
-    User *user = [[User alloc] initWithUid:@"test-uid"
+    Observer *user = [[Observer alloc] initWithUid:@"test-uid"
                                       name:@"Jane Doe"
                                      email:@"jane@example.com"
                                  avatarUrl:nil

@@ -9,6 +9,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gnustep-devel \
     libgnustep-base-dev \
     libgnustep-dl2-dev \
+    libpq-dev \
     libxml2-dev \
     libffi-dev \
     ca-certificates \
@@ -42,6 +43,15 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
     make && \
     make install
 
+# Build and install libs-gdl2 from source
+WORKDIR /src
+RUN git clone https://github.com/gnustep/libs-gdl2.git && \
+    cd libs-gdl2 && \
+    . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
+    ./configure --disable-gui-projects --disable-gorm-palette && \
+    make && \
+    make install
+
 # Build the OnTheWing application
 WORKDIR /app
 COPY . .
@@ -61,7 +71,7 @@ FROM debian:bookworm-slim AS runtime
 # Install minimal runtime dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gnustep-base-runtime \
-    libgnustep-dl2-0d \
+    libpq5 \
     libxml2 \
     && rm -rf /var/lib/apt/lists/*
 

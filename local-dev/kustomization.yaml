@@ -12,3 +12,20 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: Never
+      - op: replace
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: DB_HOST
+            value: host.minikube.internal
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_NAME
+            value: onthewing-eedce-database
+          - name: DB_USER
+            value: postgres
+          - name: DB_PASSWORD
+            value: ""
+      - op: remove
+        path: /spec/template/spec/containers/1
+      - op: remove
+        path: /spec/template/spec/volumes

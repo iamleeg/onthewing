@@ -25,17 +25,19 @@
 #import "LocationPermission.h"
 
 @class Observation;
-@class User;
+@class Observer;
+@class EOEditingContext;
 
 @interface Session : WOSession {
     LocationPermissionState _locationPermissionState;
     NSMutableArray *_unreviewedObservations;
-    User *_user;
+    Observer *_user;
 }
 
 @property (nonatomic, assign) LocationPermissionState locationPermissionState;
 @property (nonatomic, readonly) NSArray *unreviewedObservations;
-@property (nonatomic, retain) User *user;
+@property (nonatomic, retain) Observer *user;
+@property (nonatomic, readonly) EOEditingContext *editingContext;
 
 - (void)addObservationForReview:(Observation *)observation;
 - (void)removeObservationForReview:(Observation *)observation;

@@ -6,8 +6,9 @@
 
 #import "FirebaseLogin.h"
 #import "FirebaseProfile.h"
+#import "Profile.h"
 #import "Session.h"
-#import "User.h"
+#import "Observer.h"
 #import "OTWApp.h"
 #import "Main.h"
 #import <XCTest/XCTest.h>
@@ -54,7 +55,7 @@
     id nextPage = [loginComponent login];
     XCTAssertEqualObjects([nextPage class], [Main class]);
     
-    User *user = [_s user];
+    Observer *user = [_s user];
     XCTAssertNotNil(user);
     XCTAssertEqualObjects([user uid], @"uid-123");
     XCTAssertEqualObjects([user name], @"John Doe");
@@ -66,7 +67,7 @@
 }
 
 - (void)testFirebaseProfileLogoutAction {
-    User *user = [[User alloc] initWithUid:@"uid-123"
+    Observer *user = [[Observer alloc] initWithUid:@"uid-123"
                                       name:@"John Doe"
                                      email:@"john@example.com"
                                  avatarUrl:nil
@@ -76,6 +77,50 @@
     
     FirebaseProfile *profileComponent = [[FirebaseProfile alloc] initWithContext:_ctx];
     id nextPage = [profileComponent logout];
+    
+    XCTAssertEqualObjects([nextPage class], [Main class]);
+    XCTAssertNil([_s user]);
+    
+    [profileComponent release];
+    [user release];
+}
+
+- (void)testProfileUpdate {
+    Observer *user = [[Observer alloc] initWithUid:@"uid-123"
+                                      name:@"John Doe"
+                                     email:@"john@example.com"
+                                 avatarUrl:nil
+                                     token:@"token"];
+    [_s setUser:user];
+    
+    Profile *profileComponent = [[Profile alloc] initWithContext:_ctx];
+    XCTAssertEqualObjects([profileComponent userName], @"John Doe");
+    XCTAssertEqualObjects([profileComponent userEmail], @"john@example.com");
+    
+    [profileComponent setUpdatedName:@"Jane Smith"];
+    [profileComponent setUpdatedEmail:@"jane@example.com"];
+    
+    id nextPage = [profileComponent updateProfile];
+    XCTAssertNil(nextPage); // updateProfile returns nil (refresh page)
+    
+    XCTAssertEqualObjects([user name], @"Jane Smith");
+    XCTAssertEqualObjects([user email], @"jane@example.com");
+    
+    [profileComponent release];
+    [user release];
+}
+
+- (void)testProfileDeleteAccount {
+    Observer *user = [[Observer alloc] initWithUid:@"uid-123"
+                                      name:@"John Doe"
+                                     email:@"john@example.com"
+                                 avatarUrl:nil
+                                     token:@"token"];
+    [_s setUser:user];
+    XCTAssertNotNil([_s user]);
+    
+    Profile *profileComponent = [[Profile alloc] initWithContext:_ctx];
+    id nextPage = [profileComponent deleteAccount];
     
     XCTAssertEqualObjects([nextPage class], [Main class]);
     XCTAssertNil([_s user]);

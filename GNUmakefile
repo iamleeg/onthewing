@@ -24,14 +24,14 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m CompassSVGGenerator.m Compass.m Observation.m User.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m FirebaseAuthUI.m
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m CompassSVGGenerator.m Compass.m Observation.m Observer.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m FirebaseAuthUI.m
 OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo FirebaseAuthUI.wo
 OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js FirebaseAuth.js leaflet.js leaflet.css marker-icon.png marker-icon-2x.png marker-shadow.png layers.png layers-2x.png
 
 ifneq ($(FOUNDATION_LIB),gnu)
-AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions
+AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions -framework EOControl -framework EOAccess
 else
-AUXILIARY_GSW_LIBS += -lWebObjects -lWOExtensions
+AUXILIARY_GSW_LIBS += -lWebObjects -lWOExtensions -lEOControl -lEOAccess
 endif
 
 BUNDLE_NAME = OTWTests
@@ -48,7 +48,7 @@ OTWTests_OBJC_FILES = \
 	test/TestObservationMap.m \
 	test/TestOTWStyleSheet.m \
 	test/TestCompassSVGGenerator.m \
-	test/TestUser.m \
+	test/TestObserver.m \
 	test/TestAuthActions.m \
 	test/TestReviewObservations.m \
 	test/TestFirebaseAuthUI.m \
@@ -65,7 +65,7 @@ OTWTests_OBJC_FILES = \
 	CompassSVGGenerator.m \
 	Compass.m \
 	Observation.m \
-	User.m \
+	Observer.m \
 	OTWFirebaseScript.m \
 	FirebaseLogin.m \
 	FirebaseProfile.m \

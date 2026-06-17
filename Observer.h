@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// User.h - User model representation
+// Observer.h - Observer model representation
 // Copyright (C) 2026 Graham Lee
 //
 
-#import <Foundation/Foundation.h>
+#import <EOControl/EOControl.h>
 
-@interface User : NSObject {
+@interface Observer : EOCustomObject {
     NSString *_uid;
     NSString *_name;
     NSString *_email;
@@ -27,3 +27,4 @@
             token:(NSString *)token;
 
 @end
+
