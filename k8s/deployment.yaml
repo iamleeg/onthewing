@@ -54,7 +54,7 @@ spec:
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
           args:
             - "--credentials-file=/secrets/gcp/key.json"
-            - "onthewing-eedce:us-central1:onthewing-eedce-instance"
+            - "onthewing-eedce:europe-west2:onthewing-eedce-instance"
           securityContext:
             runAsNonRoot: true
           volumeMounts:
