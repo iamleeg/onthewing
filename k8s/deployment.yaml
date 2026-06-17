@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: onthewing
-          image: quay.io/iamleeg/onthewing:3f1661e4ffe5cbc8508c3d4ca191c11f93f66ca0
+          image: quay.io/iamleeg/onthewing:61022af043610fdaa77da2512be53bc1681ef188
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
