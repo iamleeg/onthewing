@@ -23,6 +23,7 @@
 
 @synthesize captureDate = _captureDate;
 @synthesize location = _location;
+@synthesize photoURL = _photoURL;
 
 - (NSComparisonResult)compareChronologically:(Observation *)other {
     if (other == nil) {
@@ -45,6 +46,7 @@
 - (void)dealloc {
     [_captureDate release];
     [_location release];
+    [_photoURL release];
     [super dealloc];
 }
 

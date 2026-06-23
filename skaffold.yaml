@@ -13,6 +13,15 @@ build:
         dependencies:
           paths:
             - "**/*"
+    - image: localhost/local/firebase-emulator
+      context: local-dev/emulator
+      custom:
+        buildCommand: podman build -t $IMAGE -f $BUILD_CONTEXT/Dockerfile $BUILD_CONTEXT && podman save -o /tmp/firebase-emulator.tar $IMAGE && minikube image load /tmp/firebase-emulator.tar
+        dependencies:
+          paths:
+            - "Dockerfile"
+            - "firebase.json"
+            - "storage.rules"
 manifests:
   kustomize:
     paths:
@@ -24,3 +33,15 @@ portForward:
     resourceName: onthewing-svc
     port: 80
     localPort: 8080
+  - resourceType: service
+    resourceName: firebase-emulator-svc
+    port: 9099
+    localPort: 9099
+  - resourceType: service
+    resourceName: firebase-emulator-svc
+    port: 9199
+    localPort: 9199
+  - resourceType: service
+    resourceName: firebase-emulator-svc
+    port: 4000
+    localPort: 4000

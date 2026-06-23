@@ -69,6 +69,18 @@
         }
     }
     [_observation setLocation: loc];
+    
+    id currentPage = [[self context] page];
+    Class nextClass = NSClassFromString([self nextComponent]);
+    if (currentPage && nextClass && [currentPage isKindOfClass:nextClass]) {
+        if (loc == nil) {
+            if ([currentPage respondsToSelector:@selector(setLocationError:)]) {
+                [currentPage performSelector:@selector(setLocationError:) withObject:@"No location data was captured."];
+            }
+        }
+        return nil;
+    }
+    
     id <LocationUsing> page = (id <LocationUsing>)[self pageWithName:[self nextComponent]];
     [page setObservation:_observation];
     if (loc == nil) {

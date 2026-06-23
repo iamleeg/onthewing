@@ -32,6 +32,10 @@ const FirebaseAuth = {
         if (typeof firebase !== 'undefined') {
             if (!firebase.apps.length) {
                 firebase.initializeApp(config);
+                if (!isProd) {
+                    firebase.auth().useEmulator("http://localhost:9099");
+                    firebase.storage().useEmulator("localhost", 9199);
+                }
             }
             this.setupListeners();
         }

@@ -1,0 +1,67 @@
+photoScript: WOJavaScript {
+    scriptSource = photoCaptureScriptName;
+}
+
+hasPhoto: WOConditional {
+    condition = hasPhoto;
+}
+
+previewImage: WOImage {
+    src = observation.photoURL;
+    alt = "Observation Photo";
+    width = imageWidth;
+    height = imageHeight;
+}
+
+removeButton: WOGenericContainer {
+    elementName = "button";
+    type = "button";
+    onclick = removeButtonOnClick;
+    class = "btn-remove";
+}
+
+labelTextString: WOString {
+    value = labelText;
+}
+
+fileInput: WOGenericContainer {
+    elementName = "input";
+    type = "file";
+    id = fileInputID;
+    accept = "image/*";
+    capture = "environment";
+    onchange = fileInputOnChange;
+    style = "display: none;";
+}
+
+uploadButton: WOGenericContainer {
+    elementName = "button";
+    type = "button";
+    onclick = uploadButtonOnClick;
+    class = "btn-upload";
+}
+
+buttonTextString: WOString {
+    value = buttonText;
+}
+
+statusSpan: WOGenericContainer {
+    elementName = "span";
+    id = statusID;
+    style = "display: none;";
+}
+
+photoForm: WOForm {
+    action = submitPhoto;
+    id = formID;
+}
+
+photoURLField: WOHiddenField {
+    value = photoURL;
+    id = urlInputID;
+}
+
+photoActionField: WOHiddenField {
+    value = photoAction;
+    id = actionInputID;
+}

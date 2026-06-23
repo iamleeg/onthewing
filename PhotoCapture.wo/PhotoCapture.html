@@ -1,0 +1,32 @@
+<div class="photo-capture-container">
+    <!-- Include the PhotoCapture JS script dynamically -->
+    <webobject name="photoScript"></webobject>
+
+    <!-- Display existing photo and remove button if present -->
+    <webobject name="hasPhoto">
+        <div class="photo-preview">
+            <webobject name="previewImage"></webobject>
+            <div>
+                <webobject name="removeButton">Remove Photo</webobject>
+            </div>
+        </div>
+    </webobject>
+
+    <!-- Upload section -->
+    <div class="photo-upload-section">
+        <span><webobject name="labelTextString"></webobject></span>
+        <webobject name="fileInput"></webobject>
+        <webobject name="uploadButton"><webobject name="buttonTextString"></webobject></webobject>
+    </div>
+    
+    <!-- Uploading indicator -->
+    <div class="photo-status-container">
+        <webobject name="statusSpan">Uploading...</webobject>
+    </div>
+
+    <!-- Hidden form submitted via Javascript -->
+    <webobject name="photoForm">
+        <webobject name="photoURLField"></webobject>
+        <webobject name="photoActionField"></webobject>
+    </webobject>
+</div>

@@ -54,7 +54,12 @@ describe('FirebaseAuth', () => {
                 email: 'test@example.com',
                 photoURL: 'avatar.jpg',
                 getIdToken: jest.fn().mockResolvedValue('jwt123')
-            }
+            },
+            useEmulator: jest.fn()
+        };
+
+        const mockStorage = {
+            useEmulator: jest.fn()
         };
 
         global.firebase = {
@@ -62,7 +67,8 @@ describe('FirebaseAuth', () => {
             initializeApp: jest.fn(function() {
                 this.apps.push({});
             }),
-            auth: jest.fn(() => mockAuth)
+            auth: jest.fn(() => mockAuth),
+            storage: jest.fn(() => mockStorage)
         };
     });
 

@@ -24,10 +24,12 @@
 {
     NSDate *_captureDate;
     ObservationLocation *_location;
+    NSURL *_photoURL;
 }
 
 @property (nonatomic, strong) NSDate *captureDate;
 @property (nonatomic, strong) ObservationLocation *location;
+@property (nonatomic, retain) NSURL *photoURL;
 
 - (NSComparisonResult)compareChronologically:(Observation *)other;
 

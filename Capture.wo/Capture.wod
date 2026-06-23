@@ -2,6 +2,7 @@ AGPLFooter:AGPLFooter {}
 FirebaseScript: OTWFirebaseScript {}
 FirebaseAuthUI: FirebaseAuthUI {}
 locationCapture:LocationCapture { nextComponent="Capture"; observation = observation; }
+photoCapture:PhotoCapture { nextComponent="Capture"; observation = observation; }
 observationMap:ObservationMap { location = observation.location; }
 compass:Compass { location = observation.location; }
 done:WOHyperlink { action = return; }

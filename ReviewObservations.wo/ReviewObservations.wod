@@ -18,6 +18,12 @@ observationTime: WOString {
     value = formattedCaptureDate;
 }
 
+photoCapture: PhotoCapture {
+    nextComponent = "ReviewObservations";
+    observation = currentObservation;
+    imageWidth = "100";
+}
+
 hasBearing: WOConditional {
     condition = hasCurrentBearing;
 }

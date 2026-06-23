@@ -16,6 +16,7 @@
     NSString *scripts = [NSString stringWithFormat:
         @"<script src=\"https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js\"></script>\n"
         @"<script src=\"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js\"></script>\n"
+        @"<script src=\"https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js\"></script>\n"
         @"<script src=\"%@\"></script>\n", url];
     [response appendContentString:scripts];
 }

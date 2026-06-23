@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firebase-emulator
+  labels:
+    app: firebase-emulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firebase-emulator
+  template:
+    metadata:
+      labels:
+        app: firebase-emulator
+    spec:
+      containers:
+        - name: emulator
+          image: localhost/local/firebase-emulator
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9099
+              name: auth
+            - containerPort: 9199
+              name: storage
+            - containerPort: 4000
+              name: ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firebase-emulator-svc
+spec:
+  selector:
+    app: firebase-emulator
+  ports:
+    - protocol: TCP
+      port: 9099
+      targetPort: 9099
+      name: auth
+    - protocol: TCP
+      port: 9199
+      targetPort: 9199
+      name: storage
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+      name: ui

@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../k8s
+  - firebase-emulator.yaml
 
 patches:
   - target:
