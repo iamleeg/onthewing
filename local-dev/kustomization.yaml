@@ -30,3 +30,11 @@ patches:
         path: /spec/template/spec/containers/1
       - op: remove
         path: /spec/template/spec/volumes
+  - patch: |-
+      $patch: delete
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: onthewing
+        namespace: argocd
+
