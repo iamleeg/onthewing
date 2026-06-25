@@ -27,9 +27,8 @@ ENV CXX=clang++
 
 # Build and install GSWeb from source: needs my patched version
 WORKDIR /src
-RUN git clone https://github.com/iamleeg/libs-gsweb.git && \
+RUN git clone https://github.com/gnustep/libs-gsweb.git && \
     cd libs-gsweb && \
-    git switch fix-wojavascript-assertion-failure && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure && \
     make && \
