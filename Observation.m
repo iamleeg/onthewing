@@ -25,6 +25,24 @@
 @synthesize location = _location;
 @synthesize photoURL = _photoURL;
 
+- (void)setCaptureDate:(NSDate *)captureDate {
+    [self willChange];
+    [_captureDate release];
+    _captureDate = [captureDate retain];
+}
+
+- (void)setLocation:(ObservationLocation *)location {
+    [self willChange];
+    [_location release];
+    _location = [location retain];
+}
+
+- (void)setPhotoURL:(NSURL *)photoURL {
+    [self willChange];
+    [_photoURL release];
+    _photoURL = [photoURL retain];
+}
+
 - (NSComparisonResult)compareChronologically:(Observation *)other {
     if (other == nil) {
         return NSOrderedDescending;
