@@ -34,10 +34,18 @@
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
 
+static NSString * const kReviewObservationsErrorDomain = @"ReviewObservationsErrorDomain";
+typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
+    ReviewObservationsErrorObserverNotPersisted = 1,
+    ReviewObservationsErrorSaveFailed = 2,
+    ReviewObservationsErrorPhotoQuotaExceeded = 3,
+};
+
 @implementation ReviewObservations
 
 @synthesize currentObservation = _currentObservation;
 @synthesize photoStorageMover = _photoStorageMover;
+@synthesize lastError = _lastError;
 
 - (PhotoStorageMover *)photoStorageMover {
     if (_photoStorageMover == nil) {
@@ -148,6 +156,26 @@
     Observer *user = [session saveObserverWithError:&observerError];
     if (user == nil) {
         NSLog(@"Cannot save journal entry: %@", observerError);
+        self.lastError = observerError ?: [NSError errorWithDomain:kReviewObservationsErrorDomain
+                                                                 code:ReviewObservationsErrorObserverNotPersisted
+                                                             userInfo:@{NSLocalizedDescriptionKey: @"Could not save your journal entry. Please try again."}];
+        return self;
+    }
+
+    NSUInteger newPhotoCount = 0;
+    for (Observation *observation in pending) {
+        if ([observation photoURL] != nil) {
+            newPhotoCount++;
+        }
+    }
+    if (newPhotoCount > [user remainingPhotoQuotaInEditingContext:ec]) {
+        NSError *quotaError = [NSError errorWithDomain:kReviewObservationsErrorDomain
+                                                    code:ReviewObservationsErrorPhotoQuotaExceeded
+                                                userInfo:@{NSLocalizedDescriptionKey:
+                                                    [NSString stringWithFormat:@"You've reached the %lu-photo limit for free accounts. Upgrade your account to save more.",
+                                                     (unsigned long)kFreeTierPhotoLimit]}];
+        NSLog(@"Cannot save journal entry: %@", quotaError);
+        self.lastError = quotaError;
         return self;
     }
 
@@ -166,6 +194,9 @@
     [ec unlock];
 
     if (entry == nil) {
+        self.lastError = [NSError errorWithDomain:kReviewObservationsErrorDomain
+                                              code:ReviewObservationsErrorSaveFailed
+                                          userInfo:@{NSLocalizedDescriptionKey: @"Could not save your journal entry. Please try again."}];
         return self;
     }
 
@@ -197,6 +228,7 @@
 - (void)dealloc {
     [_currentObservation release];
     [_photoStorageMover release];
+    [_lastError release];
     [super dealloc];
 }
 

@@ -6,6 +6,12 @@
 
 #import <EOControl/EOControl.h>
 
+// Free-tier cap on saved (JournalEntry-attached) photos. No paid tier exists
+// yet - this applies to everyone - but callers should go through
+// -remainingPhotoQuota rather than referencing this directly, so a future
+// tier distinction only has one place to change.
+extern NSUInteger const kFreeTierPhotoLimit;
+
 @interface Observer : EOCustomObject {
     NSString *_uid;
     NSString *_name;
@@ -29,6 +35,13 @@
             email:(NSString *)email
         avatarUrl:(NSString *)avatarUrl
             token:(NSString *)token;
+
+// Count of this observer's saved (JournalEntry-attached) Observations that
+// have a photo. Pending/unreviewed Observations don't count.
+- (NSUInteger)savedPhotoCountInEditingContext:(EOEditingContext *)ec;
+
+// kFreeTierPhotoLimit minus -savedPhotoCountInEditingContext:, floored at 0.
+- (NSUInteger)remainingPhotoQuotaInEditingContext:(EOEditingContext *)ec;
 
 @end
 

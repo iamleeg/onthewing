@@ -283,4 +283,29 @@
     XCTAssertNotNil(nextPage);
 }
 
+// A never-before-seen uid has zero already-saved photos whether or not a
+// real DB is reachable (see Observer -savedPhotoCountInEditingContext:'s own
+// "no DB" fallback), so the quota math (51 pending > 50 remaining) is
+// deterministic in both environments - unlike the DB-save outcome itself,
+// which the tests above already treat as environment-dependent.
+
+- (void)testSaveToJournalRejectsWhenPendingPhotosExceedQuota {
+    Session *s = (Session *)[_ctx session];
+    Observer *user = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString] name:@"Jane" email:@"jane@example.com" avatarUrl:nil token:nil] autorelease];
+    [s setUser:user];
+
+    for (NSUInteger i = 0; i < 51; i++) {
+        Observation *o = [[[Observation alloc] init] autorelease];
+        [o setCaptureDate:[NSDate date]];
+        [o setPhotoURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/temp%%2Fp%lu.jpg?alt=media", (unsigned long)i]]];
+        [s addObservationForReview:o];
+    }
+
+    id nextPage = [_review saveToJournal];
+
+    XCTAssertEqualObjects(nextPage, _review);
+    XCTAssertEqual([[s unreviewedObservations] count], (NSUInteger)51);
+    XCTAssertNotNil([_review lastError]);
+}
+
 @end
