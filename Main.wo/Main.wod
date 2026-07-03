@@ -4,6 +4,8 @@ count_observations:WOString { value = reportPendingObservations; }
 is_logged_in:WOConditional { condition = hasUser; }
 not_logged_in:WOConditional { condition = hasUser; negate = true; }
 review_link:WOHyperlink { action = reviewObservations; }
+browse_journal_link:WOHyperlink { action = browseJournal; }
+is_logged_in_for_journal:WOConditional { condition = hasUser; }
 AGPLFooter:AGPLFooter {}
 
 FirebaseScript: OTWFirebaseScript {}

@@ -20,7 +20,7 @@ entryDate: WOString {
 }
 
 observationLoop: WORepetition {
-    list = currentEntry.observations;
+    list = currentEntryObservations;
     item = currentObservation;
 }
 
@@ -52,6 +52,10 @@ deleteEntryLink: WOHyperlink {
 
 backLink: WOHyperlink {
     action = backToMain;
+}
+
+captureLink: WOHyperlink {
+    action = capture;
 }
 
 AGPLFooter: AGPLFooter {}

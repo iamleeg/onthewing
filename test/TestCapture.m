@@ -60,6 +60,15 @@
   XCTAssertEqualObjects([_capture locationError], error);
 }
 
+- (void)testPrepareFreshObservationSetsObservationWithCaptureDate {
+  XCTAssertNil([_capture observation]);
+
+  [_capture prepareFreshObservation];
+
+  XCTAssertNotNil([_capture observation]);
+  XCTAssertNotNil([[_capture observation] captureDate]);
+}
+
 - (void)testReturnAddsPendingObservation {
   Session *s = (Session *)[_ctx session];
   Observation *o = [Observation new];

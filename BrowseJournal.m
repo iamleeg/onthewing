@@ -126,6 +126,14 @@
     return results ?: @[];
 }
 
+- (NSArray *)currentEntryObservations {
+    if (self.currentEntry == nil) {
+        return @[];
+    }
+    Session *session = (Session *)[self session];
+    return [self observationsForEntry:self.currentEntry editingContext:[session editingContext]];
+}
+
 - (id)deleteEntry {
     Session *session = (Session *)[self session];
     Observer *user = [session user];
@@ -165,6 +173,12 @@
 
 - (id)backToMain {
     return [self pageWithName:@"Main"];
+}
+
+- (id)capture {
+    id <ObservationUsing> capturePage = (id <ObservationUsing>)[self pageWithName:@"Capture"];
+    [capturePage prepareFreshObservation];
+    return capturePage;
 }
 
 - (void)dealloc {

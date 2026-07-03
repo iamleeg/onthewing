@@ -19,10 +19,9 @@
 #include <WebObjects/WebObjects.h>
 
 #import "LocationCapture.h"
+#import "Observation.h"
 
-@class Observation;
-
-@interface Capture : GSWComponent <LocationUsing> {
+@interface Capture : GSWComponent <LocationUsing, ObservationUsing> {
     Observation *_observation;
     NSString *_locationError;
 }

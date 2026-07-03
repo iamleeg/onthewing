@@ -23,6 +23,7 @@
 
 - capture;
 - (id)reviewObservations;
+- (id)browseJournal;
 - (BOOL)hasObservations;
 - (NSString *)reportPendingObservations;
 - (BOOL)hasUser;

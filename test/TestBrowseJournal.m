@@ -187,6 +187,60 @@
     }
 }
 
+- (void)testCurrentEntryObservationsReturnsEmptyWhenNoCurrentEntry {
+    XCTAssertEqualObjects([_browse currentEntryObservations], @[]);
+}
+
+- (void)testCurrentEntryObservationsMatchesFetchedEntryWhenDataAvailable {
+    Session *s = (Session *)[_ctx session];
+    EOEditingContext *ec = [s editingContext];
+
+    NSError *error = nil;
+    [ec lock];
+    NS_DURING {
+        Observer *user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [user setUid:[[NSUUID UUID] UUIDString]];
+        [ec saveChanges];
+
+        JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+        [entry setObserver:user];
+        [entry setDate:[NSDate date]];
+
+        Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [o1 setJournalEntry:entry];
+        [o1 setCaptureDate:[NSDate date]];
+
+        Observation *o2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [o2 setJournalEntry:entry];
+        [o2 setCaptureDate:[NSDate date]];
+
+        [ec saveChanges];
+
+        [s setUser:user];
+    }
+    NS_HANDLER {
+        NSLog(@"testCurrentEntryObservationsMatchesFetchedEntryWhenDataAvailable: no DB available to set up fixtures: %@", localException);
+        error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    if (error != nil) {
+        return;
+    }
+
+    JournalEntry *fetchedEntry = [[_browse journalEntries] firstObject];
+    XCTAssertNotNil(fetchedEntry);
+    [_browse setCurrentEntry:fetchedEntry];
+
+    XCTAssertEqual([[_browse currentEntryObservations] count], (NSUInteger)2);
+}
+
+- (void)testCaptureReturnsCapturePageWithNewObservation {
+    id page = [_browse capture];
+    XCTAssertEqualObjects([page class], NSClassFromString(@"Capture"));
+}
+
 - (void)testDeleteEntryRemovesEntryAndDeletesEachObservationsPhoto {
     Session *s = (Session *)[_ctx session];
     EOEditingContext *ec = [s editingContext];

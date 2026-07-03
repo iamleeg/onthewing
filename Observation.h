@@ -60,4 +60,7 @@
 
 @protocol ObservationUsing <NSObject>
 - (void)setObservation:(Observation *)loc;
+
+// Creates a new Observation dated now and assigns it via -setObservation:.
+- (void)prepareFreshObservation;
 @end

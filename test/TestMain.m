@@ -20,6 +20,7 @@
 #import "Main.h"
 #import "Observation.h"
 #import "ReviewObservations.h"
+#import "BrowseJournal.h"
 #import "OTWApp.h"
 #import "Session.h"
 #import <XCTest/XCTest.h>
@@ -90,5 +91,10 @@
 - (void)testReviewObservationsAction {
   id page = [_m reviewObservations];
   XCTAssertEqualObjects([page class], [ReviewObservations class]);
+}
+
+- (void)testBrowseJournalAction {
+  id page = [_m browseJournal];
+  XCTAssertEqualObjects([page class], [BrowseJournal class]);
 }
 @end

@@ -46,6 +46,12 @@
   return _locationError;
 }
 
+- (void)prepareFreshObservation {
+  Observation *observation = [[[Observation alloc] init] autorelease];
+  [observation setCaptureDate:[NSDate date]];
+  self.observation = observation;
+}
+
 - (id)return {
   Session *session = (Session *)[self session];
   [session addObservationForReview:_observation];

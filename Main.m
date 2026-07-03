@@ -29,14 +29,16 @@
 
 - (id)capture {
   id <ObservationUsing> capturePage = (id <ObservationUsing>)[self pageWithName:@"Capture"];
-  id observation = [[Observation alloc] init];
-  [observation setCaptureDate: [NSDate date]];
-  [capturePage setObservation: observation];
+  [capturePage prepareFreshObservation];
   return capturePage;
 }
 
 - (id)reviewObservations {
   return [self pageWithName:@"ReviewObservations"];
+}
+
+- (id)browseJournal {
+  return [self pageWithName:@"BrowseJournal"];
 }
 
 - (BOOL)hasObservations {
