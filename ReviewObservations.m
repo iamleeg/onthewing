@@ -25,10 +25,25 @@
 #import "Observation.h"
 #import "ObservationLocation.h"
 #import "Session.h"
+#import "Observer.h"
+#import "JournalEntry.h"
+#import "PhotoStorageMover.h"
+#import "PhotoMigrator.h"
+#import <EOControl/EOControl.h>
+#import <EOAccess/EOAccess.h>
+#import <EOAccess/EOUtilities.h>
 
 @implementation ReviewObservations
 
 @synthesize currentObservation = _currentObservation;
+@synthesize photoStorageMover = _photoStorageMover;
+
+- (PhotoStorageMover *)photoStorageMover {
+    if (_photoStorageMover == nil) {
+        _photoStorageMover = [[PhotoStorageMover alloc] init];
+    }
+    return _photoStorageMover;
+}
 
 - (NSArray *)sortedObservations {
     Session *session = (Session *)[self session];
@@ -100,8 +115,103 @@
     return [self pageWithName:@"Main"];
 }
 
+// Extracts the raw GCS object path (e.g. "temp/uid/img.jpg") from a Firebase
+// download URL.
+// The object path is everything after the "o" path component.
+- (NSString *)objectPathFromDownloadURL:(NSURL *)url {
+    if (url == nil) {
+        return nil;
+    }
+    NSArray *components = [url pathComponents];
+    NSUInteger marker = [components indexOfObject:@"o"];
+    if (marker == NSNotFound || marker + 1 >= [components count]) {
+        return nil;
+    }
+    NSRange objectPathRange = NSMakeRange(marker + 1, [components count] - marker - 1);
+    return [[components subarrayWithRange:objectPathRange] componentsJoinedByString:@"/"];
+}
+
+- (JournalEntry *)buildJournalEntryForObservations:(NSArray *)observations
+                                            observer:(Observer *)observer
+                                      editingContext:(EOEditingContext *)ec {
+    JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+    [entry setObserver:observer];
+    [entry setDate:[[observations objectAtIndex:0] captureDate]];
+    for (Observation *observation in observations) {
+        [ec insertObject:observation];
+        [observation setJournalEntry:entry];
+    }
+    return entry;
+}
+
+- (id)saveToJournal {
+    Session *session = (Session *)[self session];
+    EOEditingContext *ec = [session editingContext];
+    NSArray *pending = [self sortedObservations];
+
+    if ([pending count] == 0) {
+        return [self pageWithName:@"Main"];
+    }
+
+    // FirebaseLogin's DB-outage fallback can leave session.user as a bare
+    // Observer never inserted into any EC (see FirebaseLogin.m -login).
+    // Relating such an object to a new JournalEntry and calling saveChanges
+    // crashes GDL2 outright rather than throwing.
+    // Give the DB another chance to persist the observer (it may
+    // have only been a transient outage at login time) before giving up.
+    NSError *observerError = nil;
+    Observer *user = [session saveObserverWithError:&observerError];
+    if (user == nil) {
+        NSLog(@"Cannot save journal entry: %@", observerError);
+        return self;
+    }
+
+    JournalEntry *entry = nil;
+
+    [ec lock];
+    NS_DURING {
+        entry = [self buildJournalEntryForObservations:pending observer:user editingContext:ec];
+        [ec saveChanges];
+    }
+    NS_HANDLER {
+        NSLog(@"Failed to save journal entry: %@", localException);
+        entry = nil;
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    if (entry == nil) {
+        return self;
+    }
+
+    NSMutableArray *migrations = [NSMutableArray array];
+    for (Observation *observation in pending) {
+        NSString *tempPath = [self objectPathFromDownloadURL:[observation photoURL]];
+        if (tempPath == nil) {
+            continue;
+        }
+        NSString *permanentPath = [NSString stringWithFormat:@"journal/%@/%@/%@",
+                                    [user uid], [entry journalEntryId], [tempPath lastPathComponent]];
+        [migrations addObject:@{
+            PhotoMigratorGlobalIDKey: [ec globalIDForObject:observation],
+            PhotoMigratorTempPathKey: tempPath,
+            PhotoMigratorPermanentPathKey: permanentPath
+        }];
+    }
+
+    [session removeAllObservationsForReview];
+
+    PhotoMigrator *migrator = [[[PhotoMigrator alloc] initWithMover:[self photoStorageMover]] autorelease];
+    for (NSDictionary *info in migrations) {
+        [NSThread detachNewThreadSelector:@selector(migratePhotoWithInfo:) toTarget:migrator withObject:info];
+    }
+
+    return [self pageWithName:@"Main"];
+}
+
 - (void)dealloc {
     [_currentObservation release];
+    [_photoStorageMover release];
     [super dealloc];
 }
 

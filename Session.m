@@ -18,7 +18,16 @@
 
 #import "Session.h"
 #import "Observer.h"
-#import <EOControl/EOEditingContext.h>
+#import <EOControl/EOControl.h>
+#import <EOAccess/EOAccess.h>
+#import <EOAccess/EOUtilities.h>
+
+static NSString * const kSessionErrorDomain = @"SessionErrorDomain";
+
+typedef NS_ENUM(NSInteger, SessionErrorCode) {
+  SessionErrorNoUser = 1,
+  SessionErrorPersistenceFailed = 2
+};
 
 @implementation Session
 
@@ -47,6 +56,67 @@
 
 - (void)removeObservationForReview:(Observation *)observation {
   [_unreviewedObservations removeObject: observation];
+}
+
+- (void)removeAllObservationsForReview {
+  [_unreviewedObservations removeAllObjects];
+}
+
+- (Observer *)saveObserverWithError:(NSError **)error {
+  if (_user == nil) {
+    if (error) {
+      *error = [NSError errorWithDomain:kSessionErrorDomain
+                                    code:SessionErrorNoUser
+                                userInfo:@{ NSLocalizedDescriptionKey: @"No user is signed in" }];
+    }
+    return nil;
+  }
+
+  EOEditingContext *ec = [self editingContext];
+  if ([ec globalIDForObject:_user] != nil) {
+    return _user;
+  }
+
+  Observer *persisted = nil;
+  NSError *persistError = nil;
+  [ec lock];
+  NS_DURING {
+    EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"uid = %@", [_user uid]];
+    EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer"
+                                                                                     qualifier:qualifier
+                                                                                 sortOrderings:nil];
+    NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
+    if ([results count] > 0) {
+      persisted = [results objectAtIndex:0];
+    } else {
+      persisted = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+      [persisted setUid:[_user uid]];
+      [persisted setName:[_user name]];
+      [persisted setEmail:[_user email]];
+      [persisted setAvatarUrl:[_user avatarUrl]];
+      [persisted setToken:[_user token]];
+      [ec saveChanges];
+    }
+  }
+  NS_HANDLER {
+    NSLog(@"Failed to persist observer: %@", localException);
+    persistError = [NSError errorWithDomain:kSessionErrorDomain
+                                        code:SessionErrorPersistenceFailed
+                                    userInfo:@{ NSLocalizedDescriptionKey: [localException reason] ?: @"Failed to persist observer" }];
+    persisted = nil;
+  }
+  NS_ENDHANDLER;
+  [ec unlock];
+
+  if (persisted == nil) {
+    if (error) {
+      *error = persistError;
+    }
+    return nil;
+  }
+
+  [self setUser:persisted];
+  return persisted;
 }
 
 - (NSArray *)unreviewedObservations {

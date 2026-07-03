@@ -23,16 +23,33 @@
 #include <WebObjects/WebObjects.h>
 
 @class Observation;
+@class Observer;
+@class JournalEntry;
+@class EOEditingContext;
+@class PhotoStorageMover;
 
 @interface ReviewObservations : GSWComponent {
     Observation *_currentObservation;
+    PhotoStorageMover *_photoStorageMover;
 }
 
 @property (nonatomic, retain) Observation *currentObservation;
 
+// Lazily defaults to a real PhotoStorageMover; inject a fake for tests.
+@property (nonatomic, retain) PhotoStorageMover *photoStorageMover;
+
 - (NSArray *)sortedObservations;
 - (id)deleteObservation;
 - (id)backToMain;
+- (id)saveToJournal;
+- (NSString *)objectPathFromDownloadURL:(NSURL *)url;
+
+// Builds the in-memory JournalEntry/Observation object graph (date = earliest
+// captureDate, relationships wired both ways). You need to save the
+// returned object into the editing context.
+- (JournalEntry *)buildJournalEntryForObservations:(NSArray *)observations
+                                            observer:(Observer *)observer
+                                      editingContext:(EOEditingContext *)ec;
 
 - (BOOL)hasAnyLocation;
 - (NSString *)formattedCaptureDate;

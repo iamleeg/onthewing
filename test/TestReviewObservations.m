@@ -20,8 +20,27 @@
 #import "Observation.h"
 #import "ObservationLocation.h"
 #import "Session.h"
+#import "Observer.h"
+#import "JournalEntry.h"
+#import "PhotoStorageMover.h"
 #import "OTWApp.h"
+#import <EOControl/EOControl.h>
 #import <XCTest/XCTest.h>
+
+// Always fails, so a spawned migration thread's real work is fast and inert.
+@interface AlwaysFailingTransport : NSObject <PhotoStorageMoverTransport>
+@end
+
+@implementation AlwaysFailingTransport
+- (NSData *)sendRequest:(NSURLRequest *)request
+                response:(NSURLResponse **)response
+                   error:(NSError **)error {
+    if (error) {
+        *error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    return nil;
+}
+@end
 
 @interface TestReviewObservations : XCTestCase
 {
@@ -153,6 +172,129 @@
     XCTAssertEqualObjects(nextPage, _review);
     XCTAssertFalse([[s unreviewedObservations] containsObject:o1]);
     XCTAssertTrue([[s unreviewedObservations] containsObject:o2]);
+}
+
+// saveToJournal - onthewing-czs.8. No Postgres in CI, so saveChanges always
+// fails here; that's the one path this suite can exercise deterministically.
+// The success path (DB commit + background photo migration) needs staging
+// verification (onthewing-czs.14). buildJournalEntryForObservations:... is
+// split out precisely so its wiring is testable without a live DB.
+
+- (void)testBuildJournalEntryForObservationsSetsDateObserverAndRelationships {
+    EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
+    Observer *observer = [[[Observer alloc] initWithUid:@"uid-1" name:@"Jane" email:@"jane@example.com" avatarUrl:nil token:nil] autorelease];
+
+    Observation *o1 = [[[Observation alloc] init] autorelease];
+    [o1 setCaptureDate:[NSDate dateWithTimeIntervalSince1970:20000]];
+    Observation *o2 = [[[Observation alloc] init] autorelease];
+    [o2 setCaptureDate:[NSDate dateWithTimeIntervalSince1970:10000]];
+    NSArray *sorted = @[o2, o1]; // already-sorted input, matching sortedObservations' contract
+
+    JournalEntry *entry = [_review buildJournalEntryForObservations:sorted observer:observer editingContext:ec];
+
+    XCTAssertEqualObjects([entry observer], observer);
+    XCTAssertEqualObjects([entry date], [o2 captureDate]);
+    XCTAssertEqualObjects([o1 journalEntry], entry);
+    XCTAssertEqualObjects([o2 journalEntry], entry);
+}
+
+- (void)testSaveToJournalWithNoObservationsReturnsMainPage {
+    id nextPage = [_review saveToJournal];
+    XCTAssertEqualObjects([nextPage class], NSClassFromString(@"Main"));
+}
+
+- (void)testSaveToJournalWithUnpersistedObserverDoesNotCrash {
+    // FirebaseLogin's DB-outage fallback can leave session.user as a bare
+    // Observer never inserted into any EC - relating that to a new
+    // JournalEntry and calling saveChanges crashes GDL2 outright (confirmed
+    // by direct repro). saveToJournal now retries persisting via
+    // -[Session saveObserverWithError:] (see TestSession.m for direct
+    // coverage of that) rather than just giving up - whether the retry
+    // succeeds depends on DB availability, which differs between this
+    // environment (may have a real local Postgres) and actual CI (never
+    // does, per .woodpecker.yaml/Containerfile) - so assert only that it
+    // doesn't crash either way, same reasoning as the tests below.
+    Session *s = (Session *)[_ctx session];
+    Observer *user = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString] name:@"Jane" email:@"jane@example.com" avatarUrl:nil token:nil] autorelease];
+    [s setUser:user];
+
+    Observation *o = [[[Observation alloc] init] autorelease];
+    [o setCaptureDate:[NSDate date]];
+    [s addObservationForReview:o];
+
+    id nextPage = [_review saveToJournal];
+
+    XCTAssertNotNil(nextPage);
+}
+
+// The two tests below exercise a properly EC-registered Observer (the normal
+// case) saving with and without a photo. Whether saveChanges actually
+// succeeds depends on whether a real Postgres is reachable: it is NOT in the
+// project's actual CI (see .woodpecker.yaml/Containerfile - make check runs
+// with no DB service), but may be on a developer's machine, which flips the
+// outcome (JournalEntry commits vs. saveToJournal fails gracefully). Rather
+// than assert one fixed outcome that would only be correct in one of those
+// environments, these assert only what's true either way - the actual thing
+// under test is that neither path crashes, particularly the photo case,
+// which spawns a background NSThread. Full outcome verification (does the
+// DB commit land correctly, does migration actually complete) is staging's
+// job (onthewing-czs.14).
+
+- (void)testSaveToJournalWithProperlyRegisteredObserverAndNoPhotoDoesNotCrash {
+    Session *s = (Session *)[_ctx session];
+    EOEditingContext *ec = [s editingContext];
+    Observer *user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+    [user setUid:[[NSUUID UUID] UUIDString]];
+    [s setUser:user];
+
+    Observation *o = [[[Observation alloc] init] autorelease];
+    [o setCaptureDate:[NSDate date]];
+    [s addObservationForReview:o];
+
+    id nextPage = [_review saveToJournal];
+
+    XCTAssertNotNil(nextPage);
+}
+
+- (void)testSaveToJournalWithPhotoSpawnsMigrationWithoutCrashingOrBlocking {
+    Session *s = (Session *)[_ctx session];
+    EOEditingContext *ec = [s editingContext];
+    Observer *user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+    NSString *uid = [[NSUUID UUID] UUIDString];
+    [user setUid:uid];
+    [s setUser:user];
+
+    Observation *o = [[[Observation alloc] init] autorelease];
+    [o setCaptureDate:[NSDate date]];
+    [o setPhotoURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:9199/v0/b/bucket/o/temp%%2F%@%%2Fphoto.jpg?alt=media", uid]]];
+    [s addObservationForReview:o];
+
+    // Always-failing transport: keeps the spawned thread's real work fast
+    // and harmless regardless of whether the DB save above succeeded.
+    AlwaysFailingTransport *transport = [[[AlwaysFailingTransport alloc] init] autorelease];
+    PhotoStorageMover *mover = [[[PhotoStorageMover alloc] initWithBucket:@"test-bucket"
+                                                                 apiBaseURL:@"http://emulator.local:9199"
+                                                      serviceAccountKeyPath:nil
+                                                                  transport:transport] autorelease];
+    [_review setPhotoStorageMover:mover];
+
+    id nextPage = [_review saveToJournal];
+
+    XCTAssertNotNil(nextPage);
+}
+
+- (void)testObjectPathFromDownloadURLDecodesEncodedSlashesAndStripsQuery {
+    NSURL *url = [NSURL URLWithString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/temp%2Fuid%2Fphoto.jpg?alt=media&token=abc"];
+    XCTAssertEqualObjects([_review objectPathFromDownloadURL:url], @"temp/uid/photo.jpg");
+}
+
+- (void)testObjectPathFromDownloadURLWorksAgainstEmulatorHost {
+    NSURL *url = [NSURL URLWithString:@"http://localhost:9199/v0/b/bucket/o/temp%2Fuid%2Fphoto.jpg?alt=media"];
+    XCTAssertEqualObjects([_review objectPathFromDownloadURL:url], @"temp/uid/photo.jpg");
+}
+
+- (void)testObjectPathFromDownloadURLReturnsNilForNil {
+    XCTAssertNil([_review objectPathFromDownloadURL:nil]);
 }
 
 @end

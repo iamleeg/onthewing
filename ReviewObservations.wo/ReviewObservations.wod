@@ -45,4 +45,8 @@ backLink: WOHyperlink {
     action = backToMain;
 }
 
+saveToJournalLink: WOHyperlink {
+    action = saveToJournal;
+}
+
 AGPLFooter: AGPLFooter {}

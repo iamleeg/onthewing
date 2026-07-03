@@ -41,5 +41,14 @@
 
 - (void)addObservationForReview:(Observation *)observation;
 - (void)removeObservationForReview:(Observation *)observation;
+- (void)removeAllObservationsForReview;
+
+// If user is already registered in editingContext, returns it unchanged.
+// Otherwise (e.g. FirebaseLogin's DB-outage fallback left a bare, unpersisted
+// Observer), retries fetch-or-create against the DB, replacing self.user with
+// the saved object and returning it on success. Returns nil and sets
+// *error on failure - self.user is left unchanged (still unpersisted) in
+// that case.
+- (Observer *)saveObserverWithError:(NSError **)error;
 
 @end

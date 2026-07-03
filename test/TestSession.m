@@ -20,11 +20,16 @@
 #import "OTWApp.h"
 
 #import "Observation.h"
+#import "Observer.h"
+#import <EOControl/EOControl.h>
+#import <EOAccess/EOAccess.h>
+#import <EOAccess/EOUtilities.h>
 
 #import <XCTest/XCTest.h>
 
 @interface TestSession : XCTestCase
 {
+  OTWApp *_app;
   Session *_s;
 }
 @end
@@ -32,11 +37,13 @@
 @implementation TestSession
 
 - (void)setUp {
+  _app = [[OTWApp alloc] init];
   _s = [[Session alloc] init];
 }
 
 - (void)tearDown {
   [_s release];
+  [_app release];
 }
 
 - (void)testSessionIDsInCookies {
@@ -52,6 +59,49 @@
   [_s addObservationForReview:o];
   XCTAssertTrue([[_s unreviewedObservations] containsObject:o]);
   [o release];
+}
+
+- (void)testSaveObserverWithErrorReturnsNilAndSetsErrorWhenNoUser {
+  NSError *error = nil;
+  XCTAssertNil([_s saveObserverWithError:&error]);
+  XCTAssertNotNil(error);
+}
+
+- (void)testSaveObserverWithErrorReturnsAlreadyPersistedUserUnchanged {
+  EOEditingContext *ec = [_s editingContext];
+  Observer *user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+  [user setUid:[[NSUUID UUID] UUIDString]];
+  [_s setUser:user];
+
+  NSError *error = nil;
+  Observer *result = [_s saveObserverWithError:&error];
+
+  XCTAssertEqualObjects(result, user);
+  XCTAssertEqualObjects([_s user], user);
+  XCTAssertNil(error);
+}
+
+- (void)testSaveObserverWithErrorHandlesUnpersistedUserWithoutCrashing {
+  // Whether the DB retry succeeds depends on environment (this dev machine
+  // may have a real local Postgres; actual CI never does - see
+  // TestReviewObservations.m for the same reasoning), so this only asserts
+  // the safety property (no crash) and the nil-result-implies-error contract,
+  // regardless of which branch actually runs.
+  Observer *bareUser = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString]
+                                                  name:@"Jane"
+                                                 email:@"jane@example.com"
+                                             avatarUrl:nil
+                                                 token:nil] autorelease];
+  [_s setUser:bareUser];
+
+  NSError *error = nil;
+  Observer *result = [_s saveObserverWithError:&error];
+
+  if (result == nil) {
+    XCTAssertNotNil(error);
+  } else {
+    XCTAssertNil(error);
+  }
 }
 
 @end
