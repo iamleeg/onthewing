@@ -24,7 +24,7 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m FirebaseAuthUI.m PhotoCapture.m
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m PhotoStorageMover.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m FirebaseAuthUI.m PhotoCapture.m
 OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo FirebaseAuthUI.wo PhotoCapture.wo
 OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js FirebaseAuth.js PhotoCapture.js leaflet.js leaflet.css marker-icon.png marker-icon-2x.png marker-shadow.png layers.png layers-2x.png
 
@@ -33,6 +33,10 @@ AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions -framework EO
 else
 AUXILIARY_GSW_LIBS += -lWebObjects -lWOExtensions -lEOControl -lEOAccess
 endif
+
+AUXILIARY_GSW_LIBS += -lgnutls
+ADDITIONAL_INCLUDE_DIRS += $(shell pkg-config --cflags-only-I gnutls 2>/dev/null)
+ADDITIONAL_LIB_DIRS += $(shell pkg-config --libs-only-L gnutls 2>/dev/null)
 
 BUNDLE_NAME = OTWTests
 
@@ -50,6 +54,8 @@ OTWTests_OBJC_FILES = \
 	test/TestCompassSVGGenerator.m \
 	test/TestObserver.m \
 	test/TestJournalEntry.m \
+	test/TestOTWBearerToken.m \
+	test/TestPhotoStorageMover.m \
 	test/TestAuthActions.m \
 	test/TestReviewObservations.m \
 	test/TestFirebaseAuthUI.m \
@@ -69,6 +75,8 @@ OTWTests_OBJC_FILES = \
 	Observation.m \
 	Observer.m \
 	JournalEntry.m \
+	OTWBearerToken.m \
+	PhotoStorageMover.m \
 	OTWFirebaseScript.m \
 	FirebaseLogin.m \
 	FirebaseProfile.m \
