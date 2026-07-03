@@ -25,6 +25,8 @@
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOSQLExpression.h>
 #import "Observer.h"
+#import "Observation.h"
+#import "JournalEntry.h"
 
 @implementation OTWApp
 
@@ -149,7 +151,192 @@ extern NSDictionary* globalMime;
     [observerEntity setClassProperties:@[uidAttr, nameAttr, emailAttr, avatarUrlAttr, tokenAttr]];
     [observerEntity setAttributesUsedForLocking:@[uidAttr]];
 
+    // --- Observation ("observations" table) ---
+    EOEntity *observationEntity = [[[EOEntity alloc] init] autorelease];
+    [observationEntity setName:@"Observation"];
+    [observationEntity setExternalName:@"observations"];
+    [observationEntity setClassName:@"Observation"];
+
+    EOAttribute *observationIdAttr = [[[EOAttribute alloc] init] autorelease];
+    [observationIdAttr setName:@"observationId"];
+    [observationIdAttr setColumnName:@"id"];
+    [observationIdAttr setValueClassName:@"NSString"];
+    [observationIdAttr setExternalType:@"varchar"];
+    [observationIdAttr setWidth:64];
+    [observationIdAttr setAllowsNull:NO];
+    [observationEntity addAttribute:observationIdAttr];
+
+    EOAttribute *captureDateAttr = [[[EOAttribute alloc] init] autorelease];
+    [captureDateAttr setName:@"captureDate"];
+    [captureDateAttr setColumnName:@"capture_date"];
+    [captureDateAttr setValueClassName:@"NSDate"];
+    [captureDateAttr setExternalType:@"timestamp"];
+    [captureDateAttr setAllowsNull:YES];
+    [observationEntity addAttribute:captureDateAttr];
+
+    // photoURL is an NSURL on the Objective-C side, but GDL2 has no native
+    // NSURL value-class support (checked: zero references in libs-gdl2) -
+    // this attribute maps to Observation's photoURLString pass-through
+    // accessor instead (see Observation.h/.m), not photoURL directly.
+    EOAttribute *photoURLStringAttr = [[[EOAttribute alloc] init] autorelease];
+    [photoURLStringAttr setName:@"photoURLString"];
+    [photoURLStringAttr setColumnName:@"photo_url"];
+    [photoURLStringAttr setValueClassName:@"NSString"];
+    [photoURLStringAttr setExternalType:@"varchar"];
+    [photoURLStringAttr setWidth:2048];
+    [photoURLStringAttr setAllowsNull:YES];
+    [observationEntity addAttribute:photoURLStringAttr];
+
+    // ObservationLocation's 4 numeric fields are embedded as flat columns
+    // here rather than a separate entity/table (per the epic's design) -
+    // these map to Observation's latitude/longitude/accuracy/bearing
+    // pass-through accessors, which proxy through -location.
+    EOAttribute *latitudeAttr = [[[EOAttribute alloc] init] autorelease];
+    [latitudeAttr setName:@"latitude"];
+    [latitudeAttr setColumnName:@"latitude"];
+    [latitudeAttr setValueClassName:@"NSNumber"];
+    [latitudeAttr setExternalType:@"double precision"];
+    [latitudeAttr setAllowsNull:YES];
+    [observationEntity addAttribute:latitudeAttr];
+
+    EOAttribute *longitudeAttr = [[[EOAttribute alloc] init] autorelease];
+    [longitudeAttr setName:@"longitude"];
+    [longitudeAttr setColumnName:@"longitude"];
+    [longitudeAttr setValueClassName:@"NSNumber"];
+    [longitudeAttr setExternalType:@"double precision"];
+    [longitudeAttr setAllowsNull:YES];
+    [observationEntity addAttribute:longitudeAttr];
+
+    EOAttribute *accuracyAttr = [[[EOAttribute alloc] init] autorelease];
+    [accuracyAttr setName:@"accuracy"];
+    [accuracyAttr setColumnName:@"accuracy"];
+    [accuracyAttr setValueClassName:@"NSNumber"];
+    [accuracyAttr setExternalType:@"double precision"];
+    [accuracyAttr setAllowsNull:YES];
+    [observationEntity addAttribute:accuracyAttr];
+
+    EOAttribute *bearingAttr = [[[EOAttribute alloc] init] autorelease];
+    [bearingAttr setName:@"bearing"];
+    [bearingAttr setColumnName:@"bearing"];
+    [bearingAttr setValueClassName:@"NSNumber"];
+    [bearingAttr setExternalType:@"double precision"];
+    [bearingAttr setAllowsNull:YES];
+    [observationEntity addAttribute:bearingAttr];
+
+    // Foreign key backing the journalEntry relationship below - deliberately
+    // NOT a class property (not directly KVC-exposed; the relationship is).
+    EOAttribute *observationJournalEntryFKAttr = [[[EOAttribute alloc] init] autorelease];
+    [observationJournalEntryFKAttr setName:@"journalEntryForeignKey"];
+    [observationJournalEntryFKAttr setColumnName:@"journal_entry_id"];
+    [observationJournalEntryFKAttr setValueClassName:@"NSString"];
+    [observationJournalEntryFKAttr setExternalType:@"varchar"];
+    [observationJournalEntryFKAttr setWidth:64];
+    [observationJournalEntryFKAttr setAllowsNull:NO];
+    [observationEntity addAttribute:observationJournalEntryFKAttr];
+
+    [observationEntity setPrimaryKeyAttributes:@[observationIdAttr]];
+    [observationEntity setAttributesUsedForLocking:@[observationIdAttr]];
+
+    // --- JournalEntry ("journal_entries" table) ---
+    EOEntity *journalEntryEntity = [[[EOEntity alloc] init] autorelease];
+    [journalEntryEntity setName:@"JournalEntry"];
+    [journalEntryEntity setExternalName:@"journal_entries"];
+    [journalEntryEntity setClassName:@"JournalEntry"];
+
+    EOAttribute *journalEntryIdAttr = [[[EOAttribute alloc] init] autorelease];
+    [journalEntryIdAttr setName:@"journalEntryId"];
+    [journalEntryIdAttr setColumnName:@"id"];
+    [journalEntryIdAttr setValueClassName:@"NSString"];
+    [journalEntryIdAttr setExternalType:@"varchar"];
+    [journalEntryIdAttr setWidth:64];
+    [journalEntryIdAttr setAllowsNull:NO];
+    [journalEntryEntity addAttribute:journalEntryIdAttr];
+
+    EOAttribute *journalEntryDateAttr = [[[EOAttribute alloc] init] autorelease];
+    [journalEntryDateAttr setName:@"date"];
+    [journalEntryDateAttr setColumnName:@"date"];
+    [journalEntryDateAttr setValueClassName:@"NSDate"];
+    [journalEntryDateAttr setExternalType:@"timestamp"];
+    [journalEntryDateAttr setAllowsNull:YES];
+    [journalEntryEntity addAttribute:journalEntryDateAttr];
+
+    // Foreign key backing the observer relationship below - not a class
+    // property, same reasoning as observationJournalEntryFKAttr above.
+    EOAttribute *journalEntryObserverFKAttr = [[[EOAttribute alloc] init] autorelease];
+    [journalEntryObserverFKAttr setName:@"observerForeignKey"];
+    [journalEntryObserverFKAttr setColumnName:@"observer_uid"];
+    [journalEntryObserverFKAttr setValueClassName:@"NSString"];
+    [journalEntryObserverFKAttr setExternalType:@"varchar"];
+    [journalEntryObserverFKAttr setWidth:128];
+    [journalEntryObserverFKAttr setAllowsNull:NO];
+    [journalEntryEntity addAttribute:journalEntryObserverFKAttr];
+
+    [journalEntryEntity setPrimaryKeyAttributes:@[journalEntryIdAttr]];
+    [journalEntryEntity setAttributesUsedForLocking:@[journalEntryIdAttr]];
+
+    // --- Relationships ---
+    // Both sides of each relationship are defined explicitly with reciprocal
+    // joins (swapped source/destination attributes).
+
+    EORelationship *observationToJournalEntry = [[[EORelationship alloc] init] autorelease];
+    [observationToJournalEntry setName:@"journalEntry"];
+    [observationToJournalEntry setEntity:observationEntity];
+    [observationToJournalEntry setToMany:NO];
+    EOJoin *observationToJournalEntryJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:observationJournalEntryFKAttr
+                            destinationAttribute:journalEntryIdAttr] autorelease];
+    [observationToJournalEntry addJoin:observationToJournalEntryJoin];
+    [observationEntity addRelationship:observationToJournalEntry];
+
+    EORelationship *journalEntryToObservations = [[[EORelationship alloc] init] autorelease];
+    [journalEntryToObservations setName:@"observations"];
+    [journalEntryToObservations setEntity:journalEntryEntity];
+    [journalEntryToObservations setToMany:YES];
+    EOJoin *journalEntryToObservationsJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:journalEntryIdAttr
+                            destinationAttribute:observationJournalEntryFKAttr] autorelease];
+    [journalEntryToObservations addJoin:journalEntryToObservationsJoin];
+    // Deleting a JournalEntry must delete its Observations - this is EOF's
+    // own app-level cascade (EOEditingContext propagates deletes through the
+    // object graph per this delete rule when -deleteObject:/-saveChanges are
+    // called), independent of any DB-level FK constraint.
+    [journalEntryToObservations setDeleteRule:EODeleteRuleCascade];
+    [journalEntryEntity addRelationship:journalEntryToObservations];
+
+    EORelationship *journalEntryToObserver = [[[EORelationship alloc] init] autorelease];
+    [journalEntryToObserver setName:@"observer"];
+    [journalEntryToObserver setEntity:journalEntryEntity];
+    [journalEntryToObserver setToMany:NO];
+    EOJoin *journalEntryToObserverJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:journalEntryObserverFKAttr
+                            destinationAttribute:uidAttr] autorelease];
+    [journalEntryToObserver addJoin:journalEntryToObserverJoin];
+    [journalEntryEntity addRelationship:journalEntryToObserver];
+
+    EORelationship *observerToJournalEntries = [[[EORelationship alloc] init] autorelease];
+    [observerToJournalEntries setName:@"journalEntries"];
+    [observerToJournalEntries setEntity:observerEntity];
+    [observerToJournalEntries setToMany:YES];
+    EOJoin *observerToJournalEntriesJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:uidAttr
+                            destinationAttribute:journalEntryObserverFKAttr] autorelease];
+    [observerToJournalEntries addJoin:observerToJournalEntriesJoin];
+    // Deliberately NOT cascade, we will revisit this on account deletion.
+    [observerEntity addRelationship:observerToJournalEntries];
+
+    [observationEntity setClassProperties:@[observationIdAttr, captureDateAttr, photoURLStringAttr,
+                                             latitudeAttr, longitudeAttr, accuracyAttr, bearingAttr,
+                                             observationToJournalEntry]];
+    [journalEntryEntity setClassProperties:@[journalEntryIdAttr, journalEntryDateAttr,
+                                              journalEntryToObserver, journalEntryToObservations]];
+    // Re-set (not append) Observer's class properties to include the new
+    // to-many relationship alongside its original 5 attributes.
+    [observerEntity setClassProperties:@[uidAttr, nameAttr, emailAttr, avatarUrlAttr, tokenAttr,
+                                          observerToJournalEntries]];
+
     [model addEntity:observerEntity];
+    [model addEntity:journalEntryEntity];
+    [model addEntity:observationEntity];
     [[EOModelGroup defaultGroup] addModel:model];
 
     // Ensure the table exists using GDL2 schema generation (migration facility)
@@ -163,12 +350,25 @@ extern NSDictionary* globalMime;
             [adaptorChannel openChannel];
         }
         
-        BOOL tableExists = NO;
+        // Checking all three expected tables (rather than just "observers",
+        // as before this schema grew to include journal_entries/observations)
+        // matters for upgrading an existing deployment: on first deploy after
+        // this change, "observers" already exists but the two new tables
+        // don't - gating schema creation on a single table's existence would
+        // silently skip creating the new ones forever. Schema-creation
+        // statements are safe to re-run for tables that already exist.
+        NSArray *expectedTableNames = @[@"observers", @"journal_entries", @"observations"];
+        BOOL allTablesExist = NO;
         NS_DURING {
             NSArray *tableNames = [adaptorChannel describeTableNames];
+            NSMutableSet *existingTableNames = [NSMutableSet set];
             for (NSString *name in tableNames) {
-                if ([[name lowercaseString] isEqualToString:@"observers"]) {
-                    tableExists = YES;
+                [existingTableNames addObject:[name lowercaseString]];
+            }
+            allTablesExist = YES;
+            for (NSString *expected in expectedTableNames) {
+                if (![existingTableNames containsObject:expected]) {
+                    allTablesExist = NO;
                     break;
                 }
             }
@@ -178,7 +378,7 @@ extern NSDictionary* globalMime;
         }
         NS_ENDHANDLER;
 
-        if (!tableExists) {
+        if (!allTablesExist) {
             EOModel *m = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
             NSArray *entities = [m entities];
             Class exprClass = [[EOAdaptor adaptorWithModel:m] expressionClass];
@@ -203,7 +403,7 @@ extern NSDictionary* globalMime;
         }
     }
     NS_HANDLER {
-        NSLog(@"Error initializing observers table: %@", localException);
+        NSLog(@"Error initializing database tables: %@", localException);
     }
     NS_ENDHANDLER
     [databaseContext unlock];

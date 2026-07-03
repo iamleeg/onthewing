@@ -17,6 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #import "OTWApp.h"
+#import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
 
 @interface TestApp : XCTestCase
@@ -51,6 +52,71 @@
 - (void)testInitSetsMessageEncoding {
   XCTAssertEqual([WOMessage defaultEncoding],
                  (NSStringEncoding)NSUTF8StringEncoding);
+}
+
+- (void)testModelHasThreeEntities {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  XCTAssertNotNil(model);
+  XCTAssertEqual([[model entities] count], (NSUInteger)3);
+  XCTAssertNotNil([model entityNamed:@"Observer"]);
+  XCTAssertNotNil([model entityNamed:@"Observation"]);
+  XCTAssertNotNil([model entityNamed:@"JournalEntry"]);
+}
+
+- (void)testObservationJournalEntryRelationshipIsToOne {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *observationEntity = [model entityNamed:@"Observation"];
+  EORelationship *rel = [observationEntity relationshipNamed:@"journalEntry"];
+  XCTAssertNotNil(rel);
+  XCTAssertFalse([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"JournalEntry");
+}
+
+- (void)testJournalEntryObservationsRelationshipIsToManyCascade {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *journalEntryEntity = [model entityNamed:@"JournalEntry"];
+  EORelationship *rel = [journalEntryEntity relationshipNamed:@"observations"];
+  XCTAssertNotNil(rel);
+  XCTAssertTrue([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"Observation");
+  XCTAssertEqual([rel deleteRule], (EODeleteRule)EODeleteRuleCascade);
+}
+
+- (void)testJournalEntryObservationsIsInverseOfObservationJournalEntry {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EORelationship *toOne = [[model entityNamed:@"Observation"] relationshipNamed:@"journalEntry"];
+  EORelationship *toMany = [[model entityNamed:@"JournalEntry"] relationshipNamed:@"observations"];
+  XCTAssertEqualObjects([toOne inverseRelationship], toMany);
+  XCTAssertEqualObjects([toMany inverseRelationship], toOne);
+}
+
+- (void)testJournalEntryObserverRelationshipIsToOne {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *journalEntryEntity = [model entityNamed:@"JournalEntry"];
+  EORelationship *rel = [journalEntryEntity relationshipNamed:@"observer"];
+  XCTAssertNotNil(rel);
+  XCTAssertFalse([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"Observer");
+}
+
+- (void)testObserverJournalEntriesRelationshipIsToManyNotCascade {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *observerEntity = [model entityNamed:@"Observer"];
+  EORelationship *rel = [observerEntity relationshipNamed:@"journalEntries"];
+  XCTAssertNotNil(rel);
+  XCTAssertTrue([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"JournalEntry");
+  XCTAssertNotEqual([rel deleteRule], (EODeleteRule)EODeleteRuleCascade);
+}
+
+- (void)testObservationAndJournalEntryHavePrimaryKeys {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *observationEntity = [model entityNamed:@"Observation"];
+  EOEntity *journalEntryEntity = [model entityNamed:@"JournalEntry"];
+  XCTAssertEqual([[observationEntity primaryKeyAttributeNames] count], (NSUInteger)1);
+  XCTAssertEqualObjects([[observationEntity primaryKeyAttributeNames] firstObject], @"observationId");
+  XCTAssertEqual([[journalEntryEntity primaryKeyAttributeNames] count], (NSUInteger)1);
+  XCTAssertEqualObjects([[journalEntryEntity primaryKeyAttributeNames] firstObject], @"journalEntryId");
 }
 
 @end

@@ -12,6 +12,7 @@
     NSString *_email;
     NSString *_avatarUrl;
     NSString *_token;
+    NSMutableArray *_journalEntries;
 }
 
 @property (nonatomic, copy) NSString *uid;
@@ -19,6 +20,9 @@
 @property (nonatomic, copy) NSString *email;
 @property (nonatomic, copy) NSString *avatarUrl;
 @property (nonatomic, copy) NSString *token;
+
+// Inverse of JournalEntry.observer.
+@property (nonatomic, retain) NSMutableArray *journalEntries;
 
 - (id)initWithUid:(NSString *)uid
              name:(NSString *)name

@@ -21,9 +21,16 @@
 
 @implementation JournalEntry
 
+@synthesize journalEntryId = _journalEntryId;
 @synthesize date = _date;
 @synthesize observer = _observer;
 @synthesize observations = _observations;
+
+- (void)setJournalEntryId:(NSString *)journalEntryId {
+    [self willChange];
+    [_journalEntryId release];
+    _journalEntryId = [journalEntryId copy];
+}
 
 - (void)setDate:(NSDate *)date {
     [self willChange];
@@ -43,7 +50,15 @@
     _observations = [observations retain];
 }
 
+- (void)awakeFromInsertionInEditingContext:(EOEditingContext *)editingContext {
+    [super awakeFromInsertionInEditingContext:editingContext];
+    if ([self journalEntryId] == nil) {
+        [self setJournalEntryId:[[NSUUID UUID] UUIDString]];
+    }
+}
+
 - (void)dealloc {
+    [_journalEntryId release];
     [_date release];
     [_observer release];
     [_observations release];

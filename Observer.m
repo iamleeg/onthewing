@@ -14,6 +14,7 @@
 @synthesize email = _email;
 @synthesize avatarUrl = _avatarUrl;
 @synthesize token = _token;
+@synthesize journalEntries = _journalEntries;
 
 - (id)initWithUid:(NSString *)uid
              name:(NSString *)name
@@ -61,12 +62,19 @@
     _token = [token copy];
 }
 
+- (void)setJournalEntries:(NSMutableArray *)journalEntries {
+    [self willChange];
+    [_journalEntries release];
+    _journalEntries = [journalEntries retain];
+}
+
 - (void)dealloc {
     [_uid release];
     [_name release];
     [_email release];
     [_avatarUrl release];
     [_token release];
+    [_journalEntries release];
     [super dealloc];
 }
 

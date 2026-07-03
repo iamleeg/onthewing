@@ -18,12 +18,21 @@
 
 #import "Observation.h"
 #import "ObservationLocation.h"
+#import "JournalEntry.h"
 
 @implementation Observation
 
+@synthesize observationId = _observationId;
 @synthesize captureDate = _captureDate;
 @synthesize location = _location;
 @synthesize photoURL = _photoURL;
+@synthesize journalEntry = _journalEntry;
+
+- (void)setObservationId:(NSString *)observationId {
+    [self willChange];
+    [_observationId release];
+    _observationId = [observationId copy];
+}
 
 - (void)setCaptureDate:(NSDate *)captureDate {
     [self willChange];
@@ -41,6 +50,71 @@
     [self willChange];
     [_photoURL release];
     _photoURL = [photoURL retain];
+}
+
+- (void)setJournalEntry:(JournalEntry *)journalEntry {
+    [self willChange];
+    [_journalEntry release];
+    _journalEntry = [journalEntry retain];
+}
+
+- (NSString *)photoURLString {
+    return [[self photoURL] absoluteString];
+}
+
+- (void)setPhotoURLString:(NSString *)photoURLString {
+    [self setPhotoURL:(photoURLString ? [NSURL URLWithString:photoURLString] : nil)];
+}
+
+- (NSNumber *)latitude {
+    return [[self location] latitude];
+}
+
+- (void)setLatitude:(NSNumber *)latitude {
+    if ([self location] == nil) {
+        [self setLocation:[[[ObservationLocation alloc] init] autorelease]];
+    }
+    [[self location] setLatitude:latitude];
+}
+
+- (NSNumber *)longitude {
+    return [[self location] longitude];
+}
+
+- (void)setLongitude:(NSNumber *)longitude {
+    if ([self location] == nil) {
+        [self setLocation:[[[ObservationLocation alloc] init] autorelease]];
+    }
+    [[self location] setLongitude:longitude];
+}
+
+- (NSNumber *)accuracy {
+    return [[self location] accuracy];
+}
+
+- (void)setAccuracy:(NSNumber *)accuracy {
+    if ([self location] == nil) {
+        [self setLocation:[[[ObservationLocation alloc] init] autorelease]];
+    }
+    [[self location] setAccuracy:accuracy];
+}
+
+- (NSNumber *)bearing {
+    return [[self location] bearing];
+}
+
+- (void)setBearing:(NSNumber *)bearing {
+    if ([self location] == nil) {
+        [self setLocation:[[[ObservationLocation alloc] init] autorelease]];
+    }
+    [[self location] setBearing:bearing];
+}
+
+- (void)awakeFromInsertionInEditingContext:(EOEditingContext *)editingContext {
+    [super awakeFromInsertionInEditingContext:editingContext];
+    if ([self observationId] == nil) {
+        [self setObservationId:[[NSUUID UUID] UUIDString]];
+    }
 }
 
 - (NSComparisonResult)compareChronologically:(Observation *)other {
@@ -62,9 +136,11 @@
 }
 
 - (void)dealloc {
+    [_observationId release];
     [_captureDate release];
     [_location release];
     [_photoURL release];
+    [_journalEntry release];
     [super dealloc];
 }
 
