@@ -43,10 +43,14 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
     make && \
     make install
 
-# Build and install libs-gdl2 from source
+# Build and install libs-gdl2 from source: needs my patched version, which
+# fixes EODatabaseContext permanently wedging after a save fails before a
+# transaction begins (e.g. a DB connection failure) - see
+# https://github.com/iamleeg/libs-gdl2/tree/fix-database-context-stuck-preparing-for-save
 WORKDIR /src
-RUN git clone https://github.com/gnustep/libs-gdl2.git && \
+RUN git clone https://github.com/iamleeg/libs-gdl2.git && \
     cd libs-gdl2 && \
+    git switch fix-database-context-stuck-preparing-for-save && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \
     make && \

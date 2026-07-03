@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>On the Wing: Browse Journal</title>
+</head>
+<body>
+    <webobject name="FirebaseScript" />
+    <webobject name="FirebaseAuthUI" />
+
+    <h1>Your Journal</h1>
+
+    <webobject name="noEntries">
+        <p>You haven't saved any journal entries yet.</p>
+    </webobject>
+
+    <webobject name="hasEntries">
+        <webobject name="entryLoop">
+            <section>
+                <h2><webobject name="entryDate"/></h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time / Date</th>
+                            <th>Photo</th>
+                            <th>Bearing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <webobject name="observationLoop">
+                            <tr>
+                                <td><webobject name="observationDate"/></td>
+                                <td>
+                                    <webobject name="hasPhoto">
+                                        <webobject name="photoImage"/>
+                                    </webobject>
+                                </td>
+                                <td>
+                                    <webobject name="hasBearing">
+                                        <webobject name="compass" />
+                                    </webobject>
+                                </td>
+                            </tr>
+                        </webobject>
+                    </tbody>
+                </table>
+            </section>
+        </webobject>
+    </webobject>
+
+    <p>
+        <webobject name="backLink">Return to Main Page</webobject>
+    </p>
+
+    <webobject name="AGPLFooter" />
+</body>
+</html>

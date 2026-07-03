@@ -1,0 +1,53 @@
+FirebaseScript: OTWFirebaseScript {}
+FirebaseAuthUI: FirebaseAuthUI {}
+
+hasEntries: WOConditional {
+    condition = hasAnyEntries;
+}
+
+noEntries: WOConditional {
+    condition = hasAnyEntries;
+    negate = true;
+}
+
+entryLoop: WORepetition {
+    list = journalEntries;
+    item = currentEntry;
+}
+
+entryDate: WOString {
+    value = formattedEntryDate;
+}
+
+observationLoop: WORepetition {
+    list = currentEntry.observations;
+    item = currentObservation;
+}
+
+observationDate: WOString {
+    value = formattedObservationDate;
+}
+
+hasPhoto: WOConditional {
+    condition = hasCurrentPhoto;
+}
+
+photoImage: WOImage {
+    src = currentObservation.photoURLString;
+    alt = "Observation photo";
+    width = "100";
+}
+
+hasBearing: WOConditional {
+    condition = hasCurrentBearing;
+}
+
+compass: Compass {
+    location = currentObservation.location;
+}
+
+backLink: WOHyperlink {
+    action = backToMain;
+}
+
+AGPLFooter: AGPLFooter {}
