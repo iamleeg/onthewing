@@ -12,6 +12,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libpq-dev \
     libxml2-dev \
     libffi-dev \
+    libgnutls28-dev \
     ca-certificates \
     nodejs \
     npm \
@@ -68,6 +69,7 @@ RUN . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
 FROM debian:bookworm-slim AS runtime
 
 # Install minimal runtime dependencies
+# (libgnutls30 comes transitively via gnustep-base-runtime, no explicit entry needed)
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gnustep-base-runtime \
     libpq5 \

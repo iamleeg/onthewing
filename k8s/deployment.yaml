@@ -38,6 +38,14 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: password
+            - name: GCS_BUCKET
+              value: "onthewing-eedce.firebasestorage.app"
+            - name: GCS_SERVICE_ACCOUNT_KEY_PATH
+              value: "/secrets/gcs/key.json"
+          volumeMounts:
+            - name: gcs-storage-credentials-vol
+              mountPath: /secrets/gcs
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /WebObjects/OnTheWing.woa?wa=ping
@@ -65,4 +73,7 @@ spec:
         - name: gcp-credentials-vol
           secret:
             secretName: gcp-credentials
+        - name: gcs-storage-credentials-vol
+          secret:
+            secretName: gcs-storage-credentials
 
