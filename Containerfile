@@ -63,9 +63,21 @@ RUN . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     make clean && \
     make
 
-# Run the test suite
-RUN . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
-    make check
+# Install Postgres so make check exercises the app's real DB paths (real
+# CI/Woodpecker has none - see .woodpecker.yaml - so this only needs to work
+# in this stage, discarded before the runtime image is built).
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql && \
+    rm -rf /var/lib/apt/lists/*
+
+# Run the test suite against a local Postgres. OTWApp -init calls
+# -initializeDatabase, which creates its own schema on first connect (see
+# OTWApp.m) - we only need to start Postgres and create an empty database.
+RUN sed -i '/127.0.0.1\/32/s/scram-sha-256/trust/' /etc/postgresql/*/main/pg_hba.conf && \
+    service postgresql start && \
+    until su postgres -c "pg_isready -q"; do sleep 1; done && \
+    su postgres -c "createdb onthewing-eedce-database" && \
+    . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
+    DB_HOST=127.0.0.1 DB_PORT=5432 DB_NAME=onthewing-eedce-database DB_USER=postgres DB_PASSWORD= make check
 
 # -------------------------
 # Stage 2: Runtime

@@ -46,6 +46,10 @@ compass: Compass {
     location = currentObservation.location;
 }
 
+deleteEntryLink: WOHyperlink {
+    action = deleteEntry;
+}
+
 backLink: WOHyperlink {
     action = backToMain;
 }

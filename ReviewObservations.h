@@ -42,7 +42,6 @@
 - (id)deleteObservation;
 - (id)backToMain;
 - (id)saveToJournal;
-- (NSString *)objectPathFromDownloadURL:(NSURL *)url;
 
 // Builds the in-memory JournalEntry/Observation object graph (date = earliest
 // captureDate, relationships wired both ways). You need to save the

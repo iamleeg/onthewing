@@ -28,11 +28,58 @@
 #import "Session.h"
 #import "Observer.h"
 #import "JournalEntry.h"
+#import "Observation.h"
+#import "PhotoStorageMover.h"
 #import "OTWApp.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
 #import <XCTest/XCTest.h>
+
+// Records DELETE requests instead of performing them, so delete-entry tests
+// can count how many photo deletes were attempted.
+@interface RecordingDeleteTransport : NSObject <PhotoStorageMoverTransport>
+{
+    NSMutableArray *_deletedURLs;
+}
+@property (nonatomic, readonly) NSArray *deletedURLs;
+@end
+
+@implementation RecordingDeleteTransport
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _deletedURLs = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [_deletedURLs release];
+    [super dealloc];
+}
+
+- (NSArray *)deletedURLs {
+    return _deletedURLs;
+}
+
+- (NSData *)sendRequest:(NSURLRequest *)request
+                response:(NSURLResponse **)response
+                   error:(NSError **)error {
+    if ([[request HTTPMethod] isEqualToString:@"DELETE"]) {
+        [_deletedURLs addObject:[request URL]];
+    }
+    if (response) {
+        *response = [[[NSHTTPURLResponse alloc] initWithURL:[request URL]
+                                                    statusCode:200
+                                                   HTTPVersion:@"HTTP/1.1"
+                                                  headerFields:nil] autorelease];
+    }
+    return [NSData data];
+}
+
+@end
 
 @interface TestBrowseJournal : XCTestCase
 {
@@ -138,6 +185,123 @@
         }
         previousDate = [entry date];
     }
+}
+
+- (void)testDeleteEntryRemovesEntryAndDeletesEachObservationsPhoto {
+    Session *s = (Session *)[_ctx session];
+    EOEditingContext *ec = [s editingContext];
+
+    NSError *error = nil;
+    JournalEntry *entry = nil;
+    NSString *entryId = nil;
+    [ec lock];
+    NS_DURING {
+        Observer *user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [user setUid:[[NSUUID UUID] UUIDString]];
+        [ec saveChanges];
+
+        entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+        [entry setObserver:user];
+        [entry setDate:[NSDate date]];
+
+        Observation *obs1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [obs1 setJournalEntry:entry];
+        [obs1 setCaptureDate:[NSDate date]];
+        [obs1 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/test-bucket/o/journal%2Fabc%2Fentry%2Fphoto1.jpg?alt=media"];
+
+        Observation *obs2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [obs2 setJournalEntry:entry];
+        [obs2 setCaptureDate:[NSDate date]];
+        [obs2 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/test-bucket/o/journal%2Fabc%2Fentry%2Fphoto2.jpg?alt=media"];
+
+        [ec saveChanges];
+        entryId = [[entry journalEntryId] copy];
+
+        [s setUser:user];
+    }
+    NS_HANDLER {
+        NSLog(@"testDeleteEntryRemovesEntryAndDeletesEachObservationsPhoto: no DB available to set up fixtures: %@", localException);
+        error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    if (error != nil) {
+        // No DB in this environment - nothing meaningful to assert.
+        return;
+    }
+
+    // Re-fetch through the same path the real UI uses (BrowseJournal
+    // -journalEntries) rather than reusing the freshly-inserted `entry`
+    // instance directly: a bare, non-refetched object's to-many
+    // relationship ivar is never populated (see -journalEntries' own
+    // comments on why it avoids relying on relationship faulting for
+    // objects that aren't EC-fetched).
+    JournalEntry *fetchedEntry = [[_browse journalEntries] firstObject];
+    XCTAssertNotNil(fetchedEntry);
+
+    RecordingDeleteTransport *transport = [[[RecordingDeleteTransport alloc] init] autorelease];
+    PhotoStorageMover *mover = [[[PhotoStorageMover alloc] initWithBucket:@"test-bucket"
+                                                                 apiBaseURL:@"http://emulator.local:9199"
+                                                      serviceAccountKeyPath:nil
+                                                                  transport:transport] autorelease];
+    [_browse setPhotoStorageMover:mover];
+    [_browse setCurrentEntry:fetchedEntry];
+
+    [_browse deleteEntry];
+
+    XCTAssertEqual([[transport deletedURLs] count], (NSUInteger)2);
+
+    for (JournalEntry *remaining in [_browse journalEntries]) {
+        XCTAssertNotEqualObjects([remaining journalEntryId], entryId);
+    }
+    [entryId release];
+}
+
+- (void)testDeleteEntryNoOpsWhenNotOwnedBySessionUser {
+    Session *s = (Session *)[_ctx session];
+    EOEditingContext *ec = [s editingContext];
+
+    NSError *error = nil;
+    JournalEntry *entry = nil;
+    [ec lock];
+    NS_DURING {
+        Observer *owner = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [owner setUid:[[NSUUID UUID] UUIDString]];
+        Observer *otherUser = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [otherUser setUid:[[NSUUID UUID] UUIDString]];
+        [ec saveChanges];
+
+        entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+        [entry setObserver:owner];
+        [entry setDate:[NSDate date]];
+        [ec saveChanges];
+
+        [s setUser:otherUser];
+    }
+    NS_HANDLER {
+        NSLog(@"testDeleteEntryNoOpsWhenNotOwnedBySessionUser: no DB available to set up fixtures: %@", localException);
+        error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    if (error != nil) {
+        return;
+    }
+
+    RecordingDeleteTransport *transport = [[[RecordingDeleteTransport alloc] init] autorelease];
+    PhotoStorageMover *mover = [[[PhotoStorageMover alloc] initWithBucket:@"test-bucket"
+                                                                 apiBaseURL:@"http://emulator.local:9199"
+                                                      serviceAccountKeyPath:nil
+                                                                  transport:transport] autorelease];
+    [_browse setPhotoStorageMover:mover];
+    [_browse setCurrentEntry:entry];
+
+    [_browse deleteEntry];
+
+    XCTAssertEqual([[transport deletedURLs] count], (NSUInteger)0);
+    XCTAssertFalse([[ec deletedObjects] containsObject:entry]);
 }
 
 @end

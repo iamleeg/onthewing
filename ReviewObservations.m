@@ -29,6 +29,7 @@
 #import "JournalEntry.h"
 #import "PhotoStorageMover.h"
 #import "PhotoMigrator.h"
+#import "OTWFirebaseStorageURL.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
@@ -115,22 +116,6 @@
     return [self pageWithName:@"Main"];
 }
 
-// Extracts the raw GCS object path (e.g. "temp/uid/img.jpg") from a Firebase
-// download URL.
-// The object path is everything after the "o" path component.
-- (NSString *)objectPathFromDownloadURL:(NSURL *)url {
-    if (url == nil) {
-        return nil;
-    }
-    NSArray *components = [url pathComponents];
-    NSUInteger marker = [components indexOfObject:@"o"];
-    if (marker == NSNotFound || marker + 1 >= [components count]) {
-        return nil;
-    }
-    NSRange objectPathRange = NSMakeRange(marker + 1, [components count] - marker - 1);
-    return [[components subarrayWithRange:objectPathRange] componentsJoinedByString:@"/"];
-}
-
 - (JournalEntry *)buildJournalEntryForObservations:(NSArray *)observations
                                             observer:(Observer *)observer
                                       editingContext:(EOEditingContext *)ec {
@@ -186,7 +171,7 @@
 
     NSMutableArray *migrations = [NSMutableArray array];
     for (Observation *observation in pending) {
-        NSString *tempPath = [self objectPathFromDownloadURL:[observation photoURL]];
+        NSString *tempPath = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
         if (tempPath == nil) {
             continue;
         }

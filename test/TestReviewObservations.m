@@ -283,18 +283,4 @@
     XCTAssertNotNil(nextPage);
 }
 
-- (void)testObjectPathFromDownloadURLDecodesEncodedSlashesAndStripsQuery {
-    NSURL *url = [NSURL URLWithString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/temp%2Fuid%2Fphoto.jpg?alt=media&token=abc"];
-    XCTAssertEqualObjects([_review objectPathFromDownloadURL:url], @"temp/uid/photo.jpg");
-}
-
-- (void)testObjectPathFromDownloadURLWorksAgainstEmulatorHost {
-    NSURL *url = [NSURL URLWithString:@"http://localhost:9199/v0/b/bucket/o/temp%2Fuid%2Fphoto.jpg?alt=media"];
-    XCTAssertEqualObjects([_review objectPathFromDownloadURL:url], @"temp/uid/photo.jpg");
-}
-
-- (void)testObjectPathFromDownloadURLReturnsNilForNil {
-    XCTAssertNil([_review objectPathFromDownloadURL:nil]);
-}
-
 @end

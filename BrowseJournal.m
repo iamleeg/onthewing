@@ -27,6 +27,8 @@
 #import "JournalEntry.h"
 #import "Observation.h"
 #import "ObservationLocation.h"
+#import "PhotoStorageMover.h"
+#import "OTWFirebaseStorageURL.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
@@ -35,7 +37,16 @@
 
 @synthesize currentEntry = _currentEntry;
 @synthesize currentObservation = _currentObservation;
+@synthesize photoStorageMover = _photoStorageMover;
 
+- (PhotoStorageMover *)photoStorageMover {
+    if (_photoStorageMover == nil) {
+        _photoStorageMover = [[PhotoStorageMover alloc] init];
+    }
+    return _photoStorageMover;
+}
+
+// Fetch these explicitly because the to-many relationships don't fault correctly in GDL2.
 - (NSArray *)journalEntries {
     Session *session = (Session *)[self session];
     Observer *user = [session user];
@@ -95,6 +106,63 @@
             [[self.currentObservation location] bearing] != nil);
 }
 
+// Fetch these explicitly because the to-many relationships don't fault correctly in GDL2.
+- (NSArray *)observationsForEntry:(JournalEntry *)entry editingContext:(EOEditingContext *)ec {
+    NSArray *results = nil;
+    [ec lock];
+    NS_DURING {
+        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"journalEntry.journalEntryId = %@", [entry journalEntryId]];
+        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation"
+                                                                                         qualifier:qualifier
+                                                                                     sortOrderings:nil];
+        results = [ec objectsWithFetchSpecification:fetchSpec];
+    }
+    NS_HANDLER {
+        NSLog(@"Failed to fetch observations for entry: %@", localException);
+        results = nil;
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+    return results ?: @[];
+}
+
+- (id)deleteEntry {
+    Session *session = (Session *)[self session];
+    Observer *user = [session user];
+    JournalEntry *entry = self.currentEntry;
+
+    if (entry == nil || user == nil || ![[[entry observer] uid] isEqualToString:[user uid]]) {
+        return self;
+    }
+
+    EOEditingContext *ec = [session editingContext];
+    PhotoStorageMover *mover = [self photoStorageMover];
+    for (Observation *observation in [self observationsForEntry:entry editingContext:ec]) {
+        NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
+        if (path == nil) {
+            continue;
+        }
+        NSError *deleteError = nil;
+        if (![mover deleteObjectAtPath:path error:&deleteError]) {
+            NSLog(@"BrowseJournal: failed to delete photo at %@: %@", path, deleteError);
+        }
+    }
+
+    [ec lock];
+    NS_DURING {
+        [ec deleteObject:entry];
+        [ec saveChanges];
+    }
+    NS_HANDLER {
+        NSLog(@"BrowseJournal: failed to delete journal entry: %@", localException);
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    self.currentEntry = nil;
+    return self;
+}
+
 - (id)backToMain {
     return [self pageWithName:@"Main"];
 }
@@ -102,6 +170,7 @@
 - (void)dealloc {
     [_currentEntry release];
     [_currentObservation release];
+    [_photoStorageMover release];
     [super dealloc];
 }
 

@@ -24,19 +24,27 @@
 
 @class JournalEntry;
 @class Observation;
+@class PhotoStorageMover;
 
 @interface BrowseJournal : GSWComponent {
     JournalEntry *_currentEntry;
     Observation *_currentObservation;
+    PhotoStorageMover *_photoStorageMover;
 }
 
 @property (nonatomic, retain) JournalEntry *currentEntry;
 @property (nonatomic, retain) Observation *currentObservation;
 
+// Lazily defaults to a real PhotoStorageMover; inject a fake for tests.
+@property (nonatomic, retain) PhotoStorageMover *photoStorageMover;
+
 /// A list of journal entries.
 /// The list is restricted to this user's entries, in reverse chronological order.
 - (NSArray *)journalEntries;
 - (BOOL)hasAnyEntries;
+
+// Deletes the current entry.
+- (id)deleteEntry;
 
 - (id)backToMain;
 
