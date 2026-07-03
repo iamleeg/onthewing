@@ -43,9 +43,9 @@
 - (NSArray *)journalEntries;
 - (BOOL)hasAnyEntries;
 
-// Observations belonging to currentEntry. Fetched explicitly (see
-// -observationsForEntry:editingContext: in the .m) rather than bound
-// directly to currentEntry.observations in the .wod - that relationship
+// Observations belonging to currentEntry. Uses Observation
+// +observationsForJournalEntry:editingContext: rather than binding
+// currentEntry.observations directly in the .wod - that relationship
 // doesn't fault correctly in GDL2.
 - (NSArray *)currentEntryObservations;
 

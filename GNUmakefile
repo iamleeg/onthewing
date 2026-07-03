@@ -61,6 +61,7 @@ OTWTests_OBJC_FILES = \
 	test/TestAuthActions.m \
 	test/TestReviewObservations.m \
 	test/TestBrowseJournal.m \
+	test/TestProfile.m \
 	test/TestFirebaseAuthUI.m \
 	test/TestPhotoCapture.m \
 	OTWApp.m \

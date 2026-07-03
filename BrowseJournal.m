@@ -30,8 +30,6 @@
 #import "PhotoStorageMover.h"
 #import "OTWFirebaseStorageURL.h"
 #import <EOControl/EOControl.h>
-#import <EOAccess/EOAccess.h>
-#import <EOAccess/EOUtilities.h>
 
 @implementation BrowseJournal
 
@@ -46,33 +44,10 @@
     return _photoStorageMover;
 }
 
-// Fetch these explicitly because the to-many relationships don't fault correctly in GDL2.
 - (NSArray *)journalEntries {
     Session *session = (Session *)[self session];
     Observer *user = [session user];
-    if (user == nil || [user uid] == nil) {
-        return @[];
-    }
-
-    EOEditingContext *ec = [session editingContext];
-    NSArray *results = nil;
-    [ec lock];
-    NS_DURING {
-        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@", [user uid]];
-        EOSortOrdering *sort = [EOSortOrdering sortOrderingWithKey:@"date" selector:EOCompareDescending];
-        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"JournalEntry"
-                                                                                         qualifier:qualifier
-                                                                                     sortOrderings:@[sort]];
-        results = [ec objectsWithFetchSpecification:fetchSpec];
-    }
-    NS_HANDLER {
-        NSLog(@"Failed to fetch journal entries: %@", localException);
-        results = nil;
-    }
-    NS_ENDHANDLER;
-    [ec unlock];
-
-    return results ?: @[];
+    return [JournalEntry journalEntriesForObserver:user editingContext:[session editingContext]];
 }
 
 - (BOOL)hasAnyEntries {
@@ -106,32 +81,9 @@
             [[self.currentObservation location] bearing] != nil);
 }
 
-// Fetch these explicitly because the to-many relationships don't fault correctly in GDL2.
-- (NSArray *)observationsForEntry:(JournalEntry *)entry editingContext:(EOEditingContext *)ec {
-    NSArray *results = nil;
-    [ec lock];
-    NS_DURING {
-        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"journalEntry.journalEntryId = %@", [entry journalEntryId]];
-        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation"
-                                                                                         qualifier:qualifier
-                                                                                     sortOrderings:nil];
-        results = [ec objectsWithFetchSpecification:fetchSpec];
-    }
-    NS_HANDLER {
-        NSLog(@"Failed to fetch observations for entry: %@", localException);
-        results = nil;
-    }
-    NS_ENDHANDLER;
-    [ec unlock];
-    return results ?: @[];
-}
-
 - (NSArray *)currentEntryObservations {
-    if (self.currentEntry == nil) {
-        return @[];
-    }
     Session *session = (Session *)[self session];
-    return [self observationsForEntry:self.currentEntry editingContext:[session editingContext]];
+    return [Observation observationsForJournalEntry:self.currentEntry editingContext:[session editingContext]];
 }
 
 - (id)deleteEntry {
@@ -145,7 +97,7 @@
 
     EOEditingContext *ec = [session editingContext];
     PhotoStorageMover *mover = [self photoStorageMover];
-    for (Observation *observation in [self observationsForEntry:entry editingContext:ec]) {
+    for (Observation *observation in [Observation observationsForJournalEntry:entry editingContext:ec]) {
         NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
         if (path == nil) {
             continue;

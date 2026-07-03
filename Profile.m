@@ -7,16 +7,29 @@
 #import "Profile.h"
 #import "Session.h"
 #import "Observer.h"
+#import "JournalEntry.h"
+#import "Observation.h"
+#import "PhotoStorageMover.h"
+#import "OTWFirebaseStorageURL.h"
 #import <EOControl/EOControl.h>
 
 @implementation Profile
 
 @synthesize updatedName = _updatedName;
 @synthesize updatedEmail = _updatedEmail;
+@synthesize photoStorageMover = _photoStorageMover;
+
+- (PhotoStorageMover *)photoStorageMover {
+    if (_photoStorageMover == nil) {
+        _photoStorageMover = [[PhotoStorageMover alloc] init];
+    }
+    return _photoStorageMover;
+}
 
 - (void)dealloc {
     [_updatedName release];
     [_updatedEmail release];
+    [_photoStorageMover release];
     [super dealloc];
 }
 
@@ -97,8 +110,31 @@
     Observer *user = [session user];
     if (user) {
         EOEditingContext *ec = [session editingContext];
+        NSArray *entries = [JournalEntry journalEntriesForObserver:user editingContext:ec];
+
+        // Delete photos before/alongside the DB rows, not after - if the
+        // request is interrupted partway, we'd rather leak a harmless
+        // orphaned GCS object than leave a dangling reference no longer
+        // reachable from any DB row.
+        PhotoStorageMover *mover = [self photoStorageMover];
+        for (JournalEntry *entry in entries) {
+            for (Observation *observation in [Observation observationsForJournalEntry:entry editingContext:ec]) {
+                NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
+                if (path == nil) {
+                    continue;
+                }
+                NSError *deleteError = nil;
+                if (![mover deleteObjectAtPath:path error:&deleteError]) {
+                    NSLog(@"Profile: failed to delete photo at %@: %@", path, deleteError);
+                }
+            }
+        }
+
         [ec lock];
         NS_DURING {
+            for (JournalEntry *entry in entries) {
+                [ec deleteObject:entry];
+            }
             [ec deleteObject:user];
             [ec saveChanges];
         }

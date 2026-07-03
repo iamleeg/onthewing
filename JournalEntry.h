@@ -34,4 +34,9 @@
 @property (nonatomic, retain) Observer *observer;
 @property (nonatomic, retain) NSMutableArray *observations;
 
+// Fetches explicitly (observer.uid = %@) rather than relying on
+// Observer.journalEntries' to-many relationship, which doesn't fault
+// correctly in GDL2. Sorted descending by date.
++ (NSArray *)journalEntriesForObserver:(Observer *)observer editingContext:(EOEditingContext *)ec;
+
 @end
