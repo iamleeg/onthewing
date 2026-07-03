@@ -50,14 +50,17 @@ compass: Compass {
 
 deleteEntryLink: WOHyperlink {
     action = deleteEntry;
+    class = "btn btn-sm btn-danger";
 }
 
 backLink: WOHyperlink {
     action = backToMain;
+    class = "btn btn-secondary";
 }
 
 captureLink: WOHyperlink {
     action = capture;
+    class = "btn btn-primary";
 }
 
 AGPLFooter: AGPLFooter {}

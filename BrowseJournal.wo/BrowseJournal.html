@@ -22,7 +22,7 @@
         <webobject name="entryLoop">
             <section>
                 <h2><webobject name="entryDate"/></h2>
-                <table>
+                <table class="responsive-table">
                     <thead>
                         <tr>
                             <th>Time / Date</th>
@@ -33,13 +33,13 @@
                     <tbody>
                         <webobject name="observationLoop">
                             <tr>
-                                <td><webobject name="observationDate"/></td>
-                                <td>
+                                <td data-label="Time / Date"><webobject name="observationDate"/></td>
+                                <td data-label="Photo">
                                     <webobject name="hasPhoto">
                                         <webobject name="photoImage"/>
                                     </webobject>
                                 </td>
-                                <td>
+                                <td data-label="Bearing">
                                     <webobject name="hasBearing">
                                         <webobject name="compass" />
                                     </webobject>

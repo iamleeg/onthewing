@@ -14,7 +14,7 @@
                 <label for="password-input">Password</label>
                 <input type="password" id="password-input" placeholder="********" required />
             </div>
-            <button class="btn btn-primary" style="width: 100%;" onclick="FirebaseAuth.loginWithEmail(document.getElementById('email-input').value, document.getElementById('password-input').value)">Sign In</button>
+            <a href="#" class="btn btn-primary" style="width: 100%; text-align: center;" onclick="FirebaseAuth.loginWithEmail(document.getElementById('email-input').value, document.getElementById('password-input').value); return false;">Sign In</a>
             <p class="auth-switch">Don't have an account? <a href="#" onclick="toggleAuthMode(true); return false;">Create one</a></p>
         </div>
 
@@ -32,7 +32,7 @@
                 <label for="reg-password-input">Password</label>
                 <input type="password" id="reg-password-input" placeholder="At least 6 characters" required />
             </div>
-            <button class="btn btn-primary" style="width: 100%;" onclick="FirebaseAuth.registerWithEmail(document.getElementById('reg-email-input').value, document.getElementById('reg-password-input').value, document.getElementById('reg-name-input').value)">Register</button>
+            <a href="#" class="btn btn-primary" style="width: 100%; text-align: center;" onclick="FirebaseAuth.registerWithEmail(document.getElementById('reg-email-input').value, document.getElementById('reg-password-input').value, document.getElementById('reg-name-input').value); return false;">Register</a>
             <p class="auth-switch">Already have an account? <a href="#" onclick="toggleAuthMode(false); return false;">Sign In</a></p>
         </div>
     </div>

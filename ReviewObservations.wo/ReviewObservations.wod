@@ -41,18 +41,22 @@ noBearing: WOConditional {
 
 deleteLink: WOHyperlink {
     action = deleteObservation;
+    class = "btn btn-sm btn-danger";
 }
 
 backLink: WOHyperlink {
     action = backToMain;
+    class = "btn btn-secondary";
 }
 
 saveToJournalLink: WOHyperlink {
     action = saveToJournal;
+    class = "btn btn-primary";
 }
 
 discardLink: WOHyperlink {
     action = discardObservations;
+    class = "btn btn-danger";
 }
 
 AGPLFooter: AGPLFooter {}

@@ -16,7 +16,7 @@
         <webobject name="observationMap" />
     </webobject>
 
-    <table>
+    <table class="responsive-table">
         <thead>
             <tr>
                 <th>Time / Date</th>
@@ -28,11 +28,11 @@
         <tbody>
             <webobject name="observationLoop">
                 <tr>
-                    <td><webobject name="observationTime"/></td>
-                    <td>
+                    <td data-label="Time / Date"><webobject name="observationTime"/></td>
+                    <td data-label="Photo">
                         <webobject name="photoCapture"/>
                     </td>
-                    <td>
+                    <td data-label="Bearing">
                         <webobject name="hasBearing">
                             <webobject name="compass" />
                         </webobject>
@@ -40,7 +40,7 @@
                             No bearing recorded
                         </webobject>
                     </td>
-                    <td>
+                    <td data-label="Action">
                         <webobject name="deleteLink">Delete</webobject>
                     </td>
                 </tr>

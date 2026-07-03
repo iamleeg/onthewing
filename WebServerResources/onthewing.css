@@ -110,6 +110,51 @@ th {
     color: var(--color-heading);
 }
 
+/* Responsive tables (ReviewObservations/BrowseJournal): below the mobile
+   breakpoint, rows become stacked cards and each cell grows its own label
+   from a data-label attribute, since there's no room for a header row. */
+@media (max-width: 640px) {
+    table.responsive-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+
+    table.responsive-table, table.responsive-table tbody, table.responsive-table tr, table.responsive-table td {
+        display: block;
+        width: 100%;
+    }
+
+    table.responsive-table tr {
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+    table.responsive-table td {
+        padding: 0.5rem 0 0.5rem 40%;
+        position: relative;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    table.responsive-table td:last-child {
+        border-bottom: none;
+    }
+
+    table.responsive-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 35%;
+        font-weight: 600;
+        color: var(--color-text-muted);
+    }
+}
+
 footer {
     margin-top: 2.5rem;
     padding-top: 1rem;
@@ -118,8 +163,10 @@ footer {
     font-size: 0.85rem;
 }
 
-/* Buttons - used by Profile/FirebaseLogin's WOSubmitButton/WOHyperlink class bindings */
 .btn {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     display: inline-block;
     padding: 0.65rem 1.4rem;
     font-family: "Lora", serif;
@@ -129,7 +176,13 @@ footer {
     border: 1px solid transparent;
     cursor: pointer;
     text-decoration: none;
+    line-height: 1.2;
     transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
 }
 
 .btn-primary {
