@@ -1,5 +1,9 @@
 FirebaseScript: OTWFirebaseScript {}
 
+webFont: OTWWebFont {}
+
+styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
+
 hasAvatar: WOConditional {
     condition = hasAvatar;
 }

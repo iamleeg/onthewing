@@ -1,5 +1,7 @@
 FirebaseScript: OTWFirebaseScript {}
 FirebaseAuthUI: FirebaseAuthUI {}
+webFont: OTWWebFont {}
+styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
 
 hasEntries: WOConditional {
     condition = hasAnyEntries;

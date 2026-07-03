@@ -3,116 +3,13 @@
 
 <head>
     <title>On the Wing: User Profile</title>
+    <webobject name="webFont" />
+    <webobject name="styleSheet" />
 </head>
 
 <body>
     <webobject name="FirebaseScript" />
-    
-    <style>
-    .profile-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 3rem 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .profile-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        width: 100%;
-        max-width: 450px;
-        padding: 2.5rem;
-        box-sizing: border-box;
-        border: 1px solid #eaeaea;
-        text-align: center;
-    }
-    .profile-avatar-container {
-        margin-bottom: 1.5rem;
-    }
-    .profile-avatar-container img {
-        width: 96px;
-        height: 96px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #4f46e5;
-        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
-    }
-    .profile-card h2 {
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        color: #1a1a1a;
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-    .profile-details {
-        margin-bottom: 2rem;
-        border-top: 1px solid #eaeaea;
-        border-bottom: 1px solid #eaeaea;
-        padding: 1rem 0;
-    }
-    .input-group {
-        margin-bottom: 1.25rem;
-        text-align: left;
-    }
-    .input-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #4a4a4a;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-    .input-group input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #cccccc;
-        border-radius: 6px;
-        font-size: 1rem;
-        box-sizing: border-box;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .input-group input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-        outline: none;
-    }
-    .btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-        text-decoration: none;
-        box-sizing: border-box;
-    }
-    .btn-primary {
-        background-color: #4f46e5;
-        color: white;
-    }
-    .btn-primary:hover {
-        background-color: #4338ca;
-    }
-    .btn-secondary {
-        color: #4b5563;
-        background-color: #f3f4f6;
-        border: 1px solid #e5e7eb;
-    }
-    .btn-secondary:hover {
-        background-color: #e5e7eb;
-        color: #1f2937;
-    }
-    .btn-danger {
-        background-color: #dc2626;
-        color: white;
-    }
-    .btn-danger:hover {
-        background-color: #b91c1c;
-    }
-    </style>
-    
+
     <div class="profile-container">
         <div class="profile-card">
             <webobject name="hasAvatar">
@@ -141,8 +38,8 @@
                 </div>
             </webobject>
 
-            <div style="margin-top: 2rem; border-top: 1px solid #eaeaea; padding-top: 1.5rem;">
-                <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; text-align: left;">
+            <div style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
+                <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 1rem; text-align: left;">
                     Warning: Deleting your account will permanently remove all your data from our database and Firebase.
                 </p>
                 <button class="btn btn-danger" style="width: 100%;" onclick="deleteUserAccount(); return false;">Delete Account</button>

@@ -1,5 +1,7 @@
 FirebaseScript: OTWFirebaseScript {}
 FirebaseAuthUI: FirebaseAuthUI {}
+webFont: OTWWebFont {}
+styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
 
 hasLocations: WOConditional {
     condition = hasAnyLocation;
