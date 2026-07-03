@@ -26,6 +26,12 @@ patches:
             value: postgres
           - name: DB_PASSWORD
             value: ""
+          - name: GCS_BUCKET
+            value: onthewing-eedce.firebasestorage.app
+          - name: GCS_API_BASE_URL
+            value: http://firebase-emulator-svc:9199
+      - op: remove
+        path: /spec/template/spec/containers/0/volumeMounts
       - op: remove
         path: /spec/template/spec/containers/1
       - op: remove
