@@ -47,6 +47,7 @@
 
 - (NSArray *)sortedObservations;
 - (id)deleteObservation;
+- (id)discardObservations;
 - (id)backToMain;
 - (id)saveToJournal;
 

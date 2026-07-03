@@ -49,4 +49,8 @@ saveToJournalLink: WOHyperlink {
     action = saveToJournal;
 }
 
+discardLink: WOHyperlink {
+    action = discardObservations;
+}
+
 AGPLFooter: AGPLFooter {}

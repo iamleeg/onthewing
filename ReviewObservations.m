@@ -120,6 +120,12 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
     return self;
 }
 
+- (id)discardObservations {
+    Session *session = (Session *)[self session];
+    [session removeAllObservationsForReview];
+    return [self pageWithName:@"Main"];
+}
+
 - (id)backToMain {
     return [self pageWithName:@"Main"];
 }

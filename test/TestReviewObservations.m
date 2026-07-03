@@ -174,11 +174,18 @@
     XCTAssertTrue([[s unreviewedObservations] containsObject:o2]);
 }
 
-// saveToJournal - onthewing-czs.8. No Postgres in CI, so saveChanges always
-// fails here; that's the one path this suite can exercise deterministically.
-// The success path (DB commit + background photo migration) needs staging
-// verification (onthewing-czs.14). buildJournalEntryForObservations:... is
-// split out precisely so its wiring is testable without a live DB.
+- (void)testDiscardObservationsEmptiesSessionAndReturnsMainPage {
+    Session *s = (Session *)[_ctx session];
+    Observation *o1 = [[[Observation alloc] init] autorelease];
+    Observation *o2 = [[[Observation alloc] init] autorelease];
+    [s addObservationForReview:o1];
+    [s addObservationForReview:o2];
+
+    id nextPage = [_review discardObservations];
+
+    XCTAssertEqualObjects([nextPage class], NSClassFromString(@"Main"));
+    XCTAssertEqual([[s unreviewedObservations] count], (NSUInteger)0);
+}
 
 - (void)testBuildJournalEntryForObservationsSetsDateObserverAndRelationships {
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
