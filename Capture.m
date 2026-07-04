@@ -59,4 +59,8 @@
   return nextPage;
 }
 
+- (id)discard {
+  return [self pageWithName:@"Main"];
+}
+
 @end

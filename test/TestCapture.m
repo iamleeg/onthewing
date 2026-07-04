@@ -81,4 +81,15 @@
   [o release];
 }
 
+- (void)testDiscardDoesNotAddPendingObservation {
+  Session *s = (Session *)[_ctx session];
+  Observation *o = [Observation new];
+  [_capture setObservation: o];
+
+  id page = [_capture discard];
+  XCTAssertEqualObjects([page class], [Main class]);
+  XCTAssertFalse([[s unreviewedObservations] containsObject:o]);
+
+  [o release];
+}
 @end

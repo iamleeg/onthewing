@@ -8,3 +8,4 @@ photoCapture:PhotoCapture { nextComponent="Capture"; observation = observation; 
 observationMap:ObservationMap { location = observation.location; }
 compass:Compass { location = observation.location; }
 done:WOHyperlink { action = return; class = "btn btn-primary"; }
+discard:WOHyperlink { action = discard; class = "btn btn-secondary"; }
