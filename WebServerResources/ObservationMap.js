@@ -32,7 +32,7 @@ function initObservationMap() {
     if (!mapElement) return;
 
     if (L.Icon && L.Icon.Default) {
-        L.Icon.Default.imagePath = '/WebObjects/OnTheWing.woa/0/wr/';
+        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
     }
 
     const markersAttr = mapElement.getAttribute('data-markers');

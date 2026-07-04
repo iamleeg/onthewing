@@ -24,9 +24,9 @@ OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m OTWWebFont.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m OTWFirebaseStorageURL.m PhotoStorageMover.m PhotoMigrator.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m BrowseJournal.m FirebaseAuthUI.m PhotoCapture.m
-OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWWebFont.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo BrowseJournal.wo FirebaseAuthUI.wo PhotoCapture.wo
-OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js FirebaseAuth.js PhotoCapture.js leaflet.js leaflet.css onthewing.css marker-icon.png marker-icon-2x.png marker-shadow.png layers.png layers-2x.png
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m OTWWebFont.m OTWLeafletScript.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m OTWFirebaseStorageURL.m PhotoStorageMover.m PhotoMigrator.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m BrowseJournal.m FirebaseAuthUI.m PhotoCapture.m
+OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWWebFont.wo OTWLeafletScript.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo BrowseJournal.wo FirebaseAuthUI.wo PhotoCapture.wo
+OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js FirebaseAuth.js PhotoCapture.js onthewing.css
 
 ifneq ($(FOUNDATION_LIB),gnu)
 AUXILIARY_GSW_LIBS = -framework WebObjects -framework WOExtensions -framework EOControl -framework EOAccess
@@ -52,6 +52,7 @@ OTWTests_OBJC_FILES = \
 	test/TestObservationMap.m \
 	test/TestOTWStyleSheet.m \
 	test/TestOTWWebFont.m \
+	test/TestOTWLeafletScript.m \
 	test/TestCompassSVGGenerator.m \
 	test/TestObserver.m \
 	test/TestJournalEntry.m \
@@ -76,6 +77,7 @@ OTWTests_OBJC_FILES = \
 	ObservationMap.m \
 	OTWStyleSheet.m \
 	OTWWebFont.m \
+	OTWLeafletScript.m \
 	CompassSVGGenerator.m \
 	Compass.m \
 	Observation.m \

@@ -1,7 +1,6 @@
 hasLocation:WOConditional { condition = hasValidCoordinates; }
 noLocation:WOConditional { condition = hasValidCoordinates; negate = yes; }
-leafletCSS:OTWStyleSheet { stylesheetName = "leaflet.css"; }
-leafletJS:WOJavaScript { scriptSource = "leaflet.js"; }
+leafletScript:OTWLeafletScript {}
 observationMapJS:WOJavaScript { scriptSource = "ObservationMap.js"; }
 mapContainer:WOGenericContainer { 
     elementName = "div"; 
