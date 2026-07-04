@@ -30,6 +30,8 @@
 
 @implementation OTWApp
 
+@synthesize databaseSchemaReady = _databaseSchemaReady;
+
 extern int GSWebNamingConv;
 extern NSDictionary* globalMime;
 
@@ -339,17 +341,26 @@ extern NSDictionary* globalMime;
     [model addEntity:observationEntity];
     [[EOModelGroup defaultGroup] addModel:model];
 
-    // Ensure the table exists using GDL2 schema generation (migration facility)
+    [self attemptSchemaInitialization];
+}
+
+// Verifies (creating if needed) the DB schema via GDL2 schema generation.
+// Runs once synchronously from -initializeDatabase at startup; if it fails,
+// it schedules itself to retry
+// via a timer on the app's own run loop rather than blocking the main
+// thread or giving up permanently.
+- (void)attemptSchemaInitialization {
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
     EODatabaseContext *databaseContext = [ec databaseContextForModelNamed:@"OnTheWing"];
     [databaseContext lock];
+    BOOL succeeded = NO;
     NS_DURING {
         EODatabaseChannel *databaseChannel = [databaseContext availableChannel];
         EOAdaptorChannel *adaptorChannel = [databaseChannel adaptorChannel];
         if (![adaptorChannel isOpen]) {
             [adaptorChannel openChannel];
         }
-        
+
         // Checking all three expected tables (rather than just "observers",
         // as before this schema grew to include journal_entries/observations)
         // matters for upgrading an existing deployment: on first deploy after
@@ -382,7 +393,7 @@ extern NSDictionary* globalMime;
             EOModel *m = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
             NSArray *entities = [m entities];
             Class exprClass = [[EOAdaptor adaptorWithModel:m] expressionClass];
-            
+
             NSDictionary *options = @{
                 EODropTablesKey: @"NO",
                 EODropPrimaryKeySupportKey: @"NO",
@@ -401,12 +412,24 @@ extern NSDictionary* globalMime;
                 NS_ENDHANDLER;
             }
         }
+        succeeded = YES;
     }
     NS_HANDLER {
         NSLog(@"Error initializing database tables: %@", localException);
     }
     NS_ENDHANDLER
     [databaseContext unlock];
+
+    self.databaseSchemaReady = succeeded;
+
+    if (!succeeded) {
+        NSTimer *retryTimer = [NSTimer timerWithTimeInterval:5.0
+                                                       target:self
+                                                     selector:@selector(attemptSchemaInitialization)
+                                                     userInfo:nil
+                                                      repeats:NO];
+        [self addTimer:retryTimer];
+    }
 }
 
 - (id)init {

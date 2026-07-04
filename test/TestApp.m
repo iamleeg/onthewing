@@ -42,6 +42,14 @@
   XCTAssertEqualObjects(timeout, @60);
 }
 
+- (void)testDatabaseSchemaReadyIsSettable {
+  [_app setDatabaseSchemaReady:YES];
+  XCTAssertTrue([_app isDatabaseSchemaReady]);
+
+  [_app setDatabaseSchemaReady:NO];
+  XCTAssertFalse([_app isDatabaseSchemaReady]);
+}
+
 - (void)testInitSetsDefaultRequestHandler {
   NSString *directActionHandlerKey =
       [[_app class] directActionRequestHandlerKey];

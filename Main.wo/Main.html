@@ -8,31 +8,38 @@
 </head>
 
 <body>
-    <webobject name="FirebaseScript" />
+    <webobject name="appNotReady">
+        <h1>On the Wing</h1>
+        <p>On the Wing will be back soon - enjoy a mindful moment with nature while you wait!</p>
+    </webobject>
 
-    <webobject name="FirebaseAuthUI" />
+    <webobject name="appReady">
+        <webobject name="FirebaseScript" />
 
-    <h1>On the Wing</h1>
-    
-    <p>
-        Did you see something interesting? <webobject name=capture_link>Capture it</webobject> for your nature journal!
-    </p>
-    
-    <p>
-        <webobject name="has_observations">
-            <webobject name="is_logged_in">
-                <webobject name="review_link"><webobject name="count_observations"/></webobject>
-            </webobject>
-            <webobject name="not_logged_in">
-                <webobject name="count_observations"/>
-            </webobject>
-        </webobject>
-    </p>
+        <webobject name="FirebaseAuthUI" />
 
-    <webobject name="is_logged_in_for_journal">
+        <h1>On the Wing</h1>
+
         <p>
-            <webobject name="browse_journal_link">Browse your journal</webobject>
+            Did you see something interesting? <webobject name=capture_link>Capture it</webobject> for your nature journal!
         </p>
+
+        <p>
+            <webobject name="has_observations">
+                <webobject name="is_logged_in">
+                    <webobject name="review_link"><webobject name="count_observations"/></webobject>
+                </webobject>
+                <webobject name="not_logged_in">
+                    <webobject name="count_observations"/>
+                </webobject>
+            </webobject>
+        </p>
+
+        <webobject name="is_logged_in_for_journal">
+            <p>
+                <webobject name="browse_journal_link">Browse your journal</webobject>
+            </p>
+        </webobject>
     </webobject>
 
     <webobject name=AGPLFooter />

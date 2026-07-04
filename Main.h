@@ -28,4 +28,8 @@
 - (NSString *)reportPendingObservations;
 - (BOOL)hasUser;
 
+// Whether the app's DB connection is ready.
+// Main shows a friendly "come back soon" message instead of the real UI when this is NO.
+- (BOOL)isAppReady;
+
 @end

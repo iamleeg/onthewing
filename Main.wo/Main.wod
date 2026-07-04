@@ -1,3 +1,5 @@
+appReady:WOConditional { condition = isAppReady; }
+appNotReady:WOConditional { condition = isAppReady; negate = true; }
 capture_link:WOHyperlink { action = capture; }
 has_observations:WOConditional { condition = hasObservations; }
 count_observations:WOString { value = reportPendingObservations; }

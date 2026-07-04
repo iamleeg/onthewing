@@ -24,6 +24,7 @@
 #import "Main.h"
 #import "Observation.h"
 #import "Session.h"
+#import "OTWApp.h"
 
 @implementation Main
 
@@ -60,6 +61,10 @@
 - (BOOL)hasUser {
   Session *session = (Session *)[self session];
   return [session user] != nil;
+}
+
+- (BOOL)isAppReady {
+  return [(OTWApp *)[self application] isDatabaseSchemaReady];
 }
 
 @end

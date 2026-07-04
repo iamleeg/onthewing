@@ -18,5 +18,11 @@
 
 #include <WebObjects/WebObjects.h>
 
-@interface OTWApp : GSWApplication
+@interface OTWApp : GSWApplication {
+    BOOL _databaseSchemaReady;
+}
+
+// Whether the DB is connected and the schema has been verified/created successfully. 
+@property (nonatomic, assign, getter=isDatabaseSchemaReady) BOOL databaseSchemaReady;
+
 @end

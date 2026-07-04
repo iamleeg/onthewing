@@ -97,4 +97,12 @@
   id page = [_m browseJournal];
   XCTAssertEqualObjects([page class], [BrowseJournal class]);
 }
+
+- (void)testIsAppReadyReflectsDatabaseSchemaReady {
+  [_app setDatabaseSchemaReady:YES];
+  XCTAssertTrue([_m isAppReady]);
+
+  [_app setDatabaseSchemaReady:NO];
+  XCTAssertFalse([_m isAppReady]);
+}
 @end
