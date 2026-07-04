@@ -208,8 +208,11 @@ footer {
 .btn-danger:hover { background-color: var(--color-error); color: #FFFFFF; }
 
 @media (prefers-color-scheme: dark) {
-    .btn-primary { color: var(--color-bg); }
-    .btn-secondary { color: var(--color-wisteria); }
+    .btn-secondary {
+        color: var(--color-wisteria);
+        border-color: var(--color-text-muted);
+    }
+    .btn-secondary:hover { border-color: var(--color-wisteria); }
 }
 
 /* Form inputs - used by Profile/FirebaseLogin's .input-group */
