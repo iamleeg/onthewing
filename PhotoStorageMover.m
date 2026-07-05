@@ -181,10 +181,9 @@ serviceAccountKeyPath:(NSString *)serviceAccountKeyPath
         return [OTWBearerToken emptyToken];
     }
 
-    NSError *readError = nil;
-    NSData *keyData = [NSData dataWithContentsOfFile:_serviceAccountKeyPath options:0 error:&readError];
+    NSData *keyData = [NSData dataWithContentsOfFile:_serviceAccountKeyPath];
     if (keyData == nil) {
-        if (error) *error = readError ?: [self errorForStatus:-1 body:nil message:@"Could not read GCS service account key file"];
+        if (error) *error = [self errorForStatus:-1 body:nil message:@"Could not read GCS service account key file"];
         return nil;
     }
 
