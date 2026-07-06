@@ -15,6 +15,16 @@ spec:
       labels:
         app: onthewing
     spec:
+      initContainers:
+        - name: init-static-assets
+          image: quay.io/iamleeg/onthewing:379cc456b64bef2660fa713ea5602d00b5ec1063
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+            - cp -R /app/OnTheWing.gswa/Resources/WebServer/* /usr/share/nginx/html/
+          volumeMounts:
+            - name: nginx-static-vol
+              mountPath: /usr/share/nginx/html
       containers:
         - name: onthewing
           image: quay.io/iamleeg/onthewing:379cc456b64bef2660fa713ea5602d00b5ec1063
@@ -58,6 +68,17 @@ spec:
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 120
+        - name: nginx-sidecar
+          image: nginx:alpine
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: nginx-static-vol
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+            - name: nginx-config-vol
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
           args:
@@ -76,4 +97,8 @@ spec:
         - name: gcs-storage-credentials-vol
           secret:
             secretName: gcs-storage-credentials
-
+        - name: nginx-static-vol
+          emptyDir: {}
+        - name: nginx-config-vol
+          configMap:
+            name: onthewing-nginx-config

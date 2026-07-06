@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: onthewing-nginx-config
+data:
+  default.conf: |
+    server {
+        listen 8081;
+
+        # Serve static assets directly from the shared volume
+        # GSWeb resource paths usually look like /WebObjects/OnTheWing.woa/wr/
+        # or /WebObjects/OnTheWing.woa/0/wr/
+        location ~ ^/WebObjects/OnTheWing\.woa(?:/[0-9]+)?/wr/(.*)$ {
+            alias /usr/share/nginx/html/$1;
+            expires max;
+            add_header Cache-Control "public, max-age=31536000";
+        }
+
+        # Proxy everything else to the GSWeb application
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }

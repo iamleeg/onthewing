@@ -14,6 +14,9 @@ patches:
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: Never
       - op: replace
+        path: /spec/template/spec/initContainers/0/imagePullPolicy
+        value: Never
+      - op: replace
         path: /spec/template/spec/containers/0/env
         value:
           - name: DB_HOST
@@ -33,9 +36,11 @@ patches:
       - op: remove
         path: /spec/template/spec/containers/0/volumeMounts
       - op: remove
-        path: /spec/template/spec/containers/1
+        path: /spec/template/spec/containers/2
       - op: remove
-        path: /spec/template/spec/volumes
+        path: /spec/template/spec/volumes/0
+      - op: remove
+        path: /spec/template/spec/volumes/0
   - patch: |-
       $patch: delete
       apiVersion: argoproj.io/v1alpha1
@@ -43,4 +48,3 @@ patches:
       metadata:
         name: onthewing
         namespace: argocd
-
