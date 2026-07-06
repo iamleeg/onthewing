@@ -18,6 +18,10 @@
 
 #import "JournalEntry.h"
 #import "Observer.h"
+#import "Observation.h"
+#import "OTWApp.h"
+#import <EOControl/EOControl.h>
+#import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
 
 @interface TestJournalEntry : XCTestCase
@@ -59,6 +63,75 @@
     XCTAssertEqualObjects([entry observations], observations);
     XCTAssertEqual([[entry observations] count], (NSUInteger)0);
     [entry release];
+}
+
+// Diagnostic for the libs-gdl2 array-fault bug ("Resolve a circular loop in
+// faulting to-many relationships", vendored-fixes branch): fetches an
+// Observer by uid in a fresh editing context (so its relationships start as
+// unfired faults, matching what production actually hits), then follows
+// Observer.journalEntries and JournalEntry.observations directly rather than
+// through an explicit EOFetchSpecification workaround. Skips its assertions
+// (but not the test) when no DB is reachable, matching the rest of the suite.
+- (void)testToManyRelationshipsFaultCorrectlyAfterFreshFetch {
+    OTWApp *app = [[OTWApp alloc] init];
+    EOEditingContext *ec1 = [[[EOEditingContext alloc] init] autorelease];
+
+    NSString *uid = [[NSUUID UUID] UUIDString];
+    NSError *setupError = nil;
+    [ec1 lock];
+    NS_DURING {
+        Observer *user = [ec1 createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [user setUid:uid];
+
+        JournalEntry *entry = [ec1 createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+        [entry setObserver:user];
+        [entry setDate:[NSDate date]];
+
+        Observation *observation = [ec1 createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [observation setJournalEntry:entry];
+        [observation setCaptureDate:[NSDate date]];
+
+        [ec1 saveChanges];
+    }
+    NS_HANDLER {
+        NSLog(@"testToManyRelationshipsFaultCorrectlyAfterFreshFetch: no DB available to set up fixtures: %@", localException);
+        setupError = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    NS_ENDHANDLER;
+    [ec1 unlock];
+
+    if (setupError != nil) {
+        [app release];
+        return;
+    }
+
+    EOEditingContext *ec2 = [[[EOEditingContext alloc] init] autorelease];
+    NSInteger journalEntryCount = -1;
+    NSInteger observationCount = -1;
+    NSException *fetchException = nil;
+    [ec2 lock];
+    NS_DURING {
+        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"uid = %@", uid];
+        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer"
+                                                                                         qualifier:qualifier
+                                                                                     sortOrderings:nil];
+        Observer *fetchedUser = [[ec2 objectsWithFetchSpecification:fetchSpec] firstObject];
+        NSArray *journalEntries = [fetchedUser journalEntries];
+        journalEntryCount = (NSInteger)[journalEntries count];
+        JournalEntry *fetchedEntry = [journalEntries firstObject];
+        observationCount = (NSInteger)[[fetchedEntry observations] count];
+    }
+    NS_HANDLER {
+        fetchException = localException;
+    }
+    NS_ENDHANDLER;
+    [ec2 unlock];
+
+    XCTAssertNil(fetchException, @"following the relationships raised: %@", fetchException);
+    XCTAssertEqual(journalEntryCount, (NSInteger)1);
+    XCTAssertEqual(observationCount, (NSInteger)1);
+
+    [app release];
 }
 
 @end

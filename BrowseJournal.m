@@ -47,7 +47,8 @@
 - (NSArray *)journalEntries {
     Session *session = (Session *)[self session];
     Observer *user = [session user];
-    return [JournalEntry journalEntriesForObserver:user editingContext:[session editingContext]];
+    EOSortOrdering *sort = [EOSortOrdering sortOrderingWithKey:@"date" selector:EOCompareDescending];
+    return [[user journalEntries] sortedArrayUsingKeyOrderArray:@[sort]];
 }
 
 - (BOOL)hasAnyEntries {
@@ -82,8 +83,7 @@
 }
 
 - (NSArray *)currentEntryObservations {
-    Session *session = (Session *)[self session];
-    return [Observation observationsForJournalEntry:self.currentEntry editingContext:[session editingContext]];
+    return [self.currentEntry observations];
 }
 
 - (id)deleteEntry {
@@ -97,7 +97,7 @@
 
     EOEditingContext *ec = [session editingContext];
     PhotoStorageMover *mover = [self photoStorageMover];
-    for (Observation *observation in [Observation observationsForJournalEntry:entry editingContext:ec]) {
+    for (Observation *observation in [self currentEntryObservations]) {
         NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
         if (path == nil) {
             continue;

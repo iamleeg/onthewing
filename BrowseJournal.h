@@ -43,10 +43,7 @@
 - (NSArray *)journalEntries;
 - (BOOL)hasAnyEntries;
 
-// Observations belonging to currentEntry. Uses Observation
-// +observationsForJournalEntry:editingContext: rather than binding
-// currentEntry.observations directly in the .wod - that relationship
-// doesn't fault correctly in GDL2.
+// Observations belonging to the currentEntry.
 - (NSArray *)currentEntryObservations;
 
 // Deletes the current entry.

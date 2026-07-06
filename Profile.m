@@ -110,23 +110,26 @@
     Observer *user = [session user];
     if (user) {
         EOEditingContext *ec = [session editingContext];
-        NSArray *entries = [JournalEntry journalEntriesForObserver:user editingContext:ec];
+
+        NSArray *entries = [user journalEntries];
+        NSMutableArray *allObservations = [NSMutableArray array];
+        for (JournalEntry *entry in entries) {
+            [allObservations addObjectsFromArray:[entry observations]];
+        }
 
         // Delete photos before/alongside the DB rows, not after - if the
         // request is interrupted partway, we'd rather leak a harmless
         // orphaned GCS object than leave a dangling reference no longer
         // reachable from any DB row.
         PhotoStorageMover *mover = [self photoStorageMover];
-        for (JournalEntry *entry in entries) {
-            for (Observation *observation in [Observation observationsForJournalEntry:entry editingContext:ec]) {
-                NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
-                if (path == nil) {
-                    continue;
-                }
-                NSError *deleteError = nil;
-                if (![mover deleteObjectAtPath:path error:&deleteError]) {
-                    NSLog(@"Profile: failed to delete photo at %@: %@", path, deleteError);
-                }
+        for (Observation *observation in allObservations) {
+            NSString *path = [OTWFirebaseStorageURL objectPathFromDownloadURL:[observation photoURL]];
+            if (path == nil) {
+                continue;
+            }
+            NSError *deleteError = nil;
+            if (![mover deleteObjectAtPath:path error:&deleteError]) {
+                NSLog(@"Profile: failed to delete photo at %@: %@", path, deleteError);
             }
         }
 

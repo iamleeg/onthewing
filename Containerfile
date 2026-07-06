@@ -50,7 +50,7 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
 WORKDIR /src
 RUN git clone https://github.com/iamleeg/libs-gdl2.git && \
     cd libs-gdl2 && \
-    git switch fix-database-context-stuck-preparing-for-save && \
+    git switch vendored-fixes && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \
     make && \

@@ -134,11 +134,11 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
                                             observer:(Observer *)observer
                                       editingContext:(EOEditingContext *)ec {
     JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-    [entry setObserver:observer];
+    [observer addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
     [entry setDate:[[observations objectAtIndex:0] captureDate]];
     for (Observation *observation in observations) {
         [ec insertObject:observation];
-        [observation setJournalEntry:entry];
+        [entry addObject:observation toBothSidesOfRelationshipWithKey:@"observations"];
     }
     return entry;
 }

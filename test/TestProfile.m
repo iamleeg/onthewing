@@ -122,16 +122,16 @@
         [ec saveChanges];
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [entry setObserver:user];
+        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [entry setDate:[NSDate date]];
 
         Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [o1 setJournalEntry:entry];
+        [entry addObject:o1 toBothSidesOfRelationshipWithKey:@"observations"];
         [o1 setCaptureDate:[NSDate date]];
         [o1 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%2Fabc%2Fentry%2Fphoto1.jpg?alt=media"];
 
         Observation *o2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [o2 setJournalEntry:entry];
+        [entry addObject:o2 toBothSidesOfRelationshipWithKey:@"observations"];
         [o2 setCaptureDate:[NSDate date]];
         [o2 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%2Fabc%2Fentry%2Fphoto2.jpg?alt=media"];
 
@@ -164,8 +164,14 @@
     XCTAssertNil([s user]);
     XCTAssertEqual([[transport deletedURLs] count], (NSUInteger)2);
 
-    Observer *sameUidLookup = [[[Observer alloc] initWithUid:uid name:nil email:nil avatarUrl:nil token:nil] autorelease];
-    XCTAssertEqual([[JournalEntry journalEntriesForObserver:sameUidLookup editingContext:ec] count], (NSUInteger)0);
+    // Direct qualifier fetch rather than Observer.journalEntries: the
+    // deleted user's Observer instance is gone, so there's no EC-registered
+    // object left to hang the relationship off; this checks DB state instead.
+    EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@", uid];
+    EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"JournalEntry"
+                                                                                     qualifier:qualifier
+                                                                                 sortOrderings:nil];
+    XCTAssertEqual([[ec objectsWithFetchSpecification:fetchSpec] count], (NSUInteger)0);
 }
 
 @end

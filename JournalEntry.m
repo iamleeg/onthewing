@@ -27,31 +27,6 @@
 @synthesize observer = _observer;
 @synthesize observations = _observations;
 
-+ (NSArray *)journalEntriesForObserver:(Observer *)observer editingContext:(EOEditingContext *)ec {
-    if (observer == nil || [observer uid] == nil) {
-        return @[];
-    }
-
-    NSArray *results = nil;
-    [ec lock];
-    NS_DURING {
-        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@", [observer uid]];
-        EOSortOrdering *sort = [EOSortOrdering sortOrderingWithKey:@"date" selector:EOCompareDescending];
-        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"JournalEntry"
-                                                                                         qualifier:qualifier
-                                                                                     sortOrderings:@[sort]];
-        results = [ec objectsWithFetchSpecification:fetchSpec];
-    }
-    NS_HANDLER {
-        NSLog(@"Failed to fetch journal entries: %@", localException);
-        results = nil;
-    }
-    NS_ENDHANDLER;
-    [ec unlock];
-
-    return results ?: @[];
-}
-
 - (void)setJournalEntryId:(NSString *)journalEntryId {
     [self willChange];
     [_journalEntryId release];

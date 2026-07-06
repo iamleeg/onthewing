@@ -114,7 +114,7 @@
 }
 
 - (void)testNoUserReturnsEmptyEntries {
-    XCTAssertEqualObjects([_browse journalEntries], @[]);
+    XCTAssertEqual([[_browse journalEntries] count], (NSUInteger)0);
     XCTAssertFalse([_browse hasAnyEntries]);
 }
 
@@ -147,13 +147,13 @@
         [ec saveChanges];
 
         JournalEntry *older = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [older setObserver:userA];
+        [userA addObject:older toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [older setDate:[NSDate dateWithTimeIntervalSince1970:10000]];
         JournalEntry *newer = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [newer setObserver:userA];
+        [userA addObject:newer toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [newer setDate:[NSDate dateWithTimeIntervalSince1970:20000]];
         JournalEntry *otherUsers = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [otherUsers setObserver:userB];
+        [userB addObject:otherUsers toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [otherUsers setDate:[NSDate dateWithTimeIntervalSince1970:30000]];
         [ec saveChanges];
 
@@ -169,7 +169,7 @@
     if (error != nil) {
         // No DB in this environment - can't meaningfully test scoping/sort
         // order, but journalEntries must still behave safely.
-        XCTAssertEqualObjects([_browse journalEntries], @[]);
+        XCTAssertEqual([[_browse journalEntries] count], (NSUInteger)0);
         return;
     }
 
@@ -188,7 +188,7 @@
 }
 
 - (void)testCurrentEntryObservationsReturnsEmptyWhenNoCurrentEntry {
-    XCTAssertEqualObjects([_browse currentEntryObservations], @[]);
+    XCTAssertEqual([[_browse currentEntryObservations] count], (NSUInteger)0);
 }
 
 - (void)testCurrentEntryObservationsMatchesFetchedEntryWhenDataAvailable {
@@ -203,15 +203,15 @@
         [ec saveChanges];
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [entry setObserver:user];
+        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [entry setDate:[NSDate date]];
 
         Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [o1 setJournalEntry:entry];
+        [entry addObject:o1 toBothSidesOfRelationshipWithKey:@"observations"];
         [o1 setCaptureDate:[NSDate date]];
 
         Observation *o2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [o2 setJournalEntry:entry];
+        [entry addObject:o2 toBothSidesOfRelationshipWithKey:@"observations"];
         [o2 setCaptureDate:[NSDate date]];
 
         [ec saveChanges];
@@ -255,16 +255,16 @@
         [ec saveChanges];
 
         entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [entry setObserver:user];
+        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
         [entry setDate:[NSDate date]];
 
         Observation *obs1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [obs1 setJournalEntry:entry];
+        [entry addObject:obs1 toBothSidesOfRelationshipWithKey:@"observations"];
         [obs1 setCaptureDate:[NSDate date]];
         [obs1 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/test-bucket/o/journal%2Fabc%2Fentry%2Fphoto1.jpg?alt=media"];
 
         Observation *obs2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [obs2 setJournalEntry:entry];
+        [entry addObject:obs2 toBothSidesOfRelationshipWithKey:@"observations"];
         [obs2 setCaptureDate:[NSDate date]];
         [obs2 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/test-bucket/o/journal%2Fabc%2Fentry%2Fphoto2.jpg?alt=media"];
 
@@ -287,10 +287,7 @@
 
     // Re-fetch through the same path the real UI uses (BrowseJournal
     // -journalEntries) rather than reusing the freshly-inserted `entry`
-    // instance directly: a bare, non-refetched object's to-many
-    // relationship ivar is never populated (see -journalEntries' own
-    // comments on why it avoids relying on relationship faulting for
-    // objects that aren't EC-fetched).
+    // instance directly, to exercise the same lookup the UI actually does.
     JournalEntry *fetchedEntry = [[_browse journalEntries] firstObject];
     XCTAssertNotNil(fetchedEntry);
 

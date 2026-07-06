@@ -136,29 +136,6 @@
     return [d1 compare:d2];
 }
 
-+ (NSArray *)observationsForJournalEntry:(JournalEntry *)entry editingContext:(EOEditingContext *)ec {
-    if (entry == nil) {
-        return @[];
-    }
-
-    NSArray *results = nil;
-    [ec lock];
-    NS_DURING {
-        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"journalEntry.journalEntryId = %@", [entry journalEntryId]];
-        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation"
-                                                                                         qualifier:qualifier
-                                                                                     sortOrderings:nil];
-        results = [ec objectsWithFetchSpecification:fetchSpec];
-    }
-    NS_HANDLER {
-        NSLog(@"Failed to fetch observations for entry: %@", localException);
-        results = nil;
-    }
-    NS_ENDHANDLER;
-    [ec unlock];
-    return results ?: @[];
-}
-
 - (void)dealloc {
     [_observationId release];
     [_captureDate release];

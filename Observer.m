@@ -6,6 +6,7 @@
 
 #import "Observer.h"
 #import "Observation.h"
+#import "JournalEntry.h"
 #import <EOControl/EOObserver.h>
 #import <EOAccess/EOAccess.h>
 
@@ -72,29 +73,15 @@ NSUInteger const kFreeTierPhotoLimit = 50;
     _journalEntries = [journalEntries retain];
 }
 
-// Fetches explicitly rather than counting via journalEntries/observations -
-// to-many relationships don't fault correctly in GDL2.
 - (NSUInteger)savedPhotoCountInEditingContext:(EOEditingContext *)ec {
     NSUInteger count = 0;
-    [ec lock];
-    NS_DURING {
-        EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"journalEntry.observer.uid = %@", [self uid]];
-        EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation"
-                                                                                         qualifier:qualifier
-                                                                                     sortOrderings:nil];
-        NSArray *observations = [ec objectsWithFetchSpecification:fetchSpec];
-        for (Observation *observation in observations) {
+    for (JournalEntry *entry in [self journalEntries]) {
+        for (Observation *observation in [entry observations]) {
             if ([observation photoURLString] != nil) {
                 count++;
             }
         }
     }
-    NS_HANDLER {
-        NSLog(@"Failed to count saved photos: %@", localException);
-        count = 0;
-    }
-    NS_ENDHANDLER;
-    [ec unlock];
     return count;
 }
 

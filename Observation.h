@@ -56,11 +56,6 @@
 
 - (NSComparisonResult)compareChronologically:(Observation *)other;
 
-// Fetches explicitly (journalEntry.journalEntryId = %@) rather than relying
-// on JournalEntry.observations' to-many relationship, which doesn't fault
-// correctly in GDL2.
-+ (NSArray *)observationsForJournalEntry:(JournalEntry *)entry editingContext:(EOEditingContext *)ec;
-
 @end
 
 @protocol ObservationUsing <NSObject>
