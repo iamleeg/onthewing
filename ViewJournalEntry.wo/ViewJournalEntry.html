@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>On the Wing: View Journal Entry</title>
+    <webobject name="webFont" />
+    <webobject name="styleSheet" />
+    <style>
+        .journal-title-input[readonly], .journal-reflections-input[readonly] {
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+        }
+        .journal-title-input[readonly] {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .journal-reflections-input[readonly] {
+            resize: none;
+        }
+        .d-none { display: none !important; }
+    </style>
+</head>
+<body>
+    <webobject name="FirebaseScript" />
+    <webobject name="FirebaseAuthUI" />
+
+    <webobject name="EntryForm">
+        <div class="header-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
+            <webobject name="TitleField" />
+            <div>
+                <button type="button" id="editButton" class="btn btn-outline-primary" onclick="toggleEditMode()">Edit</button>
+                <button type="button" id="cancelButton" class="btn btn-outline-secondary d-none" onclick="cancelEditMode()">Cancel</button>
+                <webobject name="SaveAction" />
+            </div>
+        </div>
+
+        <webobject name="hasLocations">
+            <webobject name="observationMap" />
+        </webobject>
+
+        <table class="responsive-table" style="margin-top: 1em;">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Photo</th>
+                    <th>Bearing</th>
+                </tr>
+            </thead>
+            <tbody>
+                <webobject name="observationLoop">
+                    <tr>
+                        <td data-label="Time"><webobject name="observationDate"/></td>
+                        <td data-label="Photo">
+                            <webobject name="hasPhoto">
+                                <webobject name="photoImage"/>
+                            </webobject>
+                        </td>
+                        <td data-label="Bearing">
+                            <webobject name="hasBearing">
+                                <webobject name="compass" />
+                            </webobject>
+                        </td>
+                    </tr>
+                </webobject>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 1.5em; margin-bottom: 1.5em;">
+            <webobject name="ReflectionsField" />
+        </div>
+    </webobject>
+
+    <p style="margin-top: 2em; border-top: 1px solid #ccc; padding-top: 1em;">
+        <webobject name="backLink">Back to Journal</webobject>
+        <webobject name="deleteEntryLink">Delete Entry</webobject>
+    </p>
+
+    <webobject name="AGPLFooter" />
+
+    <script>
+        const originalValues = {};
+
+        function toggleEditMode() {
+            const titleField = document.getElementById('titleField');
+            const reflectionsField = document.getElementById('reflectionsField');
+            
+            // Store original values for cancel
+            originalValues.title = titleField.value;
+            originalValues.reflections = reflectionsField.value;
+            
+            // Make editable
+            titleField.removeAttribute('readonly');
+            reflectionsField.removeAttribute('readonly');
+            
+            // Toggle buttons
+            document.getElementById('editButton').classList.add('d-none');
+            document.getElementById('cancelButton').classList.remove('d-none');
+            document.getElementById('saveButton').classList.remove('d-none');
+            
+            titleField.focus();
+        }
+
+        function cancelEditMode() {
+            const titleField = document.getElementById('titleField');
+            const reflectionsField = document.getElementById('reflectionsField');
+            
+            // Restore original values
+            titleField.value = originalValues.title;
+            reflectionsField.value = originalValues.reflections;
+            
+            // Make readonly
+            titleField.setAttribute('readonly', 'readonly');
+            reflectionsField.setAttribute('readonly', 'readonly');
+            
+            // Toggle buttons
+            document.getElementById('editButton').classList.remove('d-none');
+            document.getElementById('cancelButton').classList.add('d-none');
+            document.getElementById('saveButton').classList.add('d-none');
+        }
+    </script>
+</body>
+</html>

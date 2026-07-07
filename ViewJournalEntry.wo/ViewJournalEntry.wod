@@ -1,0 +1,81 @@
+FirebaseScript: OTWFirebaseScript {}
+FirebaseAuthUI: FirebaseAuthUI {}
+webFont: OTWWebFont {}
+styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
+
+AGPLFooter: AGPLFooter {}
+
+EntryForm: WOForm {
+    multipleSubmit = true;
+    name = "journalEntryForm";
+}
+
+TitleField: WOTextField {
+    value = editedTitle;
+    class = "form-control journal-title-input";
+    placeholder = "Entry Title";
+    id = "titleField";
+    readonly = "readonly";
+}
+
+ReflectionsField: WOText {
+    value = editedReflections;
+    class = "form-control journal-reflections-input";
+    rows = "8";
+    placeholder = "Add your thoughts and reflections here...";
+    id = "reflectionsField";
+    readonly = "readonly";
+}
+
+SaveAction: WOSubmitButton {
+    action = saveChanges;
+    value = "Save";
+    class = "btn btn-primary d-none";
+    id = "saveButton";
+}
+
+hasLocations: WOConditional {
+    condition = hasLocations;
+}
+
+observationMap: ObservationMap {
+    observations = observations;
+}
+
+observationLoop: WORepetition {
+    list = observations;
+    item = currentObservation;
+}
+
+observationDate: WOString {
+    value = currentObservation.captureDate;
+    dateformat = "%H:%M:%S";
+}
+
+photoImage: WOImage {
+    src = currentObservation.photoURLString;
+    alt = "Observation photo";
+    width = "100";
+}
+
+hasPhoto: WOConditional {
+    condition = currentObservation.photoURL;
+}
+
+hasBearing: WOConditional {
+    condition = hasCurrentBearing;
+}
+
+compass: Compass {
+    location = currentObservation.location;
+}
+
+deleteEntryLink: WOHyperlink {
+    action = deleteEntry;
+    class = "btn btn-danger";
+}
+
+backLink: WOHyperlink {
+    action = backToJournal;
+    class = "btn btn-secondary";
+}
