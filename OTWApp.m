@@ -254,13 +254,22 @@ extern NSDictionary* globalMime;
     [journalEntryIdAttr setAllowsNull:NO];
     [journalEntryEntity addAttribute:journalEntryIdAttr];
 
-    EOAttribute *journalEntryDateAttr = [[[EOAttribute alloc] init] autorelease];
-    [journalEntryDateAttr setName:@"date"];
-    [journalEntryDateAttr setColumnName:@"date"];
-    [journalEntryDateAttr setValueClassName:@"NSDate"];
-    [journalEntryDateAttr setExternalType:@"timestamp"];
-    [journalEntryDateAttr setAllowsNull:YES];
-    [journalEntryEntity addAttribute:journalEntryDateAttr];
+    EOAttribute *journalEntryTitleAttr = [[[EOAttribute alloc] init] autorelease];
+    [journalEntryTitleAttr setName:@"title"];
+    [journalEntryTitleAttr setColumnName:@"title"];
+    [journalEntryTitleAttr setValueClassName:@"NSString"];
+    [journalEntryTitleAttr setExternalType:@"varchar"];
+    [journalEntryTitleAttr setWidth:255];
+    [journalEntryTitleAttr setAllowsNull:YES];
+    [journalEntryEntity addAttribute:journalEntryTitleAttr];
+
+    EOAttribute *journalEntryReflectionsAttr = [[[EOAttribute alloc] init] autorelease];
+    [journalEntryReflectionsAttr setName:@"reflections"];
+    [journalEntryReflectionsAttr setColumnName:@"reflections"];
+    [journalEntryReflectionsAttr setValueClassName:@"NSString"];
+    [journalEntryReflectionsAttr setExternalType:@"text"];
+    [journalEntryReflectionsAttr setAllowsNull:YES];
+    [journalEntryEntity addAttribute:journalEntryReflectionsAttr];
 
     // Foreign key backing the observer relationship below - not a class
     // property, same reasoning as observationJournalEntryFKAttr above.
@@ -329,7 +338,7 @@ extern NSDictionary* globalMime;
     [observationEntity setClassProperties:@[observationIdAttr, captureDateAttr, photoURLStringAttr,
                                              latitudeAttr, longitudeAttr, accuracyAttr, bearingAttr,
                                              observationToJournalEntry]];
-    [journalEntryEntity setClassProperties:@[journalEntryIdAttr, journalEntryDateAttr,
+    [journalEntryEntity setClassProperties:@[journalEntryIdAttr, 
                                               journalEntryToObserver, journalEntryToObservations]];
     // Re-set (not append) Observer's class properties to include the new
     // to-many relationship alongside its original 5 attributes.

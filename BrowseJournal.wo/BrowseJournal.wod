@@ -18,34 +18,31 @@ entryLoop: WORepetition {
 }
 
 entryDate: WOString {
-    value = formattedEntryDate;
+    value = currentEntry.date;
+    dateformat = "%Y-%m-%d %H:%M";
 }
 
-observationLoop: WORepetition {
-    list = currentEntryObservations;
-    item = currentObservation;
+entryTitle: WOString {
+    value = currentEntry.title;
+    valueWhenEmpty = defaultEntryTitle;
 }
 
-observationDate: WOString {
-    value = formattedObservationDate;
+viewEntryLink: WOHyperlink {
+    action = viewEntry;
 }
 
-hasPhoto: WOConditional {
-    condition = hasCurrentPhoto;
+hasSummaryPhoto: WOConditional {
+    condition = hasSummaryPhoto;
 }
 
-photoImage: WOImage {
-    src = currentObservation.photoURLString;
-    alt = "Observation photo";
+summaryPhotoImage: WOImage {
+    src = summaryPhotoURLString;
+    alt = "Journal entry photo";
     width = "100";
 }
 
-hasBearing: WOConditional {
-    condition = hasCurrentBearing;
-}
-
-compass: Compass {
-    location = currentObservation.location;
+reflectionsSnippet: WOString {
+    value = reflectionsSnippet;
 }
 
 deleteEntryLink: WOHyperlink {

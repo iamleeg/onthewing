@@ -23,15 +23,18 @@
 @interface JournalEntry : EOCustomObject
 {
     NSString *_journalEntryId;
-    NSDate *_date;
     Observer *_observer;
     NSMutableArray *_observations;
+    NSString *_title;
+    NSString *_reflections;
 }
 
 @property (nonatomic, copy) NSString *journalEntryId;
 
-@property (nonatomic, retain) NSDate *date;
+@property (nonatomic, readonly) NSDate *date;
 @property (nonatomic, retain) Observer *observer;
 @property (nonatomic, retain) NSMutableArray *observations;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *reflections;
 
 @end

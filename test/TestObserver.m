@@ -84,7 +84,6 @@
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [entry setDate:[NSDate date]];
 
         for (NSUInteger i = 0; i < 3; i++) {
             Observation *withPhoto = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];

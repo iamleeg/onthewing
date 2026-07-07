@@ -32,9 +32,13 @@
     Observation *_currentObservation;
     PhotoStorageMover *_photoStorageMover;
     NSError *_lastError;
+    NSString *_title;
+    NSString *_reflections;
 }
 
 @property (nonatomic, retain) Observation *currentObservation;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *reflections;
 
 // Lazily defaults to a real PhotoStorageMover; inject a fake for tests.
 @property (nonatomic, retain) PhotoStorageMover *photoStorageMover;

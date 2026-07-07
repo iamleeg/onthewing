@@ -46,6 +46,8 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
 @synthesize currentObservation = _currentObservation;
 @synthesize photoStorageMover = _photoStorageMover;
 @synthesize lastError = _lastError;
+@synthesize title = _title;
+@synthesize reflections = _reflections;
 
 - (PhotoStorageMover *)photoStorageMover {
     if (_photoStorageMover == nil) {
@@ -135,7 +137,12 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
                                       editingContext:(EOEditingContext *)ec {
     JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
     [observer addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
-    [entry setDate:[[observations objectAtIndex:0] captureDate]];
+    if (self.title && self.title.length > 0) {
+        [entry setTitle:self.title];
+    }
+    if (self.reflections && self.reflections.length > 0) {
+        [entry setReflections:self.reflections];
+    }
     for (Observation *observation in observations) {
         [ec insertObject:observation];
         [entry addObject:observation toBothSidesOfRelationshipWithKey:@"observations"];
@@ -235,6 +242,8 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
     [_currentObservation release];
     [_photoStorageMover release];
     [_lastError release];
+    [_title release];
+    [_reflections release];
     [super dealloc];
 }
 

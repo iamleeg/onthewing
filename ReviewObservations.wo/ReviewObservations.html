@@ -48,11 +48,23 @@
         </tbody>
     </table>
 
+    <webobject name="JournalForm">
+    <div class="form-group" style="margin-top: 1em; margin-bottom: 1em;">
+        <label>Title</label>
+        <webobject name="TitleField" />
+    </div>
+
+    <div class="form-group" style="margin-bottom: 1em;">
+        <label>Reflections</label>
+        <webobject name="ReflectionsField" />
+    </div>
+
     <p>
-        <webobject name="saveToJournalLink">Save to Journal</webobject>
+        <webobject name="SaveToJournalSubmit" />
         <webobject name="discardLink">Discard All</webobject>
         <webobject name="backLink">Return to Main Page</webobject>
     </p>
+    </webobject>
 
     <webobject name="AGPLFooter" />
 </body>

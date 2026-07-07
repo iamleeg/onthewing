@@ -42,14 +42,17 @@
 /// The list is restricted to this user's entries, in reverse chronological order.
 - (NSArray *)journalEntries;
 - (BOOL)hasAnyEntries;
-
-// Observations belonging to the currentEntry.
+- (BOOL)hasCurrentPhoto;
+- (BOOL)hasCurrentBearing;
 - (NSArray *)currentEntryObservations;
-
-// Deletes the current entry.
 - (id)deleteEntry;
-
+- (id)viewEntry;
 - (id)backToMain;
 - (id)capture;
+
+- (NSString *)defaultEntryTitle;
+- (NSString *)reflectionsSnippet;
+- (BOOL)hasSummaryPhoto;
+- (NSString *)summaryPhotoURLString;
 
 @end

@@ -60,3 +60,22 @@ discardLink: WOHyperlink {
 }
 
 AGPLFooter: AGPLFooter {}
+
+JournalForm: WOForm {}
+
+TitleField: WOTextField {
+    value = title;
+    size = "40";
+}
+
+ReflectionsField: WOText {
+    value = reflections;
+    rows = "5";
+    cols = "40";
+}
+
+SaveToJournalSubmit: WOSubmitButton {
+    action = saveToJournal;
+    value = "Save to Journal";
+    class = "btn btn-primary";
+}

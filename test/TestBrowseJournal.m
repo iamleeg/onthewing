@@ -118,6 +118,26 @@
     XCTAssertFalse([_browse hasAnyEntries]);
 }
 
+- (void)testDefaultEntryTitle {
+    JournalEntry *entry = [[[JournalEntry alloc] init] autorelease];
+    
+    NSDateComponents *comp = [[[NSDateComponents alloc] init] autorelease];
+    [comp setYear:2026];
+    [comp setMonth:3];
+    [comp setDay:19];
+    
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    NSDate *date = [cal dateFromComponents:comp];
+    
+    Observation *obs = [[[Observation alloc] init] autorelease];
+    [obs setCaptureDate:date];
+    [entry setObservations:(NSMutableArray *)@[obs]];
+    
+    [_browse setCurrentEntry:entry];
+    
+    XCTAssertEqualObjects([_browse defaultEntryTitle], @"Nature Walk on 19/03/2026");
+}
+
 - (void)testUserWithNoEntriesReturnsEmpty {
     // A never-before-seen uid has zero rows whether or not a real DB is
     // reachable, so this is meaningful in both environments.
@@ -148,13 +168,22 @@
 
         JournalEntry *older = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [userA addObject:older toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [older setDate:[NSDate dateWithTimeIntervalSince1970:10000]];
+        Observation *olderObs = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [older addObject:olderObs toBothSidesOfRelationshipWithKey:@"observations"];
+        [olderObs setCaptureDate:[NSDate dateWithTimeIntervalSince1970:10000]];
+        
         JournalEntry *newer = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [userA addObject:newer toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [newer setDate:[NSDate dateWithTimeIntervalSince1970:20000]];
+        Observation *newerObs = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [newer addObject:newerObs toBothSidesOfRelationshipWithKey:@"observations"];
+        [newerObs setCaptureDate:[NSDate dateWithTimeIntervalSince1970:20000]];
+        
         JournalEntry *otherUsers = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [userB addObject:otherUsers toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [otherUsers setDate:[NSDate dateWithTimeIntervalSince1970:30000]];
+        Observation *otherObs = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [otherUsers addObject:otherObs toBothSidesOfRelationshipWithKey:@"observations"];
+        [otherObs setCaptureDate:[NSDate dateWithTimeIntervalSince1970:30000]];
+        
         [ec saveChanges];
 
         [s setUser:userA];
@@ -204,7 +233,6 @@
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [entry setDate:[NSDate date]];
 
         Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
         [entry addObject:o1 toBothSidesOfRelationshipWithKey:@"observations"];
@@ -256,7 +284,6 @@
 
         entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [entry setDate:[NSDate date]];
 
         Observation *obs1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
         [entry addObject:obs1 toBothSidesOfRelationshipWithKey:@"observations"];
@@ -325,7 +352,8 @@
 
         entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [entry setObserver:owner];
-        [entry setDate:[NSDate date]];
+        Observation *obs = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+        [entry addObject:obs toBothSidesOfRelationshipWithKey:@"observations"];
         [ec saveChanges];
 
         [s setUser:otherUser];

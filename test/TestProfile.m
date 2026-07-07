@@ -123,7 +123,6 @@
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
-        [entry setDate:[NSDate date]];
 
         Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
         [entry addObject:o1 toBothSidesOfRelationshipWithKey:@"observations"];

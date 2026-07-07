@@ -20,37 +20,27 @@
 
     <webobject name="hasEntries">
         <webobject name="entryLoop">
-            <section>
-                <h2><webobject name="entryDate"/></h2>
-                <table class="responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Time / Date</th>
-                            <th>Photo</th>
-                            <th>Bearing</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <webobject name="observationLoop">
-                            <tr>
-                                <td data-label="Time / Date"><webobject name="observationDate"/></td>
-                                <td data-label="Photo">
-                                    <webobject name="hasPhoto">
-                                        <webobject name="photoImage"/>
-                                    </webobject>
-                                </td>
-                                <td data-label="Bearing">
-                                    <webobject name="hasBearing">
-                                        <webobject name="compass" />
-                                    </webobject>
-                                </td>
-                            </tr>
-                        </webobject>
-                    </tbody>
-                </table>
-                <p>
-                    <webobject name="deleteEntryLink">Delete this entry</webobject>
-                </p>
+            <section class="journal-summary" style="margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #ccc;">
+                <h2>
+                    <webobject name="viewEntryLink">
+                        <webobject name="entryTitle"/>
+                    </webobject>
+                </h2>
+                <div class="summary-meta" style="color: #666; font-size: 0.9em; margin-bottom: 1em;">
+                    <webobject name="entryDate"/>
+                </div>
+                
+                <div class="summary-content" style="display: flex; gap: 1em; align-items: flex-start;">
+                    <webobject name="hasSummaryPhoto">
+                        <div class="summary-photo">
+                            <webobject name="summaryPhotoImage"/>
+                        </div>
+                    </webobject>
+                    
+                    <div class="summary-text" style="font-style: italic;">
+                        <webobject name="reflectionsSnippet"/>
+                    </div>
+                </div>
             </section>
         </webobject>
     </webobject>

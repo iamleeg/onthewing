@@ -23,9 +23,10 @@
 @implementation JournalEntry
 
 @synthesize journalEntryId = _journalEntryId;
-@synthesize date = _date;
 @synthesize observer = _observer;
 @synthesize observations = _observations;
+@synthesize title = _title;
+@synthesize reflections = _reflections;
 
 - (void)setJournalEntryId:(NSString *)journalEntryId {
     [self willChange];
@@ -33,10 +34,9 @@
     _journalEntryId = [journalEntryId copy];
 }
 
-- (void)setDate:(NSDate *)date {
-    [self willChange];
-    [_date release];
-    _date = [date retain];
+
+- (NSDate *)date {
+    return [[[[self observations] sortedArrayUsingSelector:@selector(compareChronologically:)] firstObject] captureDate];
 }
 
 - (void)setObserver:(Observer *)observer {
@@ -51,6 +51,18 @@
     _observations = [observations retain];
 }
 
+- (void)setTitle:(NSString *)title {
+    [self willChange];
+    [_title release];
+    _title = [title copy];
+}
+
+- (void)setReflections:(NSString *)reflections {
+    [self willChange];
+    [_reflections release];
+    _reflections = [reflections copy];
+}
+
 - (void)awakeFromInsertionInEditingContext:(EOEditingContext *)editingContext {
     [super awakeFromInsertionInEditingContext:editingContext];
     if ([self journalEntryId] == nil) {
@@ -58,11 +70,28 @@
     }
 }
 
+- (NSException *)validateForSave {
+    NSException *exception = [super validateForSave];
+    if (exception != nil) {
+        return exception;
+    }
+    
+    NSArray *obs = [self observations];
+    if (obs == nil || [obs count] == 0) {
+        return [NSException exceptionWithName:@"EOValidationException"
+                                       reason:@"A JournalEntry must have at least one observation."
+                                     userInfo:nil];
+    }
+    
+    return nil;
+}
+
 - (void)dealloc {
     [_journalEntryId release];
-    [_date release];
     [_observer release];
     [_observations release];
+    [_title release];
+    [_reflections release];
     [super dealloc];
 }
 

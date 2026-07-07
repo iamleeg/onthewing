@@ -28,6 +28,7 @@
 #import "Observation.h"
 #import "ObservationLocation.h"
 #import "PhotoStorageMover.h"
+#import "ViewJournalEntry.h"
 #import "OTWFirebaseStorageURL.h"
 #import <EOControl/EOControl.h>
 
@@ -55,31 +56,14 @@
     return [[self journalEntries] count] > 0;
 }
 
-- (NSString *)formattedEntryDate {
-    return [self formattedDate:[self.currentEntry date]];
-}
 
-- (NSString *)formattedObservationDate {
-    return [self formattedDate:[self.currentObservation captureDate]];
-}
-
-- (NSString *)formattedDate:(NSDate *)date {
-    if (date == nil) {
-        return @"";
-    }
-    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
-    return [formatter stringFromDate:date];
-}
 
 - (BOOL)hasCurrentPhoto {
     return [self.currentObservation photoURL] != nil;
 }
 
 - (BOOL)hasCurrentBearing {
-    return (self.currentObservation != nil &&
-            [self.currentObservation location] != nil &&
-            [[self.currentObservation location] bearing] != nil);
+    return [[[self currentObservation] location] bearing] != nil;
 }
 
 - (NSArray *)currentEntryObservations {
@@ -121,6 +105,47 @@
 
     self.currentEntry = nil;
     return self;
+}
+
+- (id)viewEntry {
+    ViewJournalEntry *nextPage = (ViewJournalEntry *)[self pageWithName:@"ViewJournalEntry"];
+    [nextPage setCurrentEntry:self.currentEntry];
+    return nextPage;
+}
+
+- (NSString *)defaultEntryTitle {
+    NSDate *date = [self.currentEntry date];
+    if (date) {
+        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+        [formatter setDateFormat:@"dd/MM/yyyy"];
+        return [NSString stringWithFormat:@"Nature Walk on %@", [formatter stringFromDate:date]];
+    }
+    
+    return @"Nature Walk";
+}
+
+- (NSString *)reflectionsSnippet {
+    NSString *reflections = [self.currentEntry reflections];
+    if (reflections && [reflections length] > 0) {
+        if ([reflections length] > 100) {
+            return [NSString stringWithFormat:@"%@...", [reflections substringToIndex:97]];
+        }
+        return reflections;
+    }
+    return @"";
+}
+
+- (BOOL)hasSummaryPhoto {
+    return [self summaryPhotoURLString] != nil;
+}
+
+- (NSString *)summaryPhotoURLString {
+    for (Observation *obs in [self currentEntryObservations]) {
+        if ([obs photoURL] != nil) {
+            return [obs photoURLString];
+        }
+    }
+    return nil;
 }
 
 - (id)backToMain {

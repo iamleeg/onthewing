@@ -32,8 +32,11 @@
 - (void)testDatePropertySetting {
     JournalEntry *entry = [[JournalEntry alloc] init];
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:10000];
-
-    [entry setDate:date];
+    
+    Observation *obs = [[Observation alloc] init];
+    [obs setCaptureDate:date];
+    [entry setObservations:(NSMutableArray *)@[obs]];
+    [obs release];
 
     XCTAssertEqualObjects([entry date], date);
     [entry release];
@@ -65,6 +68,49 @@
     [entry release];
 }
 
+- (void)testTitlePropertySetting {
+    JournalEntry *entry = [[JournalEntry alloc] init];
+    NSString *title = @"Morning Walk";
+
+    [entry setTitle:title];
+
+    XCTAssertEqualObjects([entry title], title);
+    [entry release];
+}
+
+- (void)testReflectionsPropertySetting {
+    JournalEntry *entry = [[JournalEntry alloc] init];
+    NSString *reflections = @"Saw a heron today.";
+
+    [entry setReflections:reflections];
+
+    XCTAssertEqualObjects([entry reflections], reflections);
+    [entry release];
+}
+
+- (void)testValidateForSaveRequiresObservation {
+    JournalEntry *entry = [[JournalEntry alloc] init];
+    
+    // No observations set
+    NSException *ex1 = [entry validateForSave];
+    XCTAssertNotNil(ex1);
+    XCTAssertEqualObjects([ex1 name], @"EOValidationException");
+    
+    // Empty observations array
+    [entry setObservations:[NSMutableArray array]];
+    NSException *ex2 = [entry validateForSave];
+    XCTAssertNotNil(ex2);
+    
+    // One observation
+    Observation *obs = [[Observation alloc] init];
+    [entry setObservations:(NSMutableArray *)@[obs]];
+    NSException *ex3 = [entry validateForSave];
+    XCTAssertNil(ex3);
+    
+    [obs release];
+    [entry release];
+}
+
 // Diagnostic for the libs-gdl2 array-fault bug ("Resolve a circular loop in
 // faulting to-many relationships", vendored-fixes branch): fetches an
 // Observer by uid in a fresh editing context (so its relationships start as
@@ -85,10 +131,9 @@
 
         JournalEntry *entry = [ec1 createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [entry setObserver:user];
-        [entry setDate:[NSDate date]];
 
         Observation *observation = [ec1 createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [observation setJournalEntry:entry];
+        [entry addObject:observation toBothSidesOfRelationshipWithKey:@"observations"];
         [observation setCaptureDate:[NSDate date]];
 
         [ec1 saveChanges];
