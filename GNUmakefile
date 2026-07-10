@@ -116,3 +116,14 @@ internal-check:: OTWTests
 
 podman-check:
 	podman build --progress=plain --target builder -f Containerfile .
+
+test-e2e:
+	skaffold run
+	kubectl wait --for=condition=available --timeout=60s deployment/onthewing
+	kubectl port-forward service/onthewing-svc 8080:80 & \
+	PF_PID=$$!; \
+	npm run test:e2e; \
+	kill $$PF_PID || true
+
+test-e2e-cluster:
+	./test/e2e/run-in-cluster.sh

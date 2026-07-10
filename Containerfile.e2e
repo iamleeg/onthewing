@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/playwright:v1.61.1-jammy
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the test infrastructure
+COPY test/e2e ./test/e2e
+COPY cucumber.js ./
+COPY tsconfig.json ./
+
+# Set environment variables for the tests
+ENV APP_URL=http://onthewing-svc
+
+# Command to run the tests
+CMD ["npm", "run", "test:e2e"]
