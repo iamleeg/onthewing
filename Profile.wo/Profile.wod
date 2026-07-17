@@ -4,6 +4,8 @@ webFont: OTWWebFont {}
 
 styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
 
+FlashMessage: FlashMessage {}
+
 hasAvatar: WOConditional {
     condition = hasAvatar;
 }

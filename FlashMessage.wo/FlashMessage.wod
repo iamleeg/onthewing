@@ -1,0 +1,12 @@
+HasMessage: WOConditional {
+    condition = hasMessage;
+}
+
+MessageContainer: WOGenericContainer {
+    elementName = "div";
+    class = messageClass;
+}
+
+MessageText: WOString {
+    value = messageText;
+}

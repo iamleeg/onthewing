@@ -307,6 +307,29 @@ footer {
     font-size: 0.875rem;
 }
 
+.flash-message {
+    padding: 0.65rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    border: 1px solid transparent;
+}
+.flash-error {
+    background-color: rgba(211, 47, 47, 0.08);
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+.flash-success {
+    background-color: rgba(76, 175, 80, 0.08);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+.flash-info {
+    background-color: rgba(98, 121, 184, 0.08);
+    border-color: var(--color-glaucous);
+    color: var(--color-glaucous);
+}
+
 .user-profile-widget {
     display: inline-flex;
     align-items: center;

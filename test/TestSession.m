@@ -18,6 +18,7 @@
 
 #import "Session.h"
 #import "OTWApp.h"
+#import "OTWFlashMessage.h"
 
 #import "Observation.h"
 #import "Observer.h"
@@ -102,6 +103,38 @@
   } else {
     XCTAssertNil(error);
   }
+}
+
+- (void)testSetFlashMessageAndConsumeBehaveAsReadOnce {
+  OTWFlashMessage *msg = [[OTWFlashMessage alloc] initWithStringValue:@"Hello" severityLevel:OTWFlashMessageSeverityInfo];
+  [_s setFlashMessage:msg];
+  [msg release];
+
+  OTWFlashMessage *consumed1 = [_s consumeFlashMessage];
+  XCTAssertNotNil(consumed1);
+  XCTAssertEqualObjects(consumed1.stringValue, @"Hello");
+  XCTAssertEqual(consumed1.severityLevel, OTWFlashMessageSeverityInfo);
+
+  OTWFlashMessage *consumed2 = [_s consumeFlashMessage];
+  XCTAssertNil(consumed2);
+}
+
+- (void)testSerializationOfFlashMessage {
+  OTWFlashMessage *msg = [[OTWFlashMessage alloc] initWithStringValue:@"Error" severityLevel:OTWFlashMessageSeverityError];
+  [_s setFlashMessage:msg];
+  [msg release];
+
+  NSDictionary *state = [_s stateDictionary];
+  
+  Session *s2 = [[Session alloc] init];
+  [s2 restoreFromStateDictionary:state];
+
+  OTWFlashMessage *restored = [s2 consumeFlashMessage];
+  XCTAssertNotNil(restored);
+  XCTAssertEqualObjects(restored.stringValue, @"Error");
+  XCTAssertEqual(restored.severityLevel, OTWFlashMessageSeverityError);
+  
+  [s2 release];
 }
 
 @end

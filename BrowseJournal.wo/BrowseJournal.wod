@@ -1,5 +1,6 @@
 FirebaseScript: OTWFirebaseScript {}
 FirebaseAuthUI: FirebaseAuthUI {}
+FlashMessage: FlashMessage {}
 webFont: OTWWebFont {}
 styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
 

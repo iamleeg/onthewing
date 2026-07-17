@@ -25,6 +25,7 @@
 #import "Observation.h"
 #import "ObservationLocation.h"
 #import "Session.h"
+#import "OTWFlashMessage.h"
 #import "Observer.h"
 #import "JournalEntry.h"
 #import "PhotoStorageMover.h"
@@ -45,7 +46,6 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
 
 @synthesize currentObservation = _currentObservation;
 @synthesize photoStorageMover = _photoStorageMover;
-@synthesize lastError = _lastError;
 @synthesize title = _title;
 @synthesize reflections = _reflections;
 
@@ -169,9 +169,10 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
     Observer *user = [session saveObserverWithError:&observerError];
     if (user == nil) {
         NSLog(@"Cannot save journal entry: %@", observerError);
-        self.lastError = observerError ?: [NSError errorWithDomain:kReviewObservationsErrorDomain
-                                                                 code:ReviewObservationsErrorObserverNotPersisted
-                                                             userInfo:@{NSLocalizedDescriptionKey: @"Could not save your journal entry. Please try again."}];
+        NSString *errMsg = observerError ? [observerError localizedDescription] : @"Could not save your journal entry. Please try again.";
+        OTWFlashMessage *flash = [[OTWFlashMessage alloc] initWithStringValue:errMsg severityLevel:OTWFlashMessageSeverityError];
+        [session setFlashMessage:flash];
+        [flash release];
         return self;
     }
 
@@ -182,13 +183,11 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
         }
     }
     if (newPhotoCount > [user remainingPhotoQuotaInEditingContext:ec]) {
-        NSError *quotaError = [NSError errorWithDomain:kReviewObservationsErrorDomain
-                                                    code:ReviewObservationsErrorPhotoQuotaExceeded
-                                                userInfo:@{NSLocalizedDescriptionKey:
-                                                    [NSString stringWithFormat:@"You've reached the %lu-photo limit for free accounts. Upgrade your account to save more.",
-                                                     (unsigned long)kFreeTierPhotoLimit]}];
-        NSLog(@"Cannot save journal entry: %@", quotaError);
-        self.lastError = quotaError;
+        NSString *errMsg = [NSString stringWithFormat:@"You've reached the %lu-photo limit for free accounts. Upgrade your account to save more.", (unsigned long)kFreeTierPhotoLimit];
+        NSLog(@"Cannot save journal entry: %@", errMsg);
+        OTWFlashMessage *flash = [[OTWFlashMessage alloc] initWithStringValue:errMsg severityLevel:OTWFlashMessageSeverityError];
+        [session setFlashMessage:flash];
+        [flash release];
         return self;
     }
 
@@ -207,9 +206,9 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
     [ec unlock];
 
     if (entry == nil) {
-        self.lastError = [NSError errorWithDomain:kReviewObservationsErrorDomain
-                                              code:ReviewObservationsErrorSaveFailed
-                                          userInfo:@{NSLocalizedDescriptionKey: @"Could not save your journal entry. Please try again."}];
+        OTWFlashMessage *flash = [[OTWFlashMessage alloc] initWithStringValue:@"Could not save your journal entry. Please try again." severityLevel:OTWFlashMessageSeverityError];
+        [session setFlashMessage:flash];
+        [flash release];
         return self;
     }
 
@@ -241,7 +240,6 @@ typedef NS_ENUM(NSInteger, ReviewObservationsErrorCode) {
 - (void)dealloc {
     [_currentObservation release];
     [_photoStorageMover release];
-    [_lastError release];
     [_title release];
     [_reflections release];
     [super dealloc];

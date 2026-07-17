@@ -19,6 +19,7 @@
 #import "Session.h"
 #import "Observer.h"
 #import "Observation.h"
+#import "OTWFlashMessage.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
@@ -34,6 +35,7 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 
 @synthesize locationPermissionState = _locationPermissionState;
 @synthesize user = _user;
+@synthesize flashMessage = _flashMessage;
 
 - (id)init {
   self = [super init];
@@ -43,6 +45,7 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
     _locationPermissionState = LocationPermissionUndetermined;
     _unreviewedObservations = [[NSMutableArray array] retain];
     _user = nil;
+    _flashMessage = nil;
   }
   return self;
 }
@@ -57,6 +60,12 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 
 - (void)removeObservationForReview:(Observation *)observation {
   [_unreviewedObservations removeObject: observation];
+}
+
+- (OTWFlashMessage *)consumeFlashMessage {
+  OTWFlashMessage *msg = [[_flashMessage retain] autorelease];
+  self.flashMessage = nil;
+  return msg;
 }
 
 - (void)removeAllObservationsForReview {
@@ -127,6 +136,7 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 - (void)dealloc {
   [_user release];
   [_unreviewedObservations release];
+  [_flashMessage release];
   [super dealloc];
 }
 
@@ -149,6 +159,9 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
         [obsArray addObject:obsDict];
     }
     [dict setObject:obsArray forKey:@"unreviewedObservations"];
+    if (_flashMessage) {
+        [dict setObject:[_flashMessage dictionaryRepresentation] forKey:@"flashMessage"];
+    }
     return dict;
 }
 
@@ -178,6 +191,12 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
             [self addObservationForReview:obs];
             [obs release];
         }
+    }
+    NSDictionary *flashDict = [dict objectForKey:@"flashMessage"];
+    if (flashDict) {
+        OTWFlashMessage *msg = [[OTWFlashMessage alloc] initWithDictionary:flashDict];
+        [self setFlashMessage:msg];
+        [msg release];
     }
 }
 @end

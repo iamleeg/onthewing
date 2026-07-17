@@ -31,7 +31,6 @@
 @interface ReviewObservations : GSWComponent {
     Observation *_currentObservation;
     PhotoStorageMover *_photoStorageMover;
-    NSError *_lastError;
     NSString *_title;
     NSString *_reflections;
 }
@@ -42,12 +41,6 @@
 
 // Lazily defaults to a real PhotoStorageMover; inject a fake for tests.
 @property (nonatomic, retain) PhotoStorageMover *photoStorageMover;
-
-// Set when -saveToJournal fails (unpersistable observer, DB error, or
-// over the free-tier photo quota). Not yet surfaced in the UI - once flash
-// messages exist (onthewing-1yu), a consumer can read
-// lastError.localizedDescription from here.
-@property (nonatomic, retain) NSError *lastError;
 
 - (NSArray *)sortedObservations;
 - (id)deleteObservation;

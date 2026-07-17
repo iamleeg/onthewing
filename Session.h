@@ -27,20 +27,25 @@
 @class Observation;
 @class Observer;
 @class EOEditingContext;
+@class OTWFlashMessage;
 
 @interface Session : WOSession {
     LocationPermissionState _locationPermissionState;
     NSMutableArray *_unreviewedObservations;
     Observer *_user;
+    OTWFlashMessage *_flashMessage;
 }
 
 @property (nonatomic, assign) LocationPermissionState locationPermissionState;
 @property (nonatomic, readonly) NSArray *unreviewedObservations;
 @property (nonatomic, retain) Observer *user;
 @property (nonatomic, readonly) EOEditingContext *editingContext;
+@property (nonatomic, retain) OTWFlashMessage *flashMessage;
 
 - (NSDictionary *)stateDictionary;
 - (void)restoreFromStateDictionary:(NSDictionary *)dict;
+
+- (OTWFlashMessage *)consumeFlashMessage;
 
 - (void)addObservationForReview:(Observation *)observation;
 - (void)removeObservationForReview:(Observation *)observation;

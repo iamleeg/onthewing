@@ -312,7 +312,9 @@
 
     XCTAssertEqualObjects(nextPage, _review);
     XCTAssertEqual([[s unreviewedObservations] count], (NSUInteger)51);
-    XCTAssertNotNil([_review lastError]);
+    
+    id flashMsgObj = [s consumeFlashMessage];
+    XCTAssertNotNil(flashMsgObj);
 }
 
 @end
