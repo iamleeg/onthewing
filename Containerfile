@@ -13,6 +13,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libxml2-dev \
     libffi-dev \
     libgnutls28-dev \
+    libhiredis-dev \
     ca-certificates \
     nodejs \
     npm \
@@ -90,6 +91,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gnustep-base-runtime \
     libpq5 \
     libxml2 \
+    libhiredis-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy built GNUstep libraries (GSWeb and potentially others installed to /usr/local)

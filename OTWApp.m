@@ -27,6 +27,7 @@
 #import "Observer.h"
 #import "Observation.h"
 #import "JournalEntry.h"
+#import "OTWRedisSessionStore.h"
 
 @implementation OTWApp
 
@@ -452,6 +453,18 @@ extern NSDictionary* globalMime;
     [self initializeDatabase];
   }
   return self;
+}
+
+- (WOSessionStore *)createSessionStore {
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    NSString *redisHost = [[processInfo environment] objectForKey:@"REDIS_HOST"];
+    if (redisHost) {
+        NSString *redisPortStr = [[processInfo environment] objectForKey:@"REDIS_PORT"];
+        int redisPort = redisPortStr ? [redisPortStr intValue] : 6379;
+        OTWRedisSessionStore *store = [[OTWRedisSessionStore alloc] initWithHost:redisHost port:redisPort];
+        return [store autorelease];
+    }
+    return [super createSessionStore];
 }
 
 + (NSNumber *)sessionTimeOut {

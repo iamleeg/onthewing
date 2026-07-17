@@ -52,6 +52,8 @@ spec:
               value: "onthewing-eedce.firebasestorage.app"
             - name: GCS_SERVICE_ACCOUNT_KEY_PATH
               value: "/secrets/gcs/key.json"
+            - name: REDIS_HOST
+              value: "redis-master"
           volumeMounts:
             - name: gcs-storage-credentials-vol
               mountPath: /secrets/gcs

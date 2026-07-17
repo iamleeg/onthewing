@@ -18,6 +18,7 @@
 
 #import "Session.h"
 #import "Observer.h"
+#import "Observation.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
@@ -127,5 +128,56 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
   [_user release];
   [_unreviewedObservations release];
   [super dealloc];
+}
+
+- (NSDictionary *)stateDictionary {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSNumber numberWithInteger:_locationPermissionState] forKey:@"locationPermissionState"];
+    if (_user && [_user uid]) {
+        [dict setObject:[_user uid] forKey:@"userUid"];
+    }
+    NSMutableArray *obsArray = [NSMutableArray array];
+    for (Observation *obs in _unreviewedObservations) {
+        NSMutableDictionary *obsDict = [NSMutableDictionary dictionary];
+        if (obs.observationId) [obsDict setObject:obs.observationId forKey:@"observationId"];
+        if (obs.captureDate) [obsDict setObject:obs.captureDate forKey:@"captureDate"];
+        if (obs.photoURLString) [obsDict setObject:obs.photoURLString forKey:@"photoURLString"];
+        if (obs.latitude) [obsDict setObject:obs.latitude forKey:@"latitude"];
+        if (obs.longitude) [obsDict setObject:obs.longitude forKey:@"longitude"];
+        if (obs.accuracy) [obsDict setObject:obs.accuracy forKey:@"accuracy"];
+        if (obs.bearing) [obsDict setObject:obs.bearing forKey:@"bearing"];
+        [obsArray addObject:obsDict];
+    }
+    [dict setObject:obsArray forKey:@"unreviewedObservations"];
+    return dict;
+}
+
+- (void)restoreFromStateDictionary:(NSDictionary *)dict {
+    if ([dict objectForKey:@"locationPermissionState"]) {
+        _locationPermissionState = [[dict objectForKey:@"locationPermissionState"] integerValue];
+    }
+    if ([dict objectForKey:@"userUid"]) {
+        NSString *uid = [dict objectForKey:@"userUid"];
+        // We restore an unpersisted Observer with the UID, saveObserverWithError: will fetch it from DB when needed.
+        Observer *obs = [[Observer alloc] init];
+        [obs setUid:uid];
+        [self setUser:obs];
+        [obs release];
+    }
+    NSArray *obsArray = [dict objectForKey:@"unreviewedObservations"];
+    if (obsArray) {
+        for (NSDictionary *obsDict in obsArray) {
+            Observation *obs = [[Observation alloc] init];
+            if ([obsDict objectForKey:@"observationId"]) obs.observationId = [obsDict objectForKey:@"observationId"];
+            if ([obsDict objectForKey:@"captureDate"]) obs.captureDate = [obsDict objectForKey:@"captureDate"];
+            if ([obsDict objectForKey:@"photoURLString"]) obs.photoURLString = [obsDict objectForKey:@"photoURLString"];
+            if ([obsDict objectForKey:@"latitude"]) obs.latitude = [obsDict objectForKey:@"latitude"];
+            if ([obsDict objectForKey:@"longitude"]) obs.longitude = [obsDict objectForKey:@"longitude"];
+            if ([obsDict objectForKey:@"accuracy"]) obs.accuracy = [obsDict objectForKey:@"accuracy"];
+            if ([obsDict objectForKey:@"bearing"]) obs.bearing = [obsDict objectForKey:@"bearing"];
+            [self addObservationForReview:obs];
+            [obs release];
+        }
+    }
 }
 @end

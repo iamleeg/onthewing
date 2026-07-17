@@ -39,6 +39,9 @@
 @property (nonatomic, retain) Observer *user;
 @property (nonatomic, readonly) EOEditingContext *editingContext;
 
+- (NSDictionary *)stateDictionary;
+- (void)restoreFromStateDictionary:(NSDictionary *)dict;
+
 - (void)addObservationForReview:(Observation *)observation;
 - (void)removeObservationForReview:(Observation *)observation;
 - (void)removeAllObservationsForReview;
