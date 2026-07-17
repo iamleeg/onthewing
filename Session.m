@@ -34,7 +34,6 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 @implementation Session
 
 @synthesize locationPermissionState = _locationPermissionState;
-@synthesize user = _user;
 @synthesize flashMessage = _flashMessage;
 
 - (id)init {
@@ -54,12 +53,44 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
   return [self defaultEditingContext];
 }
 
+- (void)_tryPersistPendingObservation:(Observation *)observation {
+    NSError *error = nil;
+    Observer *persistedUser = [self saveObserverWithError:&error];
+    if (persistedUser) {
+        EOEditingContext *ec = [self editingContext];
+        if ([observation editingContext] == nil) {
+            if (!observation.observationId) {
+                observation.observationId = [[NSUUID UUID] UUIDString];
+            }
+            [ec insertObject:observation];
+        }
+        [observation setObserver:persistedUser];
+        NS_DURING {
+            [ec saveChanges];
+        } NS_HANDLER {
+            NSLog(@"Failed to save pending observation: %@", localException);
+        } NS_ENDHANDLER;
+    }
+}
+
 - (void)addObservationForReview:(Observation *)observation {
-  [_unreviewedObservations addObject: observation];
+  if (![_unreviewedObservations containsObject:observation]) {
+      [_unreviewedObservations addObject: observation];
+  }
+  [self _tryPersistPendingObservation:observation];
 }
 
 - (void)removeObservationForReview:(Observation *)observation {
   [_unreviewedObservations removeObject: observation];
+  if ([observation editingContext] != nil && observation.journalEntry == nil) {
+      EOEditingContext *ec = [observation editingContext];
+      [ec deleteObject:observation];
+      NS_DURING {
+          [ec saveChanges];
+      } NS_HANDLER {
+          NSLog(@"Failed to delete pending observation: %@", localException);
+      } NS_ENDHANDLER;
+  }
 }
 
 - (OTWFlashMessage *)consumeFlashMessage {
@@ -69,7 +100,22 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 }
 
 - (void)removeAllObservationsForReview {
-  [_unreviewedObservations removeAllObjects];
+    EOEditingContext *ec = [self editingContext];
+    BOOL deletedAny = NO;
+    for (Observation *obs in _unreviewedObservations) {
+        if ([obs editingContext] != nil && obs.journalEntry == nil) {
+            [ec deleteObject:obs];
+            deletedAny = YES;
+        }
+    }
+    [_unreviewedObservations removeAllObjects];
+    if (deletedAny) {
+        NS_DURING {
+            [ec saveChanges];
+        } NS_HANDLER {
+            NSLog(@"Failed to delete all pending observations: %@", localException);
+        } NS_ENDHANDLER;
+    }
 }
 
 - (Observer *)saveObserverWithError:(NSError **)error {
@@ -127,6 +173,55 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 
   [self setUser:persisted];
   return persisted;
+}
+
+- (Observer *)user {
+    return [[_user retain] autorelease];
+}
+
+- (void)setUser:(Observer *)user {
+    [_user autorelease];
+    _user = [user retain];
+    if (_user && [_user uid]) {
+        [self _loadPendingObservations];
+    }
+}
+
+- (void)_loadPendingObservations {
+    EOEditingContext *ec = [self editingContext];
+    if ([ec globalIDForObject:_user] == nil) return;
+
+    NSDate *cutoffDate = [NSDate dateWithTimeIntervalSinceNow:-86400];
+    
+    EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@ and journalEntry = nil", [_user uid]];
+    EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation" qualifier:qual sortOrderings:nil];
+    NSArray *pending = [ec objectsWithFetchSpecification:fetchSpec];
+    
+    BOOL changed = NO;
+    for (Observation *obs in pending) {
+        if ([obs.captureDate compare:cutoffDate] == NSOrderedAscending) {
+            [ec deleteObject:obs];
+            changed = YES;
+        } else {
+            BOOL exists = NO;
+            for (Observation *existing in _unreviewedObservations) {
+                if ([existing.observationId isEqualToString:obs.observationId]) {
+                    exists = YES;
+                    break;
+                }
+            }
+            if (!exists) {
+                [_unreviewedObservations addObject:obs];
+            }
+        }
+    }
+    if (changed) {
+        NS_DURING {
+            [ec saveChanges];
+        } NS_HANDLER {
+            NSLog(@"Failed to purge expired observations: %@", localException);
+        } NS_ENDHANDLER;
+    }
 }
 
 - (NSArray *)unreviewedObservations {
@@ -188,7 +283,17 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
             if ([obsDict objectForKey:@"longitude"]) obs.longitude = [obsDict objectForKey:@"longitude"];
             if ([obsDict objectForKey:@"accuracy"]) obs.accuracy = [obsDict objectForKey:@"accuracy"];
             if ([obsDict objectForKey:@"bearing"]) obs.bearing = [obsDict objectForKey:@"bearing"];
-            [self addObservationForReview:obs];
+            BOOL alreadyExists = NO;
+            for (Observation *existing in _unreviewedObservations) {
+                if ([existing.observationId isEqualToString:obs.observationId]) {
+                    alreadyExists = YES;
+                    break;
+                }
+            }
+            if (!alreadyExists) {
+                [_unreviewedObservations addObject:obs];
+                [self _tryPersistPendingObservation:obs];
+            }
             [obs release];
         }
     }

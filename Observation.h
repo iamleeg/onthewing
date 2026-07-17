@@ -20,6 +20,7 @@
 
 @class ObservationLocation;
 @class JournalEntry;
+@class Observer;
 
 @interface Observation : EOCustomObject
 {
@@ -28,6 +29,7 @@
     ObservationLocation *_location;
     NSURL *_photoURL;
     JournalEntry *_journalEntry;
+    Observer *_observer;
 }
 
 @property (nonatomic, copy) NSString *observationId;
@@ -39,6 +41,9 @@
 // The JournalEntry this Observation belongs to, once saved (nil for pending,
 // unreviewed Observations - see Session.h). Inverse of JournalEntry.observations.
 @property (nonatomic, retain) JournalEntry *journalEntry;
+
+// The Observer this observation belongs to, even before it is journaled.
+@property (nonatomic, retain) Observer *observer;
 
 // EOF persistence plumbing: photoURL/location aren't natively storable value
 // classes for GDL2's Postgres adaptor (no NSURL support, and location's 4

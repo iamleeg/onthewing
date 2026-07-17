@@ -148,6 +148,7 @@
         [ec unlock];
     }
     [session setUser:nil];
+    [session terminate];
     return [self pageWithName:@"Main"];
 }
 

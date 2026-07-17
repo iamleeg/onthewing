@@ -19,6 +19,7 @@ extern NSUInteger const kFreeTierPhotoLimit;
     NSString *_avatarUrl;
     NSString *_token;
     NSMutableArray *_journalEntries;
+    NSMutableArray *_observations;
 }
 
 @property (nonatomic, copy) NSString *uid;
@@ -29,6 +30,9 @@ extern NSUInteger const kFreeTierPhotoLimit;
 
 // Inverse of JournalEntry.observer.
 @property (nonatomic, retain) NSMutableArray *journalEntries;
+
+// Pending observations (inverse of Observation.observer).
+@property (nonatomic, retain) NSMutableArray *observations;
 
 - (id)initWithUid:(NSString *)uid
              name:(NSString *)name

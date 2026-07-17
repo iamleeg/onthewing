@@ -4,6 +4,16 @@
 
 @implementation OTWRedisSessionStore
 
+static NSCache *gSessionCache = nil;
+
++ (void)initialize {
+    if (self == [OTWRedisSessionStore class]) {
+        gSessionCache = [[NSCache alloc] init];
+        // Limit to 1000 sessions in memory to prevent unbounded growth
+        [gSessionCache setCountLimit:1000];
+    }
+}
+
 - (instancetype)initWithHost:(NSString *)host port:(int)port {
     if ((self = [super init])) {
         _redisHost = [host copy];
@@ -42,13 +52,21 @@
         }
         redisFree(c);
     }
+    
+    [gSessionCache removeObjectForKey:aSessionID];
+    
     return nil; // super class expects nil here typically or the old session; returning nil is safe for GSWSessionStore.
 }
 
 - (WOSession *)restoreSessionWithID:(NSString *)aSessionID request:(WORequest *)aRequest {
     if (!aSessionID) return nil;
     
-    Session *session = nil;
+    Session *session = [[gSessionCache objectForKey:aSessionID] retain];
+    
+    if (session) {
+        return [session autorelease];
+    }
+    
     redisContext *c = [self _connect];
     if (c) {
         redisReply *reply = redisCommand(c, "GET session:%s", [aSessionID UTF8String]);
@@ -60,6 +78,8 @@
                     session = [[[Session alloc] init] autorelease];
                     [session setSessionID:aSessionID];
                     [session restoreFromStateDictionary:dict];
+                    
+                    [gSessionCache setObject:session forKey:aSessionID];
                 }
             } @catch (NSException *e) {
                 NSLog(@"OTWRedisSessionStore: Failed to unarchive session %@: %@", aSessionID, e);
@@ -106,6 +126,8 @@
             redisFree(c);
         }
     }
+    
+    [gSessionCache setObject:session forKey:sessionID];
 }
 
 @end

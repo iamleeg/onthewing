@@ -117,6 +117,25 @@
   XCTAssertNotEqual([rel deleteRule], (EODeleteRule)EODeleteRuleCascade);
 }
 
+- (void)testObservationObserverRelationshipIsToOne {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *observationEntity = [model entityNamed:@"Observation"];
+  EORelationship *rel = [observationEntity relationshipNamed:@"observer"];
+  XCTAssertNotNil(rel);
+  XCTAssertFalse([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"Observer");
+}
+
+- (void)testObserverObservationsRelationshipIsToManyCascade {
+  EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+  EOEntity *observerEntity = [model entityNamed:@"Observer"];
+  EORelationship *rel = [observerEntity relationshipNamed:@"observations"];
+  XCTAssertNotNil(rel);
+  XCTAssertTrue([rel isToMany]);
+  XCTAssertEqualObjects([[rel destinationEntity] name], @"Observation");
+  XCTAssertEqual([rel deleteRule], (EODeleteRule)EODeleteRuleCascade);
+}
+
 - (void)testObservationAndJournalEntryHavePrimaryKeys {
   EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
   EOEntity *observationEntity = [model entityNamed:@"Observation"];

@@ -234,8 +234,17 @@ extern NSDictionary* globalMime;
     [observationJournalEntryFKAttr setValueClassName:@"NSString"];
     [observationJournalEntryFKAttr setExternalType:@"varchar"];
     [observationJournalEntryFKAttr setWidth:64];
-    [observationJournalEntryFKAttr setAllowsNull:NO];
+    [observationJournalEntryFKAttr setAllowsNull:YES];
     [observationEntity addAttribute:observationJournalEntryFKAttr];
+
+    EOAttribute *observationObserverFKAttr = [[[EOAttribute alloc] init] autorelease];
+    [observationObserverFKAttr setName:@"observerForeignKey"];
+    [observationObserverFKAttr setColumnName:@"observer_uid"];
+    [observationObserverFKAttr setValueClassName:@"NSString"];
+    [observationObserverFKAttr setExternalType:@"varchar"];
+    [observationObserverFKAttr setWidth:128];
+    [observationObserverFKAttr setAllowsNull:NO]; // Must belong to an observer
+    [observationEntity addAttribute:observationObserverFKAttr];
 
     [observationEntity setPrimaryKeyAttributes:@[observationIdAttr]];
     [observationEntity setAttributesUsedForLocking:@[observationIdAttr]];
@@ -300,6 +309,16 @@ extern NSDictionary* globalMime;
     [observationToJournalEntry addJoin:observationToJournalEntryJoin];
     [observationEntity addRelationship:observationToJournalEntry];
 
+    EORelationship *observationToObserver = [[[EORelationship alloc] init] autorelease];
+    [observationToObserver setName:@"observer"];
+    [observationToObserver setEntity:observationEntity];
+    [observationToObserver setToMany:NO];
+    EOJoin *observationToObserverJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:observationObserverFKAttr
+                            destinationAttribute:uidAttr] autorelease];
+    [observationToObserver addJoin:observationToObserverJoin];
+    [observationEntity addRelationship:observationToObserver];
+
     EORelationship *journalEntryToObservations = [[[EORelationship alloc] init] autorelease];
     [journalEntryToObservations setName:@"observations"];
     [journalEntryToObservations setEntity:journalEntryEntity];
@@ -336,15 +355,27 @@ extern NSDictionary* globalMime;
     // Deliberately NOT cascade, we will revisit this on account deletion.
     [observerEntity addRelationship:observerToJournalEntries];
 
+    EORelationship *observerToObservations = [[[EORelationship alloc] init] autorelease];
+    [observerToObservations setName:@"observations"];
+    [observerToObservations setEntity:observerEntity];
+    [observerToObservations setToMany:YES];
+    EOJoin *observerToObservationsJoin =
+        [[[EOJoin alloc] initWithSourceAttribute:uidAttr
+                            destinationAttribute:observationObserverFKAttr] autorelease];
+    [observerToObservations addJoin:observerToObservationsJoin];
+    // Pending observations cascade on observer delete (EOF will handle DB sync based on this)
+    [observerToObservations setDeleteRule:EODeleteRuleCascade];
+    [observerEntity addRelationship:observerToObservations];
+
     [observationEntity setClassProperties:@[observationIdAttr, captureDateAttr, photoURLStringAttr,
                                              latitudeAttr, longitudeAttr, accuracyAttr, bearingAttr,
-                                             observationToJournalEntry]];
+                                             observationToJournalEntry, observationToObserver]];
     [journalEntryEntity setClassProperties:@[journalEntryIdAttr, 
                                               journalEntryToObserver, journalEntryToObservations]];
     // Re-set (not append) Observer's class properties to include the new
     // to-many relationship alongside its original 5 attributes.
     [observerEntity setClassProperties:@[uidAttr, nameAttr, emailAttr, avatarUrlAttr, tokenAttr,
-                                          observerToJournalEntries]];
+                                          observerToJournalEntries, observerToObservations]];
 
     [model addEntity:observerEntity];
     [model addEntity:journalEntryEntity];

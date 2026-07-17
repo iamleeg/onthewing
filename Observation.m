@@ -18,6 +18,7 @@
 
 #import "Observation.h"
 #import "ObservationLocation.h"
+#import "Observer.h"
 #import "JournalEntry.h"
 #import <EOAccess/EOAccess.h>
 
@@ -28,6 +29,7 @@
 @synthesize location = _location;
 @synthesize photoURL = _photoURL;
 @synthesize journalEntry = _journalEntry;
+@synthesize observer = _observer;
 
 - (void)setObservationId:(NSString *)observationId {
     [self willChange];
@@ -142,6 +144,7 @@
     [_location release];
     [_photoURL release];
     [_journalEntry release];
+    [_observer release];
     [super dealloc];
 }
 

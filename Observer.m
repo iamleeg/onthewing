@@ -20,6 +20,7 @@ NSUInteger const kFreeTierPhotoLimit = 50;
 @synthesize avatarUrl = _avatarUrl;
 @synthesize token = _token;
 @synthesize journalEntries = _journalEntries;
+@synthesize observations = _observations;
 
 - (id)initWithUid:(NSString *)uid
              name:(NSString *)name
@@ -33,6 +34,8 @@ NSUInteger const kFreeTierPhotoLimit = 50;
         _email = [email copy];
         _avatarUrl = [avatarUrl copy];
         _token = [token copy];
+        _journalEntries = [[NSMutableArray alloc] init];
+        _observations = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -97,6 +100,7 @@ NSUInteger const kFreeTierPhotoLimit = 50;
     [_avatarUrl release];
     [_token release];
     [_journalEntries release];
+    [_observations release];
     [super dealloc];
 }
 

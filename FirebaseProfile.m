@@ -16,6 +16,7 @@
 - (id)logout {
     Session *session = (Session *)[self session];
     [session setUser:nil];
+    [session terminate];
     return [self pageWithName:@"Main"];
 }
 
