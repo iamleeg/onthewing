@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     path: k8s
-    repoURL: https://codeberg.org/leeg/onthewing.git
+    repoURL: https://github.com/iamleeg/onthewing.git
     targetRevision: main
   syncPolicy:
     automated:
