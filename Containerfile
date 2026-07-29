@@ -27,7 +27,7 @@ ENV GNUSTEP_MAKEFILES=/usr/share/GNUstep/Makefiles
 ENV CC=clang
 ENV CXX=clang++
 
-# Build and install GSWeb from source: needs my patched version
+# Build and install GSWeb from source
 WORKDIR /src
 RUN git clone https://github.com/gnustep/libs-gsweb.git && \
     cd libs-gsweb && \
@@ -44,14 +44,10 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
     make && \
     make install
 
-# Build and install libs-gdl2 from source: needs my patched version, which
-# fixes EODatabaseContext permanently wedging after a save fails before a
-# transaction begins (e.g. a DB connection failure) - see
-# https://github.com/iamleeg/libs-gdl2/tree/fix-database-context-stuck-preparing-for-save
+# Build and install libs-gdl2 from source
 WORKDIR /src
-RUN git clone https://github.com/iamleeg/libs-gdl2.git && \
+RUN git clone https://github.com/gnustep/libs-gdl2.git && \
     cd libs-gdl2 && \
-    git switch vendored-fixes && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \
     make && \
