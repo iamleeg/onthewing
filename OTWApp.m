@@ -30,20 +30,7 @@
 #import "OTWRedisSessionStore.h"
 #import <EOAccess/EODatabaseContext.h>
 
-@interface EODatabaseContext (GDL2FixForward)
-- (EOGlobalID *)globalIDForObject:(id)object;
-- (NSDictionary *)snapshotForGlobalID:(EOGlobalID *)gid;
-- (EOGlobalID *)_globalIDForObject:(id)object;
-@end
 
-@implementation EODatabaseContext (GDL2FixForward)
-- (EOGlobalID *)globalIDForObject:(id)object {
-    return [self _globalIDForObject:object];
-}
-- (NSDictionary *)snapshotForGlobalID:(EOGlobalID *)gid {
-    return [self snapshotForGlobalID:gid after:0.0];
-}
-@end
 
 
 @implementation OTWApp
