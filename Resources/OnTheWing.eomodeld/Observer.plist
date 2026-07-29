@@ -1,0 +1,89 @@
+{
+    attributes = (
+	{
+	    columnName = uid;
+	    externalType = varchar;
+	    name = uid;
+	    valueClassName = NSString;
+	    width = 128;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = name;
+	    externalType = varchar;
+	    name = name;
+	    valueClassName = NSString;
+	    width = 255;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = email;
+	    externalType = varchar;
+	    name = email;
+	    valueClassName = NSString;
+	    width = 255;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = "avatar_url";
+	    externalType = varchar;
+	    name = avatarUrl;
+	    valueClassName = NSString;
+	    width = 2048;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = token;
+	    externalType = varchar;
+	    name = token;
+	    valueClassName = NSString;
+	    width = 2048;
+	}
+    );
+    attributesUsedForLocking = (
+	uid
+    );
+    className = Observer;
+    classProperties = (
+	uid,
+	name,
+	email,
+	avatarUrl,
+	token,
+	journalEntries,
+	observations
+    );
+    externalName = observers;
+    name = Observer;
+    primaryKeyAttributes = (
+	uid
+    );
+    relationships = (
+	{
+	    destination = JournalEntry;
+	    isToMany = Y;
+	    joinSemantic = EOInnerJoin;
+	    joins = (
+		{
+		    destinationAttribute = observerForeignKey;
+		    sourceAttribute = uid;
+		}
+	    );
+	    name = journalEntries;
+	},
+	{
+	    deleteRule = EODeleteRuleCascade;
+	    destination = Observation;
+	    isToMany = Y;
+	    joinSemantic = EOInnerJoin;
+	    ownsDestination = Y;
+	    joins = (
+		{
+		    destinationAttribute = observerForeignKey;
+		    sourceAttribute = uid;
+		}
+	    );
+	    name = observations;
+	}
+    );
+}

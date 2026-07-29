@@ -1,0 +1,115 @@
+{
+    attributes = (
+	{
+	    columnName = id;
+	    externalType = varchar;
+	    name = observationId;
+	    valueClassName = NSString;
+	    width = 64;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = "capture_date";
+	    externalType = timestamp;
+	    name = captureDate;
+	    valueClassName = NSDate;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = "photo_url";
+	    externalType = varchar;
+	    name = photoURLString;
+	    valueClassName = NSString;
+	    width = 2048;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = latitude;
+	    externalType = "double precision";
+	    name = latitude;
+	    valueClassName = NSNumber;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = longitude;
+	    externalType = "double precision";
+	    name = longitude;
+	    valueClassName = NSNumber;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = accuracy;
+	    externalType = "double precision";
+	    name = accuracy;
+	    valueClassName = NSNumber;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = bearing;
+	    externalType = "double precision";
+	    name = bearing;
+	    valueClassName = NSNumber;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = "journal_entry_id";
+	    externalType = varchar;
+	    name = journalEntryForeignKey;
+	    valueClassName = NSString;
+	    width = 64;
+	},
+	{
+	    columnName = "observer_uid";
+	    externalType = varchar;
+	    name = observerForeignKey;
+	    valueClassName = NSString;
+	    width = 128;
+	}
+    );
+    attributesUsedForLocking = (
+	observationId
+    );
+    className = Observation;
+    classProperties = (
+	observationId,
+	captureDate,
+	photoURLString,
+	latitude,
+	longitude,
+	accuracy,
+	bearing,
+	journalEntry,
+	observer
+    );
+    externalName = observations;
+    name = Observation;
+    primaryKeyAttributes = (
+	observationId
+    );
+    relationships = (
+	{
+	    destination = JournalEntry;
+	    isToMany = N;
+	    joinSemantic = EOInnerJoin;
+	    joins = (
+		{
+		    destinationAttribute = journalEntryId;
+		    sourceAttribute = journalEntryForeignKey;
+		}
+	    );
+	    name = journalEntry;
+	},
+	{
+	    destination = Observer;
+	    isToMany = N;
+	    joinSemantic = EOInnerJoin;
+	    joins = (
+		{
+		    destinationAttribute = uid;
+		    sourceAttribute = observerForeignKey;
+		}
+	    );
+	    name = observer;
+	}
+    );
+}

@@ -193,7 +193,7 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 
     NSDate *cutoffDate = [NSDate dateWithTimeIntervalSinceNow:-86400];
     
-    EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@ and journalEntry = nil", [_user uid]];
+    EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"observer = %@ and journalEntry = nil", _user];
     EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observation" qualifier:qual sortOrderings:nil];
     NSArray *pending = [ec objectsWithFetchSpecification:fetchSpec];
     

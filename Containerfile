@@ -46,7 +46,9 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
 
 # Build and install libs-gdl2 from source
 WORKDIR /src
-RUN git clone https://github.com/gnustep/libs-gdl2.git && \
+# cache bust 2: 2026-07-29
+RUN echo "bust cache 3" && \
+    git clone --depth 1 https://github.com/gnustep/libs-gdl2.git && \
     cd libs-gdl2 && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \

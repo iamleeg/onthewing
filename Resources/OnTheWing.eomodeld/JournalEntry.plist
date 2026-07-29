@@ -1,0 +1,75 @@
+{
+    attributes = (
+	{
+	    columnName = id;
+	    externalType = varchar;
+	    name = journalEntryId;
+	    valueClassName = NSString;
+	    width = 64;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = title;
+	    externalType = varchar;
+	    name = title;
+	    valueClassName = NSString;
+	    width = 255;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = reflections;
+	    externalType = text;
+	    name = reflections;
+	    valueClassName = NSString;
+	},
+	{
+	    columnName = "observer_uid";
+	    externalType = varchar;
+	    name = observerForeignKey;
+	    valueClassName = NSString;
+	    width = 128;
+	}
+    );
+    attributesUsedForLocking = (
+	journalEntryId
+    );
+    className = JournalEntry;
+    classProperties = (
+	journalEntryId,
+	observer,
+	observations
+    );
+    externalName = "journal_entries";
+    name = JournalEntry;
+    primaryKeyAttributes = (
+	journalEntryId
+    );
+    relationships = (
+	{
+	    deleteRule = EODeleteRuleCascade;
+	    destination = Observation;
+	    isToMany = Y;
+	    joinSemantic = EOInnerJoin;
+	    ownsDestination = Y;
+	    joins = (
+		{
+		    destinationAttribute = journalEntryForeignKey;
+		    sourceAttribute = journalEntryId;
+		}
+	    );
+	    name = observations;
+	},
+	{
+	    destination = Observer;
+	    isToMany = N;
+	    joinSemantic = EOInnerJoin;
+	    joins = (
+		{
+		    destinationAttribute = uid;
+		    sourceAttribute = observerForeignKey;
+		}
+	    );
+	    name = observer;
+	}
+    );
+}

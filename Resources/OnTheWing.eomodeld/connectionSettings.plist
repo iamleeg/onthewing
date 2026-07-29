@@ -1,0 +1,5 @@
+{
+    databaseName = "onthewing-eedce-database";
+    hostName = "127.0.0.1";
+    port = 5432;
+}

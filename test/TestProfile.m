@@ -166,7 +166,7 @@
     // Direct qualifier fetch rather than Observer.journalEntries: the
     // deleted user's Observer instance is gone, so there's no EC-registered
     // object left to hang the relationship off; this checks DB state instead.
-    EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"observer.uid = %@", uid];
+    EOQualifier *qualifier = [EOQualifier qualifierWithQualifierFormat:@"observerForeignKey = %@", uid];
     EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"JournalEntry"
                                                                                      qualifier:qualifier
                                                                                  sortOrderings:nil];

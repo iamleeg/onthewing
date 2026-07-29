@@ -1,0 +1,20 @@
+{
+    EOModelVersion = 3;
+    adaptorName = PostgreSQL;
+    entities = (
+	{
+	    className = JournalEntry;
+	    name = JournalEntry;
+	},
+	{
+	    className = Observation;
+	    name = Observation;
+	},
+	{
+	    className = Observer;
+	    name = Observer;
+	}
+    );
+    storedProcedures = (
+    );
+}

@@ -23,6 +23,7 @@ GSWAPP_NAME=OnTheWing
 OnTheWing_HAS_GSWCOMPONENTS=YES
 OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
+OnTheWing_RESOURCE_FILES=Resources/OnTheWing.eomodeld
 
 OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m OTWWebFont.m OTWLeafletScript.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m OTWFirebaseStorageURL.m PhotoStorageMover.m PhotoMigrator.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m BrowseJournal.m ViewJournalEntry.m FirebaseAuthUI.m PhotoCapture.m OTWRedisSessionStore.m OTWFlashMessage.m FlashMessage.m
 OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWWebFont.wo OTWLeafletScript.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo BrowseJournal.wo ViewJournalEntry.wo FirebaseAuthUI.wo PhotoCapture.wo FlashMessage.wo
@@ -39,6 +40,7 @@ ADDITIONAL_INCLUDE_DIRS += $(shell pkg-config --cflags-only-I gnutls 2>/dev/null
 ADDITIONAL_LIB_DIRS += $(shell pkg-config --libs-only-L gnutls 2>/dev/null) -L/opt/homebrew/lib
 
 BUNDLE_NAME = OTWTests
+OTWTests_RESOURCE_FILES = Resources/OnTheWing.eomodeld
 
 OTWTests_OBJC_FILES = \
 	test/TestApp.m \
