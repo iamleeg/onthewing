@@ -131,10 +131,6 @@ internal-check:: OTWTests
 podman-check:
 	podman build --progress=plain --target builder -f Containerfile .
 
-doc-container:
-	podman build --target builder -t onthewing-builder -f Containerfile .
-	podman run --rm onthewing-builder bash -c ". /usr/share/GNUstep/Makefiles/GNUstep.sh && ln -s Documentation/*.gsdoc . && make DocsOnTheWing > /dev/null && tar cf - DocsOnTheWing" | tar xf -
-
 test-e2e:
 	skaffold run
 	kubectl wait --for=condition=available --timeout=60s deployment/onthewing
