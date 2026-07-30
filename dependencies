@@ -1,0 +1,8 @@
+DocsOnTheWing/dependencies: \
+	Main.h \
+	Documentation/Tests.gsdoc \
+	Main.m \
+	Documentation/Deployment.gsdoc \
+	Documentation/index.gsdoc \
+	Documentation/Development.gsdoc \
+	Documentation/Reference.gsdoc

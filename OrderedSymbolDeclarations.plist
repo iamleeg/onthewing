@@ -1,0 +1,11 @@
+{
+    Main = (
+	"-capture",
+	"-reviewObservations",
+	"-browseJournal",
+	"-hasObservations",
+	"-reportPendingObservations",
+	"-hasUser",
+	"-isAppReady"
+    );
+}

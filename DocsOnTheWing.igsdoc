@@ -1,0 +1,55 @@
+{
+    class = {
+	Main = Main;
+    };
+    method = {
+	"-browseJournal" = {
+	    Main = Main;
+	};
+	"-capture" = {
+	    Main = Main;
+	};
+	"-hasObservations" = {
+	    Main = Main;
+	};
+	"-hasUser" = {
+	    Main = Main;
+	};
+	"-isAppReady" = {
+	    Main = Main;
+	};
+	"-reportPendingObservations" = {
+	    Main = Main;
+	};
+	"-reviewObservations" = {
+	    Main = Main;
+	};
+    };
+    output = {
+	"Main.h" = (
+	    "DocsOnTheWing/Main.gsdoc"
+	);
+    };
+    source = {
+	"Main.h" = (
+	    "Main.m"
+	);
+    };
+    super = {
+	Main = GSWComponent;
+    };
+    title = {
+	Main = "Main - The landing page for OnTheWing";
+    };
+    unitmethods = {
+	Main = {
+	    "-browseJournal" = Main;
+	    "-capture" = Main;
+	    "-hasObservations" = Main;
+	    "-hasUser" = Main;
+	    "-isAppReady" = Main;
+	    "-reportPendingObservations" = Main;
+	    "-reviewObservations" = Main;
+	};
+    };
+}
