@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN"
+ "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="Reference">
+  <head>
+    <title>OnTheWing Developer Reference</title>
+    <author name="Graham Lee">
+      <email address="grahamlee@acm.org"/>
+    </author>
+    <version>1.0</version>
+  </head>
+
+  <body>
+    <front>
+      <contents/>
+    </front>
+
+    <chapter>
+      <label id="reference"/>
+      <heading>Developer Reference</heading>
+      <p>OnTheWing is a standard WebObjects 4.5 application, though the project uses the <uref url="https://github.com/gnustep/libs-gsweb">GNUstep Web</uref> project for deployment.</p>
+      
+      <section>
+        <heading>Component Classes</heading>
+        <list>
+          <item><ref type="class" id="Main"/></item>
+        </list>
+      </section>
+
+    </chapter>
+
+    <back>
+      <index type="title" scope="project" style="normal"/>
+      <index type="class"/>
+    </back>
+  </body>
+</gsdoc>

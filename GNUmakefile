@@ -110,7 +110,8 @@ OTWTests_BUNDLE_LIBS = \
 
 DOCUMENT_NAME = DocsOnTheWing
 
-DocsOnTheWing_AGSDOC_FILES = Documentation/index.gsdoc Documentation/Deployment.gsdoc Documentation/Development.gsdoc Documentation/Tests.gsdoc
+DocsOnTheWing_AGSDOC_FILES = Documentation/index.gsdoc Documentation/Deployment.gsdoc Documentation/Development.gsdoc Documentation/Reference.gsdoc Documentation/Tests.gsdoc \
+	Main.h
 DocsOnTheWing_AGSDOC_FLAGS = -DTDs Documentation/DTDs
 
 -include Makefile.preamble
@@ -129,6 +130,10 @@ internal-check:: OTWTests
 
 podman-check:
 	podman build --progress=plain --target builder -f Containerfile .
+
+doc-container:
+	podman build --target builder -t onthewing-builder -f Containerfile .
+	podman run --rm onthewing-builder bash -c ". /usr/share/GNUstep/Makefiles/GNUstep.sh && ln -s Documentation/*.gsdoc . && make DocsOnTheWing > /dev/null && tar cf - DocsOnTheWing" | tar xf -
 
 test-e2e:
 	skaffold run
