@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+    <head>
+    <title>Deploying OnTheWing - Your Digital Nature Journal</title>
+  </head>
+  <body>
+    <font face="serif">
+    <h1><a name="title$Deployment">Deploying OnTheWing - Your Digital Nature Journal</a></h1>
+    <h3>Authors</h3>
+    <dl>
+      <dt>Graham Lee (<a href="mailto:grahamlee@acm.org"><code>grahamlee@acm.org</code></a>)</dt>
+      <dd>
+      </dd>
+    </dl>
+    <p><b>Version:</b> 1.0</p>
+
+        <div>
+
+            <hr width="50%" align="left" />
+      <h3>Contents -</h3>
+      <ol>
+        <li>
+          <a href="#001000000000">Deploying OnTheWing</a>
+        </li>
+        <li>
+          <a href="#001001000000">Configuring secrets</a>
+        </li>
+      </ol>
+      <hr width="50%" align="left" />
+    </div>
+
+      <a name="label$deployment"></a>
+          <h1><a name="001000000000">Deploying OnTheWing</a></h1>
+    <p>
+Apply the Kubernetes configuration in k8s to your cluster. ArgoCD automatically tracks changes in the OnTheWing repository, and keeps the deployment up to date.    </p>
+
+            <h2><a name="001001000000">Configuring secrets</a></h2>
+    <p>
+Your Kubernetes cluster needs access to the following secrets:    </p>
+    <dl>
+      <dt><code>db-credentials</code></dt>
+      <dd>
+        A username and password that OnTheWing uses to authenticate to its postgresql database.
+      </dd>
+      <dt><code>gcp-credentials</code></dt>
+      <dd>
+        A JSON-wrapped key that OnTheWing uses to authenticate to Google Cloud.
+      </dd>
+      <dt><code>gcs-storage-credentials</code></dt>
+      <dd>
+        A JSON-wrapped key that OnTheWing uses to authenticate to Google Cloud Storage.
+      </dd>
+    </dl>
+    <p>
+The Let&apos;s Encrypt certificate manager automatically sets the <code>onthewing-tls</code> secret.    </p>
+    <div>
+
+            <b>Title Index</b>
+      <ul>
+        <li><a rel="gsdoc" href="Development.html#title$Development">Running OnTheWing Locally for Development</a></li>
+        <li><a rel="gsdoc" href="Main.html#title$Main">Main - The landing page for OnTheWing</a></li>
+        <li><a rel="gsdoc" href="Reference.html#title$Reference">OnTheWing Developer Reference</a></li>
+        <li><a rel="gsdoc" href="Tests.html#title$Tests">Testing OnTheWing - Your Digital Nature Journal</a></li>
+        <li><a rel="gsdoc" href="index.html#title$index">OnTheWing - Your Digital Nature Journal</a></li>
+      </ul>
+    </div>
+    <br />
+    </font>
+</body>
+</html>

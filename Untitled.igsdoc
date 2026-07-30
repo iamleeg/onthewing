@@ -1,0 +1,67 @@
+{
+    class = {
+	Main = Main;
+    };
+    label = {
+	deployment = Deployment;
+	development = Development;
+	"development-prereqs" = Development;
+	reference = Reference;
+	testing = Tests;
+    };
+    method = {
+	"-browseJournal" = {
+	    Main = Main;
+	};
+	"-capture" = {
+	    Main = Main;
+	};
+	"-hasObservations" = {
+	    Main = Main;
+	};
+	"-hasUser" = {
+	    Main = Main;
+	};
+	"-isAppReady" = {
+	    Main = Main;
+	};
+	"-reportPendingObservations" = {
+	    Main = Main;
+	};
+	"-reviewObservations" = {
+	    Main = Main;
+	};
+    };
+    output = {
+	"../Main.h" = (
+	    "../DocsOnTheWing/Main.gsdoc"
+	);
+    };
+    source = {
+	"../Main.h" = (
+	    "../Main.h"
+	);
+    };
+    super = {
+	Main = GSWComponent;
+    };
+    title = {
+	Deployment = "Deploying OnTheWing - Your Digital Nature Journal";
+	Development = "Running OnTheWing Locally for Development";
+	Main = "Main - The landing page for OnTheWing";
+	Reference = "OnTheWing Developer Reference";
+	Tests = "Testing OnTheWing - Your Digital Nature Journal";
+	index = "OnTheWing - Your Digital Nature Journal";
+    };
+    unitmethods = {
+	Main = {
+	    "-browseJournal" = Main;
+	    "-capture" = Main;
+	    "-hasObservations" = Main;
+	    "-hasUser" = Main;
+	    "-isAppReady" = Main;
+	    "-reportPendingObservations" = Main;
+	    "-reviewObservations" = Main;
+	};
+    };
+}

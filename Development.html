@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+    <head>
+    <title>Running OnTheWing Locally for Development</title>
+  </head>
+  <body>
+    <font face="serif">
+    <h1><a name="title$Development">Running OnTheWing Locally for Development</a></h1>
+    <h3>Authors</h3>
+    <dl>
+      <dt>Graham Lee (<a href="mailto:grahamlee@acm.org"><code>grahamlee@acm.org</code></a>)</dt>
+      <dd>
+      </dd>
+    </dl>
+    <p><b>Version:</b> 1.0</p>
+
+        <div>
+
+            <hr width="50%" align="left" />
+      <h3>Contents -</h3>
+      <ol>
+        <li>
+          <a href="#001000000000">Running OnTheWing Locally for Development</a>
+        </li>
+        <li>
+          <a href="#001001000000">Install Prerequisites</a>
+        </li>
+        <li>
+          <a href="#001002000000">Start Postgresql</a>
+        </li>
+        <li>
+          <a href="#001003000000">Start Minikube</a>
+        </li>
+        <li>
+          <a href="#001004000000">Start the App</a>
+        </li>
+      </ol>
+      <hr width="50%" align="left" />
+    </div>
+
+      <a name="label$development"></a>
+          <h1><a name="001000000000">Running OnTheWing Locally for Development</a></h1>
+    <p>
+Install and configure the app&apos;s prerequisites.
+      Deploy the app in minikube, and use port forwarding to load the app in your browser.    </p>
+
+        <a name="label$development-prereqs"></a>
+            <h2><a name="001001000000">Install Prerequisites</a></h2>
+    <p>
+Install the following packages using your system&apos;s package manager, homebrew, or another method:    </p>
+    <ul>
+      <li>
+        PostgreSQL
+      </li>
+      <li>
+        A container environment, for example, <code>podman</code>.
+      </li>
+      <li>
+        Minikube
+      </li>
+      <li>
+        Skaffold
+      </li>
+    </ul>
+    <p>
+OnTheWing also depends on the GNUstep Base Library, GNUstep XCTest, GNUstep Web, GNUstep Database Library, node.js, and <code>npm</code>.
+        The build process fetches these and installs them in the app&apos;s container.    </p>
+
+            <h2><a name="001002000000">Start Postgresql</a></h2>
+    <p>
+Install postgresql using your system&apos;s package manager, or your other preferred method if appropriate.
+        Ensure that your system&apos;s service manager, for example GNU shepherd or <code>launchd</code>, starts postgresql automatically, or manually run it at the command-line:    </p>
+<pre>
+        % LC_ALL=&quot;en_US.UTF-8&quot; /path/to/postgresql/bin/postgres -D /path/to/database/files
+        </pre>
+    <p>
+If you&apos;re setting up PostgreSQL for the first time, you also need to create the database that OnTheWing uses:    </p>
+<pre>
+        % createdb onthewing-eedce-database
+        </pre>
+
+            <h2><a name="001003000000">Start Minikube</a></h2>
+    <p>
+Ensure your container environment is running, then start minikube:    </p>
+<pre>
+        % minikube start
+        </pre>
+    <p>
+Minikube automatically configures <code>kubectl</code> to use minikube&apos;s cluster as its context.    </p>
+
+            <h2><a name="001004000000">Start the App</a></h2>
+    <p>
+Type the following command to build OnTheWing, deploy the app into the minikube cluster, and forward a port to your host computer:    </p>
+<pre>
+        % skaffold dev
+        </pre>
+    <p>
+When the kubernetes deployment stabilizes, navigate to <a href="http://localhost:8080/WebObjects/OnTheWing.woa/0">http://localhost:8080/WebObjects/OnTheWing.woa/0</a> in your browser to use the local version of the app.    </p>
+    <div>
+
+            <b>Title Index</b>
+      <ul>
+        <li><a rel="gsdoc" href="Deployment.html#title$Deployment">Deploying OnTheWing - Your Digital Nature Journal</a></li>
+        <li><a rel="gsdoc" href="Main.html#title$Main">Main - The landing page for OnTheWing</a></li>
+        <li><a rel="gsdoc" href="Reference.html#title$Reference">OnTheWing Developer Reference</a></li>
+        <li><a rel="gsdoc" href="Tests.html#title$Tests">Testing OnTheWing - Your Digital Nature Journal</a></li>
+        <li><a rel="gsdoc" href="index.html#title$index">OnTheWing - Your Digital Nature Journal</a></li>
+      </ul>
+    </div>
+    <br />
+    </font>
+</body>
+</html>
