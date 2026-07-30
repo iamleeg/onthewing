@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN"
+ "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="Deployment">
+  <head>
+    <title>Deploying OnTheWing - Your Digital Nature Journal</title>
+    <author name="Graham Lee">
+      <email address="grahamlee@acm.org"/>
+    </author>
+    <version>1.0</version>
+  </head>
+
+  <body>
+    <front>
+      <contents/>
+    </front>
+
+    <chapter>
+      <heading>Deploying OnTheWing</heading>
+      <p>Apply the Kubernetes configuration in k8s to your cluster. ArgoCD automatically tracks changes in the OnTheWing repository, and keeps the deployment up to date.</p>
+
+      <section>
+        <heading>Configuring secrets</heading>
+        <p>Your Kubernetes cluster needs access to the following secrets:</p>
+        <deflist>
+          <term><code>db-credentials</code></term><desc>A username and password that OnTheWing uses to authenticate to its postgresql database.</desc>
+          <term><code>gcp-credentials</code></term><desc>A JSON-wrapped key that OnTheWing uses to authenticate to Google Cloud.</desc>
+          <term><code>gcs-storage-credentials</code></term><desc>A JSON-wrapped key that OnTheWing uses to authenticate to Google Cloud Storage.</desc>
+        </deflist>
+        <p>The Let's Encrypt certificate manager automatically sets the <code>onthewing-tls</code> secret.</p>
+      </section>
+    </chapter>
+
+    <back>
+      <index type="title" scope="project" style="normal"/>
+    </back>
+  </body>
+</gsdoc>

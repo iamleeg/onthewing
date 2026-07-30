@@ -108,10 +108,17 @@ OTWTests_BUNDLE_LIBS = \
 	-lXCTest \
 	$(AUXILIARY_GSW_LIBS)
 
+DOCUMENT_NAME = DocsOnTheWing
+
+DocsOnTheWing_AGSDOC_FILES = Documentation/Deployment.gsdoc Documentation/Development.gsdoc
+DocsOnTheWing_AGSDOC_FLAGS = -DTDs Documentation/DTDs
+
 -include Makefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/gswapp.make
 include $(GNUSTEP_MAKEFILES)/bundle.make
+include $(GNUSTEP_MAKEFILES)/documentation.make
+
 -include Makefile.postamble
 
 

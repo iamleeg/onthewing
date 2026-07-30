@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN"
+ "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="Development">
+  <head>
+    <title>Running OnTheWing Locally for Development</title>
+    <author name="Graham Lee">
+      <email address="grahamlee@acm.org"/>
+    </author>
+    <version>1.0</version>
+  </head>
+
+  <body>
+    <front>
+      <contents/>
+    </front>
+
+    <chapter>
+      <heading>Running OnTheWing Locally for Development</heading>
+      <p>Install and configure the app's prerequisites.
+      Deploy the app in minikube, and use port forwarding to load the app in your browser.</p>
+
+      <section>
+        <heading>Install Prerequisites</heading>
+        <p>Install the following packages using your system's package manager, homebrew, or another method:</p>
+        <list>
+          <item>PostgreSQL</item>
+          <item>A container environment, for example, <code>podman</code>.</item>
+          <item>Minikube</item>
+          <item>Skaffold</item>
+        </list>
+        <p>OnTheWing also depends on the GNUstep Base Library, GNUstep XCTest, GNUstep Web, GNUstep Database Library, node.js, and <code>npm</code>.
+        The build process fetches these and installs them in the app's container.</p>
+      </section>
+
+      <section>
+        <heading>Start Postgresql</heading>
+        <p>Install postgresql using your system's package manager, or your other preferred method if appropriate.
+        Ensure that your system's service manager, for example GNU shepherd or <code>launchd</code>, starts postgresql automatically, or manually run it at the command-line:</p>
+        <example>
+        % LC_ALL="en_US.UTF-8" /path/to/postgresql/bin/postgres -D /path/to/database/files
+        </example>
+        <p>If you're setting up PostgreSQL for the first time, you also need to create the database that OnTheWing uses:</p>
+        <example>
+        % createdb onthewing-eedce-database
+        </example>
+      </section>
+
+      <section>
+        <heading>Start Minikube</heading>
+        <p>Ensure your container environment is running, then start minikube:</p>
+        <example>
+        % minikube start
+        </example>
+        <p>Minikube automatically configures <code>kubectl</code> to use minikube's cluster as its context.</p>
+      </section>
+
+      <section>
+        <heading>Start the App</heading>
+        <p>Type the following command to build OnTheWing, deploy the app into the minikube cluster, and forward a port to your host computer:</p>
+        <example>
+        % skaffold dev
+        </example>
+        <p>When the kubernetes deployment stabilizes, navigate to <url url="http://localhost:8080/WebObjects/OnTheWing.woa/0"/> in your browser to use the local version of the app.</p>
+      </section>
+    </chapter>
+
+    <back>
+      <index type="title" scope="project" style="normal"/>
+    </back>
+  </body>
+</gsdoc>
