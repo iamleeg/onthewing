@@ -16,6 +16,7 @@
     </front>
 
     <chapter>
+      <label id="deployment"/>
       <heading>Deploying OnTheWing</heading>
       <p>Apply the Kubernetes configuration in k8s to your cluster. ArgoCD automatically tracks changes in the OnTheWing repository, and keeps the deployment up to date.</p>
 

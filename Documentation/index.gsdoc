@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN"
+ "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="index">
+  <head>
+    <title>OnTheWing - Your Digital Nature Journal</title>
+    <author name="Graham Lee">
+      <email address="grahamlee@acm.org"/>
+    </author>
+    <version>1.0</version>
+  </head>
+
+  <body>
+    <front>
+      <contents/>
+    </front>
+
+    <chapter>
+      <heading>OnTheWing — Your Digital Nature Journal</heading>
+      <p>On The Wing is a web application that makes it easy for you to record your observations of nature while you're out and about.
+      At the end of the day, you can review your observations, make notes, and keep a nature journal.</p>
+
+      <section>
+        <heading>Information for Systems Operators</heading>
+        <list>
+          <item><ref id="deployment">Deploying OnTheWing</ref></item>
+        </list>
+      </section>
+
+      <section>
+        <heading>Information for Developers</heading>
+        <list>
+          <item><ref id="development">Running OnTheWing Locally for Development</ref></item>
+          <item><ref id="testing">Testing OnTheWing</ref></item>
+        </list>
+      </section>
+
+    </chapter>
+
+    <back>
+      <index type="title" scope="project" style="normal"/>
+    </back>
+  </body>
+</gsdoc>

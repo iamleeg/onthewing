@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE gsdoc PUBLIC "-//GNUstep//DTD gsdoc 1.0.3//EN"
+ "http://www.gnustep.org/gsdoc-1_0_3.xml">
+<gsdoc base="Tests">
+  <head>
+    <title>Testing OnTheWing - Your Digital Nature Journal</title>
+    <author name="Graham Lee">
+      <email address="grahamlee@acm.org"/>
+    </author>
+    <version>1.0</version>
+  </head>
+
+  <body>
+    <front>
+      <contents/>
+    </front>
+
+    <chapter>
+      <label id="testing"/>
+      <heading>Testing OnTheWing</heading>
+      <p>Ensure you have the prerequisites set up, as described in <ref id="development-prereqs">Install Prerequisites</ref>.
+      To run the tests in your computer's operating system instead of in a container environment, you also need to install GNUstep's <uref url="https://github.com/gnustep/tools-xctest">XCTest</uref>.</p>
+
+      <section>
+        <heading>Run Unit Tests</heading>
+        <p>Use this command to run the tests in your computer's operating system:</p>
+        <example>
+        % make check
+        </example>
+        <p>Use this command to run the tests in the container environment:</p>
+        <example>
+        % make podman-check
+        </example>
+      </section>
+
+      <section>
+        <heading>Run End-to-End Tests</heading>
+        <p>Use this command to run the tests in a browser in your computer's operating system, with the app running in minikube:</p>
+        <example>
+        % make test-e2e
+        </example>
+        <p>Use this command to run the tests in a headless browser in the minikube cluster alongside the app:</p>
+        <example>
+        % make test-e2e-cluster
+        </example>
+      </section>
+    </chapter>
+
+    <back>
+      <index type="title" scope="project" style="normal"/>
+    </back>
+  </body>
+</gsdoc>

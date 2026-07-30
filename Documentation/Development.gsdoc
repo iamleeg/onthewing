@@ -16,11 +16,13 @@
     </front>
 
     <chapter>
+      <label id="development"/>
       <heading>Running OnTheWing Locally for Development</heading>
       <p>Install and configure the app's prerequisites.
       Deploy the app in minikube, and use port forwarding to load the app in your browser.</p>
 
       <section>
+        <label id="development-prereqs"/>
         <heading>Install Prerequisites</heading>
         <p>Install the following packages using your system's package manager, homebrew, or another method:</p>
         <list>
