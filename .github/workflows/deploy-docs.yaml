@@ -21,7 +21,9 @@ jobs:
 
       - name: Extract Docs
         run: |
-          docker create --name temp-builder onthewing-builder
+          # The Docker container makefile skips building index.html because autogsdoc looks in the current directory.
+          # We explicitly run autogsdoc in the Documentation folder to generate all HTML files properly.
+          docker run --name temp-builder onthewing-builder /bin/bash -c "cd Documentation && . /usr/share/GNUstep/Makefiles/GNUstep.sh && autogsdoc -DocumentationDirectory ../DocsOnTheWing -DTDs DTDs *.gsdoc ../Main.h"
           docker cp temp-builder:/app/DocsOnTheWing ./DocsOnTheWing
           docker rm temp-builder
 
