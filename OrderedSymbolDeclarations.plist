@@ -1,4 +1,24 @@
 {
+    BrowseJournal = (
+	"-journalEntries",
+	"-hasAnyEntries",
+	"-hasCurrentPhoto",
+	"-hasCurrentBearing",
+	"-currentEntryObservations",
+	"-deleteEntry",
+	"-viewEntry",
+	"-backToMain",
+	"-capture",
+	"-defaultEntryTitle",
+	"-reflectionsSnippet",
+	"-hasSummaryPhoto",
+	"-summaryPhotoURLString"
+    );
+    Capture = (
+	"-setLocationError:",
+	"-locationError",
+	"-return"
+    );
     Main = (
 	"-capture",
 	"-reviewObservations",
@@ -7,5 +27,13 @@
 	"-reportPendingObservations",
 	"-hasUser",
 	"-isAppReady"
+    );
+    ViewJournalEntry = (
+	"-observations",
+	"-saveChanges",
+	"-deleteEntry",
+	"-backToJournal",
+	"-hasLocations",
+	"-hasCurrentBearing"
     );
 }

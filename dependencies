@@ -1,8 +1,14 @@
 DocsOnTheWing/dependencies: \
+	ViewJournalEntry.h \
+	ViewJournalEntry.m \
 	Main.h \
 	Documentation/Tests.gsdoc \
 	Main.m \
 	Documentation/Deployment.gsdoc \
 	Documentation/index.gsdoc \
 	Documentation/Development.gsdoc \
-	Documentation/Reference.gsdoc
+	Capture.h \
+	BrowseJournal.h \
+	Capture.m \
+	Documentation/Reference.gsdoc \
+	BrowseJournal.m

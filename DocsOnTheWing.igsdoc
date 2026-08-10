@@ -1,16 +1,100 @@
 {
     class = {
+	BrowseJournal = BrowseJournal;
+	Capture = Capture;
 	Main = Main;
+	ViewJournalEntry = ViewJournalEntry;
+    };
+    classvars = {
+	BrowseJournal = {
+	    "_currentEntry" = BrowseJournal;
+	    "_currentObservation" = BrowseJournal;
+	    "_photoStorageMover" = BrowseJournal;
+	};
+	Capture = {
+	    "_locationError" = Capture;
+	    "_observation" = Capture;
+	};
+	ViewJournalEntry = {
+	    "_currentEntry" = ViewJournalEntry;
+	    "_currentObservation" = ViewJournalEntry;
+	    "_editedReflections" = ViewJournalEntry;
+	    "_editedTitle" = ViewJournalEntry;
+	    "_lastError" = ViewJournalEntry;
+	    "_photoStorageMover" = ViewJournalEntry;
+	};
+    };
+    ivariable = {
+	"_currentEntry" = {
+	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_currentObservation" = {
+	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_editedReflections" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_editedTitle" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_lastError" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_locationError" = {
+	    Capture = Capture;
+	};
+	"_observation" = {
+	    Capture = Capture;
+	};
+	"_photoStorageMover" = {
+	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
     };
     method = {
+	"-backToJournal" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-backToMain" = {
+	    BrowseJournal = BrowseJournal;
+	};
 	"-browseJournal" = {
 	    Main = Main;
 	};
 	"-capture" = {
+	    BrowseJournal = BrowseJournal;
 	    Main = Main;
+	};
+	"-currentEntryObservations" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-defaultEntryTitle" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-deleteEntry" = {
+	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-hasAnyEntries" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-hasCurrentBearing" = {
+	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-hasCurrentPhoto" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-hasLocations" = {
+	    ViewJournalEntry = ViewJournalEntry;
 	};
 	"-hasObservations" = {
 	    Main = Main;
+	};
+	"-hasSummaryPhoto" = {
+	    BrowseJournal = BrowseJournal;
 	};
 	"-hasUser" = {
 	    Main = Main;
@@ -18,30 +102,102 @@
 	"-isAppReady" = {
 	    Main = Main;
 	};
+	"-journalEntries" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-locationError" = {
+	    Capture = Capture;
+	};
+	"-observations" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-reflectionsSnippet" = {
+	    BrowseJournal = BrowseJournal;
+	};
 	"-reportPendingObservations" = {
 	    Main = Main;
+	};
+	"-return" = {
+	    Capture = Capture;
 	};
 	"-reviewObservations" = {
 	    Main = Main;
 	};
+	"-saveChanges" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-setLocationError:" = {
+	    Capture = Capture;
+	};
+	"-summaryPhotoURLString" = {
+	    BrowseJournal = BrowseJournal;
+	};
+	"-viewEntry" = {
+	    BrowseJournal = BrowseJournal;
+	};
     };
     output = {
+	"BrowseJournal.h" = (
+	    "DocsOnTheWing/BrowseJournal.gsdoc"
+	);
+	"Capture.h" = (
+	    "DocsOnTheWing/Capture.gsdoc"
+	);
 	"Main.h" = (
 	    "DocsOnTheWing/Main.gsdoc"
 	);
+	"ViewJournalEntry.h" = (
+	    "DocsOnTheWing/ViewJournalEntry.gsdoc"
+	);
     };
     source = {
+	"BrowseJournal.h" = (
+	    "BrowseJournal.m"
+	);
+	"Capture.h" = (
+	    "Capture.m"
+	);
 	"Main.h" = (
 	    "Main.m"
 	);
+	"ViewJournalEntry.h" = (
+	    "ViewJournalEntry.m"
+	);
     };
     super = {
+	BrowseJournal = GSWComponent;
+	Capture = GSWComponent;
 	Main = GSWComponent;
+	ViewJournalEntry = GSWComponent;
     };
     title = {
+	BrowseJournal = "BrowseJournal - A component that shows an observer
+      their nature journal.";
+	Capture = "Capture class documentation";
 	Main = "Main - The landing page for OnTheWing";
+	ViewJournalEntry = "ViewJournalEntry class documentation";
     };
     unitmethods = {
+	BrowseJournal = {
+	    "-backToMain" = BrowseJournal;
+	    "-capture" = BrowseJournal;
+	    "-currentEntryObservations" = BrowseJournal;
+	    "-defaultEntryTitle" = BrowseJournal;
+	    "-deleteEntry" = BrowseJournal;
+	    "-hasAnyEntries" = BrowseJournal;
+	    "-hasCurrentBearing" = BrowseJournal;
+	    "-hasCurrentPhoto" = BrowseJournal;
+	    "-hasSummaryPhoto" = BrowseJournal;
+	    "-journalEntries" = BrowseJournal;
+	    "-reflectionsSnippet" = BrowseJournal;
+	    "-summaryPhotoURLString" = BrowseJournal;
+	    "-viewEntry" = BrowseJournal;
+	};
+	Capture = {
+	    "-locationError" = Capture;
+	    "-return" = Capture;
+	    "-setLocationError:" = Capture;
+	};
 	Main = {
 	    "-browseJournal" = Main;
 	    "-capture" = Main;
@@ -50,6 +206,14 @@
 	    "-isAppReady" = Main;
 	    "-reportPendingObservations" = Main;
 	    "-reviewObservations" = Main;
+	};
+	ViewJournalEntry = {
+	    "-backToJournal" = ViewJournalEntry;
+	    "-deleteEntry" = ViewJournalEntry;
+	    "-hasCurrentBearing" = ViewJournalEntry;
+	    "-hasLocations" = ViewJournalEntry;
+	    "-observations" = ViewJournalEntry;
+	    "-saveChanges" = ViewJournalEntry;
 	};
     };
 }
