@@ -25,6 +25,7 @@
 /**
  A component that renders the main user interface for the OnTheWing app.
 
+ Return an instance of <code>Main</code> from an action method to send an observer to the home page.
  */
 @interface Main : GSWComponent {
 }

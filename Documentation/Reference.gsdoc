@@ -24,6 +24,7 @@
         <heading>Component Classes</heading>
         <list>
           <item><ref type="class" id="Main"/></item>
+          <item><ref type="class" id="BrowseJournal"/></item>
         </list>
       </section>
 

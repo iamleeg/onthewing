@@ -111,7 +111,7 @@ OTWTests_BUNDLE_LIBS = \
 DOCUMENT_NAME = DocsOnTheWing
 
 DocsOnTheWing_AGSDOC_FILES = Documentation/index.gsdoc Documentation/Deployment.gsdoc Documentation/Development.gsdoc Documentation/Reference.gsdoc Documentation/Tests.gsdoc \
-	Main.h
+	Main.h BrowseJournal.h ViewJournalEntry.h Capture.h
 DocsOnTheWing_AGSDOC_FLAGS = -DTDs Documentation/DTDs
 
 -include Makefile.preamble
