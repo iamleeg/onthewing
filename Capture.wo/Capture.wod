@@ -5,7 +5,10 @@ FlashMessage: FlashMessage {}
 webFont: OTWWebFont {}
 styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
 locationCapture:LocationCapture { nextComponent="Capture"; observation = observation; }
+hasPhotoQuota:WOConditional { condition = hasPhotoQuota; }
 photoCapture:PhotoCapture { nextComponent="Capture"; observation = observation; }
+noPhotoQuota:WOConditional { condition = hasPhotoQuota; negate = 1; }
+upgradeURL:WOHyperlink { pageName = "PremiumSubscription"; }
 observationMap:ObservationMap { location = observation.location; }
 compass:Compass { location = observation.location; }
 done:WOHyperlink { action = return; class = "btn btn-primary"; }

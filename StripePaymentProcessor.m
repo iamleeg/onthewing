@@ -61,7 +61,7 @@
     return NO;
 }
 
-- (NSString *)checkoutURLForOption:(NSString *)option successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error {
+- (NSString *)checkoutURLForOption:(NSString *)option userId:(NSString *)userId successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error {
     NSString *urlString = @"https://api.stripe.com/v1/checkout/sessions";
     NSMutableURLRequest *request = [self requestWithURLString:urlString method:@"POST"];
     
@@ -89,6 +89,9 @@
     [bodyStr appendString:@"mode=subscription"];
     [bodyStr appendFormat:@"&success_url=%@", [successURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     [bodyStr appendFormat:@"&cancel_url=%@", [cancelURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    if (userId) {
+        [bodyStr appendFormat:@"&client_reference_id=%@", [userId stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    }
     
     [bodyStr appendFormat:@"&line_items[0][quantity]=1"];
     [bodyStr appendFormat:@"&line_items[0][price_data][currency]=%@", currency];

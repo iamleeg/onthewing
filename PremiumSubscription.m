@@ -110,7 +110,7 @@
     NSString *absCancelURL = [NSString stringWithFormat:@"%@://%@%@", scheme, host, cancelURL];
     
     NSError *error = nil;
-    NSString *checkoutURL = [processor checkoutURLForOption:option successURL:absSuccessURL cancelURL:absCancelURL error:&error];
+    NSString *checkoutURL = [processor checkoutURLForOption:option userId:self.observer.uid successURL:absSuccessURL cancelURL:absCancelURL error:&error];
     
     if (checkoutURL) {
         OTWRedirect *redirect = (OTWRedirect *)[self pageWithName:@"OTWRedirect"];

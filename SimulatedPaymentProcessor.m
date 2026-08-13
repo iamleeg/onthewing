@@ -8,10 +8,13 @@
 
 @implementation SimulatedPaymentProcessor
 
-- (NSString *)checkoutURLForOption:(NSString *)option successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error {
-    // In simulation mode, we instantly redirect to the success URL, appending a simulated session_id
+- (NSString *)checkoutURLForOption:(NSString *)option userId:(NSString *)userId successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error {
+    // In simulation mode, we simulate a webhook POST asynchronously, then immediately redirect the user to success.
+    // In a real system, the webhook arrives independently. Here we'll simulate the webhook call manually if we had a webhook URL,
+    // but actually, we can just let a background thread or a synchronous HTTP request hit our own webhook endpoint!
+    // Since we don't easily know our own webhook URL in the model layer, we can rely on `SimulateWebhookCommand` or similar.
     NSString *separator = [successURL rangeOfString:@"?"].location == NSNotFound ? @"?" : @"&";
-    return [NSString stringWithFormat:@"%@%@session_id=simulated_session_12345", successURL, separator];
+    return [NSString stringWithFormat:@"%@%@session_id=simulated_session_12345&client_reference_id=%@", successURL, separator, userId ? [userId stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] : @""];
 }
 
 - (BOOL)validatePaymentWithDetails:(NSString *)paymentDetails option:(NSString *)option error:(NSError **)error {

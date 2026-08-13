@@ -17,7 +17,12 @@
     <p>Upload a photo, or an audio recording, to relive the moment later!</p>
     <p>Optionally, record your current location and compass bearing to recall where you saw this:</p>
     <webobject name=locationCapture/>
-    <webobject name=photoCapture/>
+    <webobject name=hasPhotoQuota>
+        <webobject name=photoCapture/>
+    </webobject>
+    <webobject name=noPhotoQuota>
+        <p class="alert alert-warning">You have reached your free tier photo limit. <webobject name="upgradeURL">Upgrade to Premium</webobject> to save more photos.</p>
+    </webobject>
     <webobject name="observationMap"/>
     <webobject name="compass"/>
     <webobject name="done">Store this observation</webobject>

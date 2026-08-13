@@ -22,12 +22,13 @@
  * Creates a checkout session URL for the user to visit and complete payment.
  *
  * @param option The subscription tier or option being purchased (e.g., "monthly", "annual").
+ * @param userId The unique identifier of the user (client_reference_id).
  * @param successURL The URL to redirect to upon successful payment.
  * @param cancelURL The URL to redirect to if the user cancels.
  * @param error Out parameter for error details.
  * @return The checkout URL as a string, or nil on failure.
  */
-- (NSString *)checkoutURLForOption:(NSString *)option successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error;
+- (NSString *)checkoutURLForOption:(NSString *)option userId:(NSString *)userId successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error;
 
 /**
  * Cancels the auto-renewal for the specified customer.

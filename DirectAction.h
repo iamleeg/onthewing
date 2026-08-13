@@ -21,4 +21,5 @@
 @interface DirectAction : GSWDirectAction
 - (id)paymentSucceededAction;
 - (id)paymentCanceledAction;
+- (id)stripeWebhookAction;
 @end

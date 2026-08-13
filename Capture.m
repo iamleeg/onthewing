@@ -23,6 +23,7 @@
 
 #import "Capture.h"
 #import "Observation.h"
+#import "Observer.h"
 #import "Session.h"
 
 @implementation Capture
@@ -61,6 +62,29 @@
 
 - (id)discard {
   return [self pageWithName:@"Main"];
+}
+
+- (BOOL)hasPhotoQuota {
+    Session *session = (Session *)[self session];
+    Observer *user = [session user];
+    if (user == nil) {
+        return YES;
+    }
+    EOEditingContext *ec = [session defaultEditingContext];
+    NSUInteger quota = [user remainingPhotoQuotaInEditingContext:ec];
+    
+    if (quota == NSUIntegerMax) {
+        return YES;
+    }
+    
+    NSUInteger pendingPhotos = 0;
+    for (Observation *obs in [session unreviewedObservations]) {
+        if ([obs photoURL]) {
+            pendingPhotos++;
+        }
+    }
+    
+    return quota > pendingPhotos;
 }
 
 @end
