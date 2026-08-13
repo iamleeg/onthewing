@@ -40,6 +40,28 @@ backLink: WOHyperlink {
     class = "btn btn-secondary";
 }
 
+manageSubscriptionLink: WOHyperlink {
+    action = manageSubscription;
+    class = "btn btn-primary";
+    style = "width: 100%; text-align: center; display: block; margin-bottom: 1rem; margin-top: 1rem;";
+}
+
+membershipStatusString: WOString {
+    value = membershipStatusString;
+}
+
+isPremiumCondition: WOConditional {
+    condition = isPremium;
+}
+
+renewalDateString: WOString {
+    value = renewalDateString;
+}
+
+manageSubscriptionButtonText: WOString {
+    value = manageSubscriptionButtonText;
+}
+
 deleteForm: WOForm {
     action = deleteAccount;
     id = "delete-account-form";

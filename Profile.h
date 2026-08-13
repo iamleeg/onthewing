@@ -20,12 +20,17 @@
 // Lazily defaults to a real PhotoStorageMover; inject a fake for tests.
 @property (nonatomic, retain) PhotoStorageMover *photoStorageMover;
 
-- (id)showMain;
 - (BOOL)hasAvatar;
 - (NSString *)userName;
 - (NSString *)userEmail;
 - (NSString *)avatarUrl;
 - (id)updateProfile;
-- (id)deleteAccount;
+- (WOComponent *)showMain;
+- (WOComponent *)deleteAccount;
+- (WOComponent *)manageSubscription;
+- (BOOL)isPremium;
+- (NSString *)membershipStatusString;
+- (NSString *)renewalDateString;
+- (NSString *)manageSubscriptionButtonText;
 
 @end

@@ -7,7 +7,9 @@
 #import <Foundation/Foundation.h>
 #import "PaymentProcessor.h"
 
-@interface StripePaymentProcessor : NSObject <PaymentProcessor>
+@interface StripePaymentProcessor : NSObject <PaymentProcessor> {
+    NSString *_secretKey;
+}
 
 @property (nonatomic, copy) NSString *secretKey;
 

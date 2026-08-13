@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="utf-8">
     <title>On the Wing: User Profile</title>
     <webobject name="webFont" />
     <webobject name="styleSheet" />
@@ -38,6 +39,15 @@
                     <webobject name="backLink">Back to Journal</webobject>
                 </div>
             </webobject>
+
+            <div style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
+                <h3>Membership</h3>
+                <p style="margin-bottom: 0.5rem;">Status: <strong><webobject name="membershipStatusString" /></strong></p>
+                <webobject name="isPremiumCondition">
+                    <p style="margin-bottom: 1rem;">Renewal Date: <strong><webobject name="renewalDateString" /></strong></p>
+                </webobject>
+                <webobject name="manageSubscriptionLink"><webobject name="manageSubscriptionButtonText" /></webobject>
+            </div>
 
             <div style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
                 <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 1rem; text-align: left;">

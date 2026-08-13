@@ -50,8 +50,8 @@
     }
     
     // Parse JSON
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    if (json && [json[@"payment_status"] isEqualToString:@"paid"]) {
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (json && [[json objectForKey:@"payment_status"] isEqualToString:@"paid"]) {
         return YES;
     }
     
@@ -59,6 +59,63 @@
         *error = [NSError errorWithDomain:@"StripeErrorDomain" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Payment not paid."}];
     }
     return NO;
+}
+
+- (NSString *)checkoutURLForOption:(NSString *)option successURL:(NSString *)successURL cancelURL:(NSString *)cancelURL error:(NSError **)error {
+    NSString *urlString = @"https://api.stripe.com/v1/checkout/sessions";
+    NSMutableURLRequest *request = [self requestWithURLString:urlString method:@"POST"];
+    
+    // Determine pricing data based on the option
+    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"subscriptions.plist"];
+    NSDictionary *config = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSDictionary *optionConfig = [config objectForKey:option];
+    
+    if (!optionConfig) {
+        if (error) {
+            *error = [NSError errorWithDomain:@"StripeErrorDomain" code:2 userInfo:@{NSLocalizedDescriptionKey: @"Invalid subscription option"}];
+        }
+        return nil;
+    }
+    
+    // Calculate amount in cents/pence (e.g., 4.99 -> 499)
+    NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithString:[optionConfig objectForKey:@"amount"]];
+    NSDecimalNumber *multiplier = [NSDecimalNumber decimalNumberWithString:@"100"];
+    int unitAmount = [[amount decimalNumberByMultiplyingBy:multiplier] intValue];
+    NSString *currency = [[optionConfig objectForKey:@"currency"] lowercaseString];
+    NSString *interval = [[optionConfig objectForKey:@"interval"] isEqualToString:@"yr"] ? @"year" : @"month";
+    NSString *title = [optionConfig objectForKey:@"title"];
+    
+    NSMutableString *bodyStr = [NSMutableString string];
+    [bodyStr appendString:@"mode=subscription"];
+    [bodyStr appendFormat:@"&success_url=%@", [successURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    [bodyStr appendFormat:@"&cancel_url=%@", [cancelURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    
+    [bodyStr appendFormat:@"&line_items[0][quantity]=1"];
+    [bodyStr appendFormat:@"&line_items[0][price_data][currency]=%@", currency];
+    [bodyStr appendFormat:@"&line_items[0][price_data][product_data][name]=%@", [title stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    [bodyStr appendFormat:@"&line_items[0][price_data][recurring][interval]=%@", interval];
+    [bodyStr appendFormat:@"&line_items[0][price_data][unit_amount]=%d", unitAmount];
+    
+    [request setHTTPBody:[bodyStr dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSURLResponse *response = nil;
+    NSError *reqError = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&reqError];
+    
+    if (reqError) {
+        if (error) *error = reqError;
+        return nil;
+    }
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if (json && [json objectForKey:@"url"]) {
+        return [json objectForKey:@"url"];
+    }
+    
+    if (error) {
+        *error = [NSError errorWithDomain:@"StripeErrorDomain" code:3 userInfo:@{NSLocalizedDescriptionKey: @"Failed to create checkout session."}];
+    }
+    return nil;
 }
 
 - (BOOL)cancelAutoRenewalForCustomer:(NSString *)customerId error:(NSError **)error {
@@ -77,8 +134,8 @@
         return NO;
     }
     
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    if (json && [json[@"status"] isEqualToString:@"canceled"]) {
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (json && [[json objectForKey:@"status"] isEqualToString:@"canceled"]) {
         return YES;
     }
     

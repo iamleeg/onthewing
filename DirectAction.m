@@ -21,11 +21,27 @@
 #endif
 
 #import "DirectAction.h"
+#import "Session.h"
+#import "OTWFlashMessage.h"
 
 @implementation DirectAction
 
 - defaultAction {
   return [self pageWithName:@"Main"];
+}
+
+- (id)paymentSucceededAction {
+    Session *session = (Session *)[self session];
+    OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:@"Subscription process completed. Awaiting confirmation..." severityLevel:OTWFlashMessageSeverityInfo] autorelease];
+    [session setFlashMessage:msg];
+    return [self pageWithName:@"Profile"];
+}
+
+- (id)paymentCanceledAction {
+    Session *session = (Session *)[self session];
+    OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:@"Subscription cancelled." severityLevel:OTWFlashMessageSeverityError] autorelease];
+    [session setFlashMessage:msg];
+    return [self pageWithName:@"PremiumSubscription"];
 }
 
 @end

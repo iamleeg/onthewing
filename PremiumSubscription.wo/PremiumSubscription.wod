@@ -1,0 +1,45 @@
+FirebaseScript: OTWFirebaseScript {}
+webFont: OTWWebFont {}
+styleSheet: OTWStyleSheet { stylesheetName = "onthewing.css"; }
+FlashMessage: FlashMessage {}
+AGPLFooter: AGPLFooter {}
+
+isPremiumCondition: WOConditional {
+    condition = isPremium;
+}
+
+isNotPremiumCondition: WOConditional {
+    condition = isPremium;
+    negate = YES;
+}
+
+expiryDateString: WOString {
+    value = subscriptionExpiryString;
+}
+
+cancelForm: WOForm {}
+
+cancelButton: WOSubmitButton {
+    action = cancelSubscription;
+    class = "btn btn-danger";
+    value = "Cancel Subscription";
+}
+
+subscribeForm: WOForm {}
+
+monthlyButton: WOSubmitButton {
+    action = subscribeMonthly;
+    class = "btn btn-primary";
+    value = monthlyButtonText;
+}
+
+annualButton: WOSubmitButton {
+    action = subscribeAnnual;
+    class = "btn btn-primary";
+    value = annualButtonText;
+}
+
+backLink: WOHyperlink {
+    action = goBack;
+    class = "btn btn-secondary";
+}

@@ -19,5 +19,6 @@
 #include <WebObjects/WebObjects.h>
 
 @interface DirectAction : GSWDirectAction
-
+- (id)paymentSucceededAction;
+- (id)paymentCanceledAction;
 @end

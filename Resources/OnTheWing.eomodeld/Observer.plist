@@ -42,7 +42,7 @@
 	{
 	    allowsNull = Y;
 	    columnName = is_premium;
-	    externalType = integer;
+	    externalType = int;
 	    name = isPremium;
 	    valueClassName = NSNumber;
 	    valueType = i;

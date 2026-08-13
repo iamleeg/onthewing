@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>monthly</key>
+    <dict>
+        <key>title</key>
+        <string>Subscribe Monthly</string>
+        <key>amount</key>
+        <string>4.99</string>
+        <key>currency</key>
+        <string>GBP</string>
+        <key>interval</key>
+        <string>mo</string>
+    </dict>
+    <key>annual</key>
+    <dict>
+        <key>title</key>
+        <string>Subscribe Annually</string>
+        <key>amount</key>
+        <string>49.99</string>
+        <key>currency</key>
+        <string>GBP</string>
+        <key>interval</key>
+        <string>yr</string>
+    </dict>
+</dict>
+</plist>

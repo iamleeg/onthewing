@@ -36,6 +36,8 @@ patches:
             value: http://firebase-emulator-svc:9199
           - name: REDIS_HOST
             value: redis-svc
+          - name: PAYMENT_PROCESSOR
+            value: simulator
       - op: remove
         path: /spec/template/spec/containers/0/volumeMounts
       - op: remove

@@ -37,6 +37,35 @@
     return [self pageWithName:@"Main"];
 }
 
+- (WOComponent *)manageSubscription {
+    return [self pageWithName:@"PremiumSubscription"];
+}
+
+- (BOOL)isPremium {
+    Observer *user = [(Session *)[self session] user];
+    return [[user isPremium] boolValue];
+}
+
+- (NSString *)membershipStatusString {
+    return [self isPremium] ? @"Premium Membership" : @"Free Tier";
+}
+
+- (NSString *)renewalDateString {
+    Observer *user = [(Session *)[self session] user];
+    NSDate *expiry = [user subscriptionExpiryDate];
+    if (expiry) {
+        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+        [formatter setDateStyle:NSDateFormatterMediumStyle];
+        [formatter setTimeStyle:NSDateFormatterNoStyle];
+        return [formatter stringFromDate:expiry];
+    }
+    return @"Unknown";
+}
+
+- (NSString *)manageSubscriptionButtonText {
+    return [self isPremium] ? @"Cancel Membership" : @"Unlock Premium";
+}
+
 - (BOOL)hasAvatar {
     Observer *user = [(Session *)[self session] user];
     return [user avatarUrl] != nil && [[user avatarUrl] length] > 0;

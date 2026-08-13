@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>On the Wing: Premium Subscription</title>
+    <webobject name="webFont" />
+    <webobject name="styleSheet" />
+</head>
+<body>
+    <webobject name="FirebaseScript" />
+    <webobject name="FlashMessage" />
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <h2>Premium Subscription</h2>
+            
+            <webobject name="isPremiumCondition">
+                <!-- User is currently Premium -->
+                <div style="margin-bottom: 1.5rem;">
+                    <p>You are currently a Premium subscriber.</p>
+                    <p>Your subscription expires on: <strong><webobject name="expiryDateString" /></strong></p>
+                </div>
+                
+                <webobject name="cancelForm">
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem;">
+                        <webobject name="cancelButton">Cancel Subscription</webobject>
+                        <webobject name="backLink">Back</webobject>
+                    </div>
+                </webobject>
+            </webobject>
+            
+            <webobject name="isNotPremiumCondition">
+                <!-- User is not Premium -->
+                <div style="margin-bottom: 1.5rem;">
+                    <p>Upgrade to Premium for unlimited photo storage!</p>
+                </div>
+                
+                <webobject name="subscribeForm">
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; flex-direction: column; align-items: center;">
+                        <webobject name="monthlyButton">Subscribe Monthly ($4.99/mo)</webobject>
+                        <webobject name="annualButton">Subscribe Annually ($49.99/yr)</webobject>
+                        <br/>
+                        <webobject name="backLink">Back</webobject>
+                    </div>
+                </webobject>
+            </webobject>
+        </div>
+    </div>
+    
+    <webobject name="AGPLFooter" />
+</body>
+</html>
