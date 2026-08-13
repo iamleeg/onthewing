@@ -122,15 +122,27 @@
         [ec saveChanges];
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
+        [entry setObserver:user];
+        if (![user journalEntries]) { [user setJournalEntries:[NSMutableArray array]]; }
+        [[user journalEntries] addObject:entry];
 
         Observation *o1 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [entry addObject:o1 toBothSidesOfRelationshipWithKey:@"observations"];
+        [o1 setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:o1];
+        [o1 setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:o1];
         [o1 setCaptureDate:[NSDate date]];
         [o1 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%2Fabc%2Fentry%2Fphoto1.jpg?alt=media"];
 
         Observation *o2 = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [entry addObject:o2 toBothSidesOfRelationshipWithKey:@"observations"];
+        [o2 setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:o2];
+        [o2 setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:o2];
         [o2 setCaptureDate:[NSDate date]];
         [o2 setPhotoURLString:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%2Fabc%2Fentry%2Fphoto2.jpg?alt=media"];
 

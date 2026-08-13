@@ -83,17 +83,29 @@
         [ec saveChanges];
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
+        [entry setObserver:user];
+        if (![user journalEntries]) { [user setJournalEntries:[NSMutableArray array]]; }
+        [[user journalEntries] addObject:entry];
 
         for (NSUInteger i = 0; i < 3; i++) {
             Observation *withPhoto = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-            [entry addObject:withPhoto toBothSidesOfRelationshipWithKey:@"observations"];
+            [withPhoto setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:withPhoto];
+        [withPhoto setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:withPhoto];
             [withPhoto setCaptureDate:[NSDate date]];
             [withPhoto setPhotoURLString:[NSString stringWithFormat:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%%2F%lu.jpg?alt=media", (unsigned long)i]];
         }
 
         Observation *withoutPhoto = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [entry addObject:withoutPhoto toBothSidesOfRelationshipWithKey:@"observations"];
+        [withoutPhoto setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:withoutPhoto];
+        [withoutPhoto setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:withoutPhoto];
         [withoutPhoto setCaptureDate:[NSDate date]];
 
         [ec saveChanges];
@@ -143,11 +155,18 @@
         [ec saveChanges];
 
         JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
-        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
+        [entry setObserver:user];
+        if (![user journalEntries]) { [user setJournalEntries:[NSMutableArray array]]; }
+        [[user journalEntries] addObject:entry];
 
         for (NSUInteger i = 0; i < kFreeTierPhotoLimit; i++) {
             Observation *withPhoto = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
-            [entry addObject:withPhoto toBothSidesOfRelationshipWithKey:@"observations"];
+            [withPhoto setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:withPhoto];
+        [withPhoto setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:withPhoto];
             [withPhoto setCaptureDate:[NSDate date]];
             [withPhoto setPhotoURLString:[NSString stringWithFormat:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%%2F%lu.jpg?alt=media", (unsigned long)i]];
         }

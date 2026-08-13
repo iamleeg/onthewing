@@ -51,6 +51,8 @@
                                                   token:@"token"];
 
     [entry setObserver:observer];
+        if (![observer journalEntries]) { [observer setJournalEntries:[NSMutableArray array]]; }
+        if (![[observer journalEntries] containsObject:entry]) { [[observer journalEntries] addObject:entry]; }
 
     XCTAssertEqualObjects([entry observer], observer);
     [entry release];
@@ -131,9 +133,16 @@
 
         JournalEntry *entry = [ec1 createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
         [entry setObserver:user];
+        if (![user journalEntries]) { [user setJournalEntries:[NSMutableArray array]]; }
+        if (![[user journalEntries] containsObject:entry]) { [[user journalEntries] addObject:entry]; }
 
         Observation *observation = [ec1 createAndInsertInstanceOfEntityNamed:@"Observation"];
-        [entry addObject:observation toBothSidesOfRelationshipWithKey:@"observations"];
+        [observation setJournalEntry:entry];
+        if (![entry observations]) { [entry setObservations:[NSMutableArray array]]; }
+        [[entry observations] addObject:observation];
+        [observation setObserver:[entry observer]];
+        if (![[entry observer] observations]) { [[entry observer] setObservations:[NSMutableArray array]]; }
+        [[[entry observer] observations] addObject:observation];
         [observation setCaptureDate:[NSDate date]];
 
         [ec1 saveChanges];

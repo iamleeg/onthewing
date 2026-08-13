@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>On the Wing: Error</title>
+    <webobject name="webFont" />
+    <webobject name="styleSheet" />
+    <style>
+        .error-accent {
+            color: var(--color-error);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="error-accent">Something went wrong</h1>
+    <p>We're sorry, but an unexpected error occurred while processing your request.</p>
+    <p>
+        If this problem persists, please <a href="https://github.com/iamleeg/onthewing/issues/new">report an issue on GitHub</a> 
+        and include this correlation ID: <strong><webobject name="correlationId" /></strong>.
+    </p>
+    <p><a href="/">Return to Home</a></p>
+
+    <webobject name="AGPLFooter" />
+</body>
+</html>

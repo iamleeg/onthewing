@@ -29,6 +29,7 @@
 #import "JournalEntry.h"
 #import "OTWRedisSessionStore.h"
 #import <EOAccess/EODatabaseContext.h>
+#import "ErrorPage.h"
 
 
 
@@ -229,6 +230,15 @@ extern NSDictionary* globalMime;
 
 - (NSString *)contextClassName {
   return @"WOContext";
+}
+
+- (GSWResponse *)handleException:(NSException *)exception inContext:(GSWContext *)aContext {
+    NSString *correlationId = [[NSProcessInfo processInfo] globallyUniqueString];
+    NSLog(@"Unhandled application exception [%@]: %@", correlationId, exception);
+    
+    ErrorPage *errorPage = (ErrorPage *)[self pageWithName:@"ErrorPage" inContext:aContext];
+    [errorPage setCorrelationId:correlationId];
+    return [errorPage generateResponse];
 }
 
 @end
