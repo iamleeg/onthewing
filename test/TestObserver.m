@@ -116,4 +116,60 @@
     [app release];
 }
 
+- (void)testRemainingPhotoQuotaIsUnlimitedForPremiumUser {
+    OTWApp *app = [[OTWApp alloc] init];
+    EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
+    Observer *user = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString]
+                                                name:@"Premium"
+                                               email:@"premium@example.com"
+                                           avatarUrl:nil
+                                               token:nil] autorelease];
+    [user setIsPremium:@(YES)];
+
+    XCTAssertEqual([user remainingPhotoQuotaInEditingContext:ec], (NSUInteger)NSUIntegerMax);
+    [app release];
+}
+
+- (void)testRemainingPhotoQuotaAtBoundaryCondition {
+    OTWApp *app = [[OTWApp alloc] init];
+    EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
+
+    NSError *error = nil;
+    Observer *user = nil;
+    [ec lock];
+    NS_DURING {
+        user = [ec createAndInsertInstanceOfEntityNamed:@"Observer"];
+        [user setUid:[[NSUUID UUID] UUIDString]];
+        [ec saveChanges];
+
+        JournalEntry *entry = [ec createAndInsertInstanceOfEntityNamed:@"JournalEntry"];
+        [user addObject:entry toBothSidesOfRelationshipWithKey:@"journalEntries"];
+
+        for (NSUInteger i = 0; i < kFreeTierPhotoLimit; i++) {
+            Observation *withPhoto = [ec createAndInsertInstanceOfEntityNamed:@"Observation"];
+            [entry addObject:withPhoto toBothSidesOfRelationshipWithKey:@"observations"];
+            [withPhoto setCaptureDate:[NSDate date]];
+            [withPhoto setPhotoURLString:[NSString stringWithFormat:@"https://firebasestorage.googleapis.com/v0/b/bucket/o/journal%%2F%lu.jpg?alt=media", (unsigned long)i]];
+        }
+
+        [ec saveChanges];
+    }
+    NS_HANDLER {
+        NSLog(@"testRemainingPhotoQuotaAtBoundaryCondition: no DB available to set up fixtures: %@", localException);
+        error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    }
+    NS_ENDHANDLER;
+    [ec unlock];
+
+    if (error != nil) {
+        [app release];
+        return;
+    }
+
+    XCTAssertEqual([user savedPhotoCountInEditingContext:ec], (NSUInteger)kFreeTierPhotoLimit);
+    XCTAssertEqual([user remainingPhotoQuotaInEditingContext:ec], (NSUInteger)0);
+
+    [app release];
+}
+
 @end

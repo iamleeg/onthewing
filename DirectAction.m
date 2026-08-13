@@ -53,7 +53,8 @@
     NSData *body = [req content];
     
     NSError *error = nil;
-    NSString *secret = [[[NSProcessInfo processInfo] environment] objectForKey:@"STRIPE_WEBHOOK_SECRET"];
+    const char *secretEnv = getenv("STRIPE_WEBHOOK_SECRET");
+    NSString *secret = secretEnv ? [NSString stringWithUTF8String:secretEnv] : nil;
     if (secret && [secret length] > 0) {
         NSString *signatureHeader = [req headerForKey:@"Stripe-Signature"];
         if (!signatureHeader) {

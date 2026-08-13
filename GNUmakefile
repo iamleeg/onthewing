@@ -71,6 +71,9 @@ OTWTests_OBJC_FILES = \
 	test/TestPhotoCapture.m \
 	test/TestViewJournalEntry.m \
 	test/TestFlashMessage.m \
+	test/TestStripePaymentProcessor.m \
+	test/TestSimulatedPaymentProcessor.m \
+	test/TestPremiumSubscription.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \

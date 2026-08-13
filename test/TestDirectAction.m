@@ -15,6 +15,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+//
 
 #import "DirectAction.h"
 #import "OTWApp.h"
@@ -25,6 +26,16 @@
 @end
 
 @implementation TestDirectAction
+
+- (void)setUp {
+    [super setUp];
+    setenv("STRIPE_WEBHOOK_SECRET", "whsec_test_secret", 1);
+}
+
+- (void)tearDown {
+    unsetenv("STRIPE_WEBHOOK_SECRET");
+    [super tearDown];
+}
 
 - (void)testDefaultActionReturnsMainPage {
   OTWApp *app = [[OTWApp alloc] init];
@@ -38,6 +49,35 @@
   DirectAction *da = [[DirectAction alloc] initWithRequest:req];
   id results = [da defaultAction];
   XCTAssertTrue([results isKindOfClass:[Main class]]);
+}
+
+- (void)testStripeWebhookMissingSignature {
+    NSString *bodyStr = @"{\"type\":\"checkout.session.completed\",\"data\":{\"object\":{\"client_reference_id\":\"mock_uid\",\"customer\":\"cus_123\"}}}";
+    NSData *bodyData = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    WORequest *req = [[WORequest alloc] initWithMethod:@"POST" uri:@"/wa/stripeWebhookAction" httpVersion:@"HTTP/1.1" headers:nil content:bodyData userInfo:nil];
+    DirectAction *da = [[DirectAction alloc] initWithRequest:req];
+    WOResponse *resp = (WOResponse *)[da stripeWebhookAction];
+    XCTAssertEqual([resp status], 400);
+}
+
+- (void)testStripeWebhookInvalidSignature {
+    NSString *bodyStr = @"{\"type\":\"checkout.session.completed\",\"data\":{\"object\":{\"client_reference_id\":\"mock_uid\",\"customer\":\"cus_123\"}}}";
+    NSData *bodyData = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *headers = @{@"Stripe-Signature": @[@"t=1234567890,v1=invalidsignature"]};
+    WORequest *req = [[WORequest alloc] initWithMethod:@"POST" uri:@"/wa/stripeWebhookAction" httpVersion:@"HTTP/1.1" headers:headers content:bodyData userInfo:nil];
+    DirectAction *da = [[DirectAction alloc] initWithRequest:req];
+    WOResponse *resp = (WOResponse *)[da stripeWebhookAction];
+    XCTAssertEqual([resp status], 400);
+}
+
+- (void)testStripeWebhookValidSignature {
+    NSString *bodyStr = @"{\"type\":\"checkout.session.completed\",\"data\":{\"object\":{\"client_reference_id\":\"mock_uid\",\"customer\":\"cus_123\"}}}";
+    NSData *bodyData = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *headers = @{@"Stripe-Signature": @[@"t=1234567890,v1=e3b9414dadaf73d7dba408182f16523cd71539334ba706354e3943ef19e88dce"]};
+    WORequest *req = [[WORequest alloc] initWithMethod:@"POST" uri:@"/wa/stripeWebhookAction" httpVersion:@"HTTP/1.1" headers:headers content:bodyData userInfo:nil];
+    DirectAction *da = [[DirectAction alloc] initWithRequest:req];
+    WOResponse *resp = (WOResponse *)[da stripeWebhookAction];
+    XCTAssertEqual([resp status], 200);
 }
 
 @end
