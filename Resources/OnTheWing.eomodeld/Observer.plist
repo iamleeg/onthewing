@@ -38,6 +38,29 @@
 	    name = token;
 	    valueClassName = NSString;
 	    width = 2048;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = is_premium;
+	    externalType = integer;
+	    name = isPremium;
+	    valueClassName = NSNumber;
+	    valueType = i;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = subscription_expiry_date;
+	    externalType = timestamp;
+	    name = subscriptionExpiryDate;
+	    valueClassName = NSDate;
+	},
+	{
+	    allowsNull = Y;
+	    columnName = payment_processor_customer_id;
+	    externalType = varchar;
+	    name = paymentProcessorCustomerId;
+	    valueClassName = NSString;
+	    width = 255;
 	}
     );
     attributesUsedForLocking = (
@@ -50,6 +73,9 @@
 	email,
 	avatarUrl,
 	token,
+	isPremium,
+	subscriptionExpiryDate,
+	paymentProcessorCustomerId,
 	journalEntries,
 	observations
     );

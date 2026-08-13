@@ -18,6 +18,9 @@ extern NSUInteger const kFreeTierPhotoLimit;
     NSString *_email;
     NSString *_avatarUrl;
     NSString *_token;
+    NSNumber *_isPremium;
+    NSDate *_subscriptionExpiryDate;
+    NSString *_paymentProcessorCustomerId;
     NSMutableArray *_journalEntries;
     NSMutableArray *_observations;
 }
@@ -27,6 +30,9 @@ extern NSUInteger const kFreeTierPhotoLimit;
 @property (nonatomic, copy) NSString *email;
 @property (nonatomic, copy) NSString *avatarUrl;
 @property (nonatomic, copy) NSString *token;
+@property (nonatomic, retain) NSNumber *isPremium;
+@property (nonatomic, retain) NSDate *subscriptionExpiryDate;
+@property (nonatomic, copy) NSString *paymentProcessorCustomerId;
 
 // Inverse of JournalEntry.observer.
 @property (nonatomic, retain) NSMutableArray *journalEntries;
@@ -45,7 +51,12 @@ extern NSUInteger const kFreeTierPhotoLimit;
 - (NSUInteger)savedPhotoCountInEditingContext:(EOEditingContext *)ec;
 
 // kFreeTierPhotoLimit minus -savedPhotoCountInEditingContext:, floored at 0.
+// If the observer is on a premium tier, this returns NSUIntegerMax.
 - (NSUInteger)remainingPhotoQuotaInEditingContext:(EOEditingContext *)ec;
+
+- (void)subscribeToPremium:(NSString *)option paymentDetails:(NSString *)paymentDetails;
+- (void)cancelPremiumSubscription;
+- (void)handlePaymentRenewal:(BOOL)success;
 
 @end
 
