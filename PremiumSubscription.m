@@ -82,8 +82,8 @@
     }
     
     WOContext *ctx = [self context];
-    NSString *successURL = [ctx urlWithRequestHandlerKey:[WOApplication directActionRequestHandlerKey] path:@"paymentSucceeded" queryString:nil];
-    NSString *cancelURL = [ctx urlWithRequestHandlerKey:[WOApplication directActionRequestHandlerKey] path:@"paymentCanceled" queryString:nil];
+    NSString *successURL = [ctx urlWithRequestHandlerKey:[WOApplication directActionRequestHandlerKey] path:@"DirectAction/paymentSucceeded" queryString:nil];
+    NSString *cancelURL = [ctx urlWithRequestHandlerKey:[WOApplication directActionRequestHandlerKey] path:@"DirectAction/paymentCanceled" queryString:nil];
     
     // Stripe requires absolute URLs. We must correctly determine the host and port.
     NSString *host = [[ctx request] headerForKey:@"x-forwarded-host"];
