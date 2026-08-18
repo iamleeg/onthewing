@@ -123,25 +123,52 @@
 }
 
 - (BOOL)cancelAutoRenewalForCustomer:(NSString *)customerId error:(NSError **)error {
-    // Typically we would fetch the customer's active subscription and then cancel it.
-    // For simplicity, assume customerId represents the subscription ID here or we look it up.
-    // Stripe cancel API: DELETE /v1/subscriptions/{subscription_id}
-    NSString *urlString = [NSString stringWithFormat:@"https://api.stripe.com/v1/subscriptions/%@", customerId];
-    NSMutableURLRequest *request = [self requestWithURLString:urlString method:@"DELETE"];
+    // 1. Fetch the customer's active subscriptions
+    NSString *listUrlString = [NSString stringWithFormat:@"https://api.stripe.com/v1/subscriptions?customer=%@", customerId];
+    NSMutableURLRequest *listReq = [self requestWithURLString:listUrlString method:@"GET"];
     
     NSURLResponse *response = nil;
     NSError *reqError = nil;
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&reqError];
+    NSData *listData = [NSURLConnection sendSynchronousRequest:listReq returningResponse:&response error:&reqError];
     
     if (reqError) {
         if (error) *error = reqError;
         return NO;
     }
     
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    NSDictionary *listJson = [NSJSONSerialization JSONObjectWithData:listData options:0 error:NULL];
+    NSArray *subscriptions = [listJson objectForKey:@"data"];
+    
+    if (!subscriptions || [subscriptions count] == 0) {
+        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:404 userInfo:@{NSLocalizedDescriptionKey: @"No active subscription found for this customer in Stripe."}];
+        return NO;
+    }
+    
+    NSString *subscriptionId = [[subscriptions objectAtIndex:0] objectForKey:@"id"];
+    
+    // 2. Cancel the subscription
+    NSString *cancelUrlString = [NSString stringWithFormat:@"https://api.stripe.com/v1/subscriptions/%@", subscriptionId];
+    NSMutableURLRequest *cancelReq = [self requestWithURLString:cancelUrlString method:@"DELETE"];
+    
+    NSData *cancelData = [NSURLConnection sendSynchronousRequest:cancelReq returningResponse:&response error:&reqError];
+    if (reqError) {
+        if (error) *error = reqError;
+        return NO;
+    }
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:cancelData options:0 error:NULL];
+    
+    if (json && [json objectForKey:@"error"]) {
+        NSString *errMsg = [[json objectForKey:@"error"] objectForKey:@"message"];
+        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:400 userInfo:@{NSLocalizedDescriptionKey: errMsg ? errMsg : @"Unknown Stripe error."}];
+        return NO;
+    }
+    
     if (json && [[json objectForKey:@"status"] isEqualToString:@"canceled"]) {
         return YES;
     }
+    
+    if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:500 userInfo:@{NSLocalizedDescriptionKey: @"Failed to parse Stripe cancel response."}];
     
     return NO;
 }

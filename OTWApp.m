@@ -208,16 +208,22 @@ extern NSDictionary* globalMime;
                         }
                         
                         if (!found) {
-                            NSArray *statements = [exprClass statementsToInsertColumnForAttribute:appAttr options:@{}];
-                            for (EOSQLExpression *expr in statements) {
-                                NS_DURING {
-                                    [adaptorChannel evaluateExpression:expr];
+                            NS_DURING {
+                                NSArray *statements = [exprClass statementsToInsertColumnForAttribute:appAttr options:nil];
+                                if (statements) {
+                                    for (EOSQLExpression *expr in statements) {
+                                        NS_DURING {
+                                            [adaptorChannel evaluateExpression:expr];
+                                        }
+                                        NS_HANDLER {
+                                            NSLog(@"Failed to add column %@: %@", [appAttr columnName], localException);
+                                        }
+                                        NS_ENDHANDLER;
+                                    }
                                 }
-                                NS_HANDLER {
-                                    NSLog(@"Failed to add column %@: %@", [appAttr columnName], localException);
-                                }
-                                NS_ENDHANDLER;
-                            }
+                            } NS_HANDLER {
+                                NSLog(@"Failed to generate column insertion statement for %@: %@", [appAttr name], localException);
+                            } NS_ENDHANDLER;
                         }
                     }
                 }
