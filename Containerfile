@@ -29,8 +29,9 @@ ENV CXX=clang++
 
 # Build and install GSWeb from source
 WORKDIR /src
-RUN git clone https://github.com/gnustep/libs-gsweb.git && \
+RUN git clone https://github.com/iamleeg/libs-gsweb.git && \
     cd libs-gsweb && \
+    git checkout 540f6943fef2e9176073a095a481b81716add2b8 && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure && \
     make && \
@@ -46,9 +47,9 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
 
 # Build and install libs-gdl2 from source
 WORKDIR /src
-RUN git clone https://github.com/gnustep/libs-gdl2.git && \
+RUN git clone https://github.com/iamleeg/libs-gdl2.git && \
     cd libs-gdl2 && \
-    git checkout dae456d306f453f44e82d9b413bcda1422e8ddd6 && \
+    git checkout 96234ad85a12a6261c03e230e648447c731abd04 && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \
     make && \
