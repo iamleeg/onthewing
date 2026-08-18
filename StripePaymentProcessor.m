@@ -98,6 +98,7 @@
     [bodyStr appendFormat:@"&line_items[0][price_data][product_data][name]=%@", [title stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     [bodyStr appendFormat:@"&line_items[0][price_data][recurring][interval]=%@", interval];
     [bodyStr appendFormat:@"&line_items[0][price_data][unit_amount]=%d", unitAmount];
+    [bodyStr appendString:@"&managed_payments[enabled]=false"];
     
     [request setHTTPBody:[bodyStr dataUsingEncoding:NSUTF8StringEncoding]];
     

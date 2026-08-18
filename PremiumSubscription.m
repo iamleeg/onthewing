@@ -117,8 +117,11 @@
         [redirect setUrl:checkoutURL];
         return redirect;
     } else {
+        NSString *correlationID = [[NSUUID UUID] UUIDString];
+        NSLog(@"[CorrelationID: %@] Failed to create checkout session: %@", correlationID, error);
+        
         NSString *errMsg = error ? [error localizedDescription] : @"Unknown error creating checkout session.";
-        OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:[NSString stringWithFormat:@"Error: %@", errMsg] severityLevel:OTWFlashMessageSeverityError] autorelease];
+        OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:[NSString stringWithFormat:@"Error: %@ (Correlation ID: %@)", errMsg, correlationID] severityLevel:OTWFlashMessageSeverityError] autorelease];
         [session setFlashMessage:msg];
         return nil;
     }
@@ -169,8 +172,11 @@
         OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:@"Membership cancelled successfully." severityLevel:OTWFlashMessageSeverityInfo] autorelease];
         [session setFlashMessage:msg];
     } else {
+        NSString *correlationID = [[NSUUID UUID] UUIDString];
+        NSLog(@"[CorrelationID: %@] Failed to cancel subscription: %@", correlationID, error);
+        
         NSString *errMsg = error ? [error localizedDescription] : @"Unknown error cancelling subscription.";
-        OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:[NSString stringWithFormat:@"Error cancelling: %@", errMsg] severityLevel:OTWFlashMessageSeverityError] autorelease];
+        OTWFlashMessage *msg = [[[OTWFlashMessage alloc] initWithStringValue:[NSString stringWithFormat:@"Error cancelling: %@ (Correlation ID: %@)", errMsg, correlationID] severityLevel:OTWFlashMessageSeverityError] autorelease];
         [session setFlashMessage:msg];
     }
     
