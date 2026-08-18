@@ -65,7 +65,11 @@
     const char *secretEnv = getenv("STRIPE_WEBHOOK_SECRET");
     NSString *secret = secretEnv ? [NSString stringWithUTF8String:secretEnv] : nil;
     if (secret && [secret length] > 0) {
-        NSString *signatureHeader = [req headerForKey:@"Stripe-Signature"];
+        NSString *signatureHeader = [req headerForKey:@"stripe-signature"];
+        if (!signatureHeader) {
+            signatureHeader = [req headerForKey:@"Stripe-Signature"];
+        }
+        
         if (!signatureHeader) {
             return [self errorResponseWithStatus:400 reason:@"Missing Stripe-Signature header"];
         }
