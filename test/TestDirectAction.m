@@ -80,4 +80,14 @@
     XCTAssertEqual([resp status], 200);
 }
 
+- (void)testStripeWebhookLowercaseSignature {
+    NSString *bodyStr = @"{\"type\":\"checkout.session.completed\",\"data\":{\"object\":{\"client_reference_id\":\"mock_uid\",\"customer\":\"cus_123\"}}}";
+    NSData *bodyData = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *headers = @{@"stripe-signature": @[@"t=1234567890,v1=e3b9414dadaf73d7dba408182f16523cd71539334ba706354e3943ef19e88dce"]};
+    WORequest *req = [[WORequest alloc] initWithMethod:@"POST" uri:@"/wa/stripeWebhookAction" httpVersion:@"HTTP/1.1" headers:headers content:bodyData userInfo:nil];
+    DirectAction *da = [[DirectAction alloc] initWithRequest:req];
+    WOResponse *resp = (WOResponse *)[da stripeWebhookAction];
+    XCTAssertEqual([resp status], 200);
+}
+
 @end

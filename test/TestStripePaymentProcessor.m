@@ -50,3 +50,48 @@
 }
 
 @end
+
+#import "MockURLProtocol.h"
+
+@interface TestStripePaymentProcessor (Integration)
+@end
+
+@implementation TestStripePaymentProcessor (Integration)
+
+- (void)setUp {
+    [super setUp];
+    [NSURLProtocol registerClass:[MockURLProtocol class]];
+    [MockURLProtocol clearMocks];
+}
+
+- (void)tearDown {
+    [NSURLProtocol unregisterClass:[MockURLProtocol class]];
+    [MockURLProtocol clearMocks];
+    [super tearDown];
+}
+
+- (void)testCancelAutoRenewalNoSubscription {
+    StripePaymentProcessor *processor = [[StripePaymentProcessor alloc] initWithSecretKey:@"sk_test_123"];
+    
+    // Mock GET /v1/subscriptions returning empty data list
+    NSDictionary *emptyResp = @{@"data": @[]};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:emptyResp options:0 error:NULL];
+    [MockURLProtocol setResponseData:data];
+    
+    NSError *error = nil;
+    BOOL success = [processor cancelAutoRenewalForCustomer:@"cus_123" error:&error];
+    
+    XCTAssertFalse(success);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects([error domain], @"StripeErrorDomain");
+    XCTAssertEqual([error code], 404);
+    XCTAssertEqualObjects([[error userInfo] objectForKey:@"NSLocalizedDescription"], @"No active subscription found for this customer in Stripe.");
+    
+    NSArray *requests = [MockURLProtocol requests];
+    XCTAssertEqual([requests count], 1);
+    XCTAssertEqualObjects([[[requests objectAtIndex:0] URL] absoluteString], @"https://api.stripe.com/v1/subscriptions?customer=cus_123");
+    
+    [processor release];
+}
+
+@end

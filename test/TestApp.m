@@ -146,4 +146,12 @@
   XCTAssertEqualObjects([[journalEntryEntity primaryKeyAttributeNames] firstObject], @"journalEntryId");
 }
 
+- (void)testAttemptSchemaInitializationResilience {
+  // attemptSchemaInitialization is called during [OTWApp init].
+  // If the resilient NS_DURING block works, it will catch the GDL2 exception
+  // (Tried to add nil to array) internally without bubbling up.
+  // We explicitly call it here to ensure it doesn't throw.
+  XCTAssertNoThrow([_app attemptSchemaInitialization]);
+}
+
 @end

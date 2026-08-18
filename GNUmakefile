@@ -75,6 +75,7 @@ OTWTests_OBJC_FILES = \
 	test/TestSimulatedPaymentProcessor.m \
 	test/TestPremiumSubscription.m \
 	test/TestErrorPage.m \
+	test/MockURLProtocol.m \
 	OTWApp.m \
 	Session.m \
 	DirectAction.m \
