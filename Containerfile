@@ -46,8 +46,9 @@ RUN git clone https://github.com/gnustep/tools-xctest.git && \
 
 # Build and install libs-gdl2 from source
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/gnustep/libs-gdl2.git && \
+RUN git clone https://github.com/iamleeg/libs-gdl2.git && \
     cd libs-gdl2 && \
+    git switch vendored-fixes && \
     . /usr/share/GNUstep/Makefiles/GNUstep.sh && \
     ./configure --disable-gui-projects --disable-gorm-palette && \
     make && \

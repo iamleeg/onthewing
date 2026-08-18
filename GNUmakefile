@@ -136,6 +136,7 @@ include $(GNUSTEP_MAKEFILES)/documentation.make
 
 internal-check:: OTWTests
 	DYLD_LIBRARY_PATH=/usr/local/lib:$(DYLD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=/usr/local/lib:$(LD_LIBRARY_PATH) \
 	/usr/local/bin/xctest ./OTWTests.bundle
 	npm install && npm test
 
