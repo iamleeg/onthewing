@@ -56,7 +56,7 @@
     }
     
     if (error) {
-        *error = [NSError errorWithDomain:@"StripeErrorDomain" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Payment not paid."}];
+        *error = [NSError errorWithDomain:@"StripeErrorDomain" code:1 userInfo:@{@"NSLocalizedDescription": @"Payment not paid."}];
     }
     return NO;
 }
@@ -72,7 +72,7 @@
     
     if (!optionConfig) {
         if (error) {
-            *error = [NSError errorWithDomain:@"StripeErrorDomain" code:2 userInfo:@{NSLocalizedDescriptionKey: @"Invalid subscription option"}];
+            *error = [NSError errorWithDomain:@"StripeErrorDomain" code:2 userInfo:@{@"NSLocalizedDescription": @"Invalid subscription option"}];
         }
         return nil;
     }
@@ -117,12 +117,13 @@
     }
     
     if (error) {
-        *error = [NSError errorWithDomain:@"StripeErrorDomain" code:3 userInfo:@{NSLocalizedDescriptionKey: @"Failed to create checkout session."}];
+        *error = [NSError errorWithDomain:@"StripeErrorDomain" code:3 userInfo:@{@"NSLocalizedDescription": @"Failed to create checkout session."}];
     }
     return nil;
 }
 
 - (BOOL)cancelAutoRenewalForCustomer:(NSString *)customerId error:(NSError **)error {
+    NSLog(@"Starting cancelAutoRenewalForCustomer for %@", customerId);
     // 1. Fetch the customer's active subscriptions
     NSString *listUrlString = [NSString stringWithFormat:@"https://api.stripe.com/v1/subscriptions?customer=%@", customerId];
     NSMutableURLRequest *listReq = [self requestWithURLString:listUrlString method:@"GET"];
@@ -131,44 +132,54 @@
     NSError *reqError = nil;
     NSData *listData = [NSURLConnection sendSynchronousRequest:listReq returningResponse:&response error:&reqError];
     
+    NSLog(@"listData length: %lu, reqError: %@", (unsigned long)[listData length], reqError);
     if (reqError) {
         if (error) *error = reqError;
         return NO;
     }
     
     NSDictionary *listJson = [NSJSONSerialization JSONObjectWithData:listData options:0 error:NULL];
+    NSLog(@"listJson: %@", listJson);
     NSArray *subscriptions = [listJson objectForKey:@"data"];
     
     if (!subscriptions || [subscriptions count] == 0) {
-        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:404 userInfo:@{NSLocalizedDescriptionKey: @"No active subscription found for this customer in Stripe."}];
+        NSLog(@"No active subscription found.");
+        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:404 userInfo:@{@"NSLocalizedDescription": @"No active subscription found for this customer in Stripe."}];
         return NO;
     }
     
     NSString *subscriptionId = [[subscriptions objectAtIndex:0] objectForKey:@"id"];
+    NSLog(@"Found subscriptionId: %@", subscriptionId);
     
     // 2. Cancel the subscription
     NSString *cancelUrlString = [NSString stringWithFormat:@"https://api.stripe.com/v1/subscriptions/%@", subscriptionId];
     NSMutableURLRequest *cancelReq = [self requestWithURLString:cancelUrlString method:@"DELETE"];
     
     NSData *cancelData = [NSURLConnection sendSynchronousRequest:cancelReq returningResponse:&response error:&reqError];
+    NSLog(@"cancelData length: %lu, reqError: %@", (unsigned long)[cancelData length], reqError);
+    
     if (reqError) {
         if (error) *error = reqError;
         return NO;
     }
     
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:cancelData options:0 error:NULL];
+    NSLog(@"cancelJson: %@", json);
     
     if (json && [json objectForKey:@"error"]) {
         NSString *errMsg = [[json objectForKey:@"error"] objectForKey:@"message"];
-        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:400 userInfo:@{NSLocalizedDescriptionKey: errMsg ? errMsg : @"Unknown Stripe error."}];
+        NSLog(@"Stripe cancel error: %@", errMsg);
+        if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:400 userInfo:@{@"NSLocalizedDescription": errMsg ? errMsg : @"Unknown Stripe error."}];
         return NO;
     }
     
     if (json && [[json objectForKey:@"status"] isEqualToString:@"canceled"]) {
+        NSLog(@"Successfully canceled!");
         return YES;
     }
     
-    if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:500 userInfo:@{NSLocalizedDescriptionKey: @"Failed to parse Stripe cancel response."}];
+    NSLog(@"Failed to parse canceled status.");
+    if (error) *error = [NSError errorWithDomain:@"StripeErrorDomain" code:500 userInfo:@{@"NSLocalizedDescription": @"Failed to parse Stripe cancel response."}];
     
     return NO;
 }
