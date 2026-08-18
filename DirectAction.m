@@ -48,6 +48,15 @@
     return [self pageWithName:@"PremiumSubscription"];
 }
 
+- (WOResponse *)errorResponseWithStatus:(int)status reason:(NSString *)reason {
+    NSString *correlationId = [[NSProcessInfo processInfo] globallyUniqueString];
+    NSLog(@"Webhook error %d [%@]: %@", status, correlationId, reason);
+    WOResponse *resp = [[[WOResponse alloc] init] autorelease];
+    [resp setStatus:status];
+    [resp appendContentString:[NSString stringWithFormat:@"%@. Correlation ID: %@", reason, correlationId]];
+    return resp;
+}
+
 - (id)stripeWebhookAction {
     GSWRequest *req = [self request];
     NSData *body = [req content];
@@ -58,9 +67,7 @@
     if (secret && [secret length] > 0) {
         NSString *signatureHeader = [req headerForKey:@"Stripe-Signature"];
         if (!signatureHeader) {
-            WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-            [resp setStatus:400];
-            return resp;
+            return [self errorResponseWithStatus:400 reason:@"Missing Stripe-Signature header"];
         }
         
         NSArray *components = [signatureHeader componentsSeparatedByString:@","];
@@ -76,9 +83,7 @@
         }
         
         if (!timestamp || !signature) {
-            WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-            [resp setStatus:400];
-            return resp;
+            return [self errorResponseWithStatus:400 reason:[NSString stringWithFormat:@"Invalid Stripe-Signature format: %@", signatureHeader]];
         }
         
         NSString *bodyStr = [[[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding] autorelease];
@@ -95,17 +100,13 @@
         }
         
         if (![signature isEqualToString:hexMac]) {
-            WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-            [resp setStatus:400];
-            return resp;
+            return [self errorResponseWithStatus:400 reason:[NSString stringWithFormat:@"Signature mismatch. Expected: %@, Got: %@", hexMac, signature]];
         }
     }
 
     NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:body options:0 error:&error];
     if (!payload || error) {
-        WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-        [resp setStatus:400];
-        return resp;
+        return [self errorResponseWithStatus:400 reason:[NSString stringWithFormat:@"Failed to parse JSON payload. Error: %@", error]];
     }
     
     NSString *type = [payload objectForKey:@"type"];
@@ -146,11 +147,7 @@
         [resp setStatus:200];
         return resp;
     } NS_HANDLER {
-        NSLog(@"Error processing Stripe webhook: %@", localException);
-        WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-        [resp setStatus:500];
-        [resp appendContentString:[localException reason]];
-        return resp;
+        return [self errorResponseWithStatus:500 reason:[NSString stringWithFormat:@"An internal error occurred: %@", localException]];
     } NS_ENDHANDLER;
 }
 
