@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
         - name: init-static-assets
-          image: quay.io/iamleeg/onthewing:bf8e2b938b7bbef8601e975ec1cedd8eea6a82a3
+          image: quay.io/iamleeg/onthewing:a477ed0f1b825d4f910d5c3671faaba64d199425
           imagePullPolicy: Always
           command: ["/bin/sh", "-c"]
           args:
@@ -27,7 +27,7 @@ spec:
               mountPath: /usr/share/nginx/html
       containers:
         - name: onthewing
-          image: quay.io/iamleeg/onthewing:bf8e2b938b7bbef8601e975ec1cedd8eea6a82a3
+          image: quay.io/iamleeg/onthewing:a477ed0f1b825d4f910d5c3671faaba64d199425
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
