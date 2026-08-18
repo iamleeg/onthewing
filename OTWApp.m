@@ -24,6 +24,7 @@
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOSQLExpression.h>
+#import <EOAccess/EOSchemaSynchronization.h>
 #import "Observer.h"
 #import "Observation.h"
 #import "JournalEntry.h"
@@ -179,6 +180,54 @@ extern NSDictionary* globalMime;
                 NS_ENDHANDLER;
             }
         }
+        
+        NS_DURING {
+            EOModel *m = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
+            Class exprClass = [[EOAdaptor adaptorWithModel:m] expressionClass];
+            EOModel *dbModel = [adaptorChannel describeModelWithTableNames:expectedTableNames];
+            
+            for (EOEntity *appEntity in [m entities]) {
+                EOEntity *dbEntity = nil;
+                for (EOEntity *e in [dbModel entities]) {
+                    if ([[e externalName] caseInsensitiveCompare:[appEntity externalName]] == NSOrderedSame) {
+                        dbEntity = e;
+                        break;
+                    }
+                }
+                
+                if (dbEntity) {
+                    for (EOAttribute *appAttr in [appEntity attributes]) {
+                        if (![appAttr columnName]) continue;
+                        
+                        BOOL found = NO;
+                        for (EOAttribute *dbAttr in [dbEntity attributes]) {
+                            if ([dbAttr columnName] && [[dbAttr columnName] caseInsensitiveCompare:[appAttr columnName]] == NSOrderedSame) {
+                                found = YES;
+                                break;
+                            }
+                        }
+                        
+                        if (!found) {
+                            NSArray *statements = [exprClass statementsToInsertColumnForAttribute:appAttr options:@{}];
+                            for (EOSQLExpression *expr in statements) {
+                                NS_DURING {
+                                    [adaptorChannel evaluateExpression:expr];
+                                }
+                                NS_HANDLER {
+                                    NSLog(@"Failed to add column %@: %@", [appAttr columnName], localException);
+                                }
+                                NS_ENDHANDLER;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        NS_HANDLER {
+            NSLog(@"Failed to check/update schema columns: %@", localException);
+        }
+        NS_ENDHANDLER;
+        
         succeeded = YES;
     }
     NS_HANDLER {

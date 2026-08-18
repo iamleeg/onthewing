@@ -113,37 +113,45 @@
     
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
     
-    if ([type isEqualToString:@"checkout.session.completed"]) {
-        NSString *uid = [dataObj objectForKey:@"client_reference_id"];
-        NSString *customerId = [dataObj objectForKey:@"customer"];
-        if (uid && customerId) {
-            EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"uid = %@", uid];
-            EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer" qualifier:qual sortOrderings:nil];
-            NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
-            if ([results count] > 0) {
-                Observer *observer = [results objectAtIndex:0];
-                [observer setIsPremium:@(YES)];
-                [observer setPaymentProcessorCustomerId:customerId];
-                [ec saveChanges];
+    NS_DURING {
+        if ([type isEqualToString:@"checkout.session.completed"]) {
+            NSString *uid = [dataObj objectForKey:@"client_reference_id"];
+            NSString *customerId = [dataObj objectForKey:@"customer"];
+            if (uid && customerId) {
+                EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"uid = %@", uid];
+                EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer" qualifier:qual sortOrderings:nil];
+                NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
+                if ([results count] > 0) {
+                    Observer *observer = [results objectAtIndex:0];
+                    [observer setIsPremium:@(YES)];
+                    [observer setPaymentProcessorCustomerId:customerId];
+                    [ec saveChanges];
+                }
+            }
+        } else if ([type isEqualToString:@"customer.subscription.deleted"]) {
+            NSString *customerId = [dataObj objectForKey:@"customer"];
+            if (customerId) {
+                EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"paymentProcessorCustomerId = %@", customerId];
+                EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer" qualifier:qual sortOrderings:nil];
+                NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
+                if ([results count] > 0) {
+                    Observer *observer = [results objectAtIndex:0];
+                    [observer setIsPremium:@(NO)];
+                    [ec saveChanges];
+                }
             }
         }
-    } else if ([type isEqualToString:@"customer.subscription.deleted"]) {
-        NSString *customerId = [dataObj objectForKey:@"customer"];
-        if (customerId) {
-            EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"paymentProcessorCustomerId = %@", customerId];
-            EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer" qualifier:qual sortOrderings:nil];
-            NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
-            if ([results count] > 0) {
-                Observer *observer = [results objectAtIndex:0];
-                [observer setIsPremium:@(NO)];
-                [ec saveChanges];
-            }
-        }
-    }
-    
-    WOResponse *resp = [[[WOResponse alloc] init] autorelease];
-    [resp setStatus:200];
-    return resp;
+        
+        WOResponse *resp = [[[WOResponse alloc] init] autorelease];
+        [resp setStatus:200];
+        return resp;
+    } NS_HANDLER {
+        NSLog(@"Error processing Stripe webhook: %@", localException);
+        WOResponse *resp = [[[WOResponse alloc] init] autorelease];
+        [resp setStatus:500];
+        [resp appendContentString:[localException reason]];
+        return resp;
+    } NS_ENDHANDLER;
 }
 
 @end
