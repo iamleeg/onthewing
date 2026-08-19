@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><WEBOBJECT NAME="TitleString"></WEBOBJECT></title>
+    <WEBOBJECT NAME="HasOpenGraph">
+        <meta property="og:image" content="<WEBOBJECT NAME="OpenGraphImage"></WEBOBJECT>" />
+    </WEBOBJECT>
+    <style>
+        body { font-family: sans-serif; margin: 2em; line-height: 1.6; }
+        .presentation-container { max-width: 800px; margin: 0 auto; }
+        .blur { filter: blur(5px); opacity: 0.5; }
+        .photo { max-width: 100%; height: auto; margin-bottom: 1em; }
+        .footer { margin-top: 3em; border-top: 1px solid #ccc; padding-top: 1em; text-align: center; color: #777; }
+        
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #1a1a1a; color: #f0f0f0; }
+            .footer { border-top-color: #444; color: #aaa; }
+        }
+        
+        /* Print Support */
+        @media print {
+            body { margin: 0; background-color: white; color: black; }
+            .footer { display: none; }
+            .presentation-container { max-width: none; }
+            .photo { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <h1><WEBOBJECT NAME="TitleString"></WEBOBJECT></h1>
+        <p><strong><WEBOBJECT NAME="DateString"></WEBOBJECT></strong></p>
+        
+        <WEBOBJECT NAME="HasMapLocation">
+            <p><em>Location: <WEBOBJECT NAME="MapLocationString"></WEBOBJECT></em></p>
+        </WEBOBJECT>
+        
+        <WEBOBJECT NAME="PhotosRepetition">
+            <img class="photo" src="<WEBOBJECT NAME="PhotoUrl"></WEBOBJECT>" alt="Observation Photo" />
+        </WEBOBJECT>
+        
+        <div class="<WEBOBJECT NAME="BlurClass"></WEBOBJECT>">
+            <p><WEBOBJECT NAME="ReflectionsString"></WEBOBJECT></p>
+        </div>
+        
+        <WEBOBJECT NAME="IsTruncated">
+            <p style="text-align: center; color: #888;">
+                <em>This presentation is truncated. The full presentation is available to Premium members.</em>
+            </p>
+        </WEBOBJECT>
+        
+        <div class="footer">
+            <p>Made with OnTheWing - sign up!</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -18,8 +18,12 @@
 
 #include <WebObjects/WebObjects.h>
 
-@interface DirectAction : GSWDirectAction
+@interface DirectAction : WODirectAction
+
+- defaultAction;
 - (id)paymentSucceededAction;
 - (id)paymentCanceledAction;
 - (id)stripeWebhookAction;
+- (id)presentationAction;
+
 @end

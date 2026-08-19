@@ -1,0 +1,44 @@
+TitleString: WOString {
+    value = presentationView.title;
+}
+
+HasOpenGraph: WOConditional {
+    condition = hasOpenGraphImage;
+}
+
+OpenGraphImage: WOString {
+    value = presentationView.openGraphImage;
+}
+
+DateString: WOString {
+    value = presentationView.date;
+}
+
+HasMapLocation: WOConditional {
+    condition = hasMapLocation;
+}
+
+MapLocationString: WOString {
+    value = presentationView.mapLocation;
+}
+
+PhotosRepetition: WORepetition {
+    list = presentationView.photos;
+    item = currentPhoto;
+}
+
+PhotoUrl: WOString {
+    value = currentPhoto;
+}
+
+BlurClass: WOString {
+    value = blurClass;
+}
+
+ReflectionsString: WOString {
+    value = presentationView.reflections;
+}
+
+IsTruncated: WOConditional {
+    condition = presentationView.isTruncatedAndBlurred;
+}

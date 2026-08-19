@@ -24,6 +24,8 @@
 #import "Session.h"
 #import "OTWFlashMessage.h"
 #import "Observer.h"
+#import "PresentationService.h"
+#import "PresentationView.h"
 #import <EOControl/EOControl.h>
 #include <gnutls/gnutls.h>
 #include <gnutls/crypto.h>
@@ -169,6 +171,29 @@
     } NS_HANDLER {
         return [self errorResponseWithStatus:500 reason:[NSString stringWithFormat:@"An internal error occurred: %@", localException]];
     } NS_ENDHANDLER;
+}
+
+- (id)presentationAction {
+    WORequest *req = [self request];
+    NSString *urlId = [req formValueForKey:@"id"];
+    
+    if (urlId == nil || [urlId length] == 0) {
+        return [self errorResponseWithStatus:400 reason:@"Missing 'id' parameter."];
+    }
+    
+    // Use a fresh EOEditingContext to fetch the presentation
+    EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
+    PresentationService *ps = [[[PresentationService alloc] initWithEditingContext:ec] autorelease];
+    
+    PresentationView *view = [ps getPresentation:urlId];
+    if (view == nil) {
+        return [self errorResponseWithStatus:404 reason:@"Presentation not found."];
+    }
+    
+    id page = [self pageWithName:@"PublicPresentationPage"];
+    [page performSelector:@selector(setPresentationView:) withObject:view];
+    
+    return page;
 }
 
 @end
