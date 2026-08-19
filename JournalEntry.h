@@ -19,13 +19,14 @@
 #import <EOControl/EOControl.h>
 
 @class Observer;
+@class PublishedPresentation;
 
 @interface JournalEntry : EOCustomObject
 {
     NSString *_journalEntryId;
     Observer *_observer;
     NSMutableArray *_observations;
-    NSMutableArray *_publishedPresentations;
+    PublishedPresentation *_publishedPresentation;
     NSString *_title;
     NSString *_reflections;
 }
@@ -35,7 +36,7 @@
 @property (nonatomic, readonly) NSDate *date;
 @property (nonatomic, retain) Observer *observer;
 @property (nonatomic, retain) NSMutableArray *observations;
-@property (nonatomic, retain) NSMutableArray *publishedPresentations;
+@property (nonatomic, retain) PublishedPresentation *publishedPresentation;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *reflections;
 

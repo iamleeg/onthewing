@@ -13,14 +13,16 @@
 
 - (void)setUrlId:(NSString *)urlId {
     [self willChange];
-    [_urlId release];
-    _urlId = [urlId copy];
+    id new_urlId = [urlId copy];
+    [_urlId autorelease];
+    _urlId = new_urlId;
 }
 
 - (void)setJournalEntry:(JournalEntry *)journalEntry {
     [self willChange];
-    [_journalEntry release];
-    _journalEntry = [journalEntry retain];
+    [journalEntry retain];
+    [_journalEntry autorelease];
+    _journalEntry = journalEntry;
 }
 
 - (void)dealloc {

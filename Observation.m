@@ -33,32 +33,37 @@
 
 - (void)setObservationId:(NSString *)observationId {
     [self willChange];
-    [_observationId release];
-    _observationId = [observationId copy];
+    id new_observationId = [observationId copy];
+    [_observationId autorelease];
+    _observationId = new_observationId;
 }
 
 - (void)setCaptureDate:(NSDate *)captureDate {
     [self willChange];
-    [_captureDate release];
-    _captureDate = [captureDate retain];
+    [captureDate retain];
+    [_captureDate autorelease];
+    _captureDate = captureDate;
 }
 
 - (void)setLocation:(ObservationLocation *)location {
     [self willChange];
-    [_location release];
-    _location = [location retain];
+    [location retain];
+    [_location autorelease];
+    _location = location;
 }
 
 - (void)setPhotoURL:(NSURL *)photoURL {
     [self willChange];
-    [_photoURL release];
-    _photoURL = [photoURL retain];
+    [photoURL retain];
+    [_photoURL autorelease];
+    _photoURL = photoURL;
 }
 
 - (void)setJournalEntry:(JournalEntry *)journalEntry {
     [self willChange];
-    [_journalEntry release];
-    _journalEntry = [journalEntry retain];
+    [journalEntry retain];
+    [_journalEntry autorelease];
+    _journalEntry = journalEntry;
 }
 
 - (NSString *)photoURLString {

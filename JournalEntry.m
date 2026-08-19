@@ -25,14 +25,15 @@
 @synthesize journalEntryId = _journalEntryId;
 @synthesize observer = _observer;
 @synthesize observations = _observations;
-@synthesize publishedPresentations = _publishedPresentations;
+@synthesize publishedPresentation = _publishedPresentation;
 @synthesize title = _title;
 @synthesize reflections = _reflections;
 
 - (void)setJournalEntryId:(NSString *)journalEntryId {
     [self willChange];
-    [_journalEntryId release];
-    _journalEntryId = [journalEntryId copy];
+    NSString *newId = [journalEntryId copy];
+    [_journalEntryId autorelease];
+    _journalEntryId = newId;
 }
 
 
@@ -42,32 +43,37 @@
 
 - (void)setObserver:(Observer *)observer {
     [self willChange];
-    [_observer release];
-    _observer = [observer retain];
+    [observer retain];
+    [_observer autorelease];
+    _observer = observer;
 }
 
 - (void)setObservations:(NSMutableArray *)observations {
     [self willChange];
-    [_observations release];
-    _observations = [observations retain];
+    [observations retain];
+    [_observations autorelease];
+    _observations = observations;
 }
 
-- (void)setPublishedPresentations:(NSMutableArray *)publishedPresentations {
+- (void)setPublishedPresentation:(PublishedPresentation *)publishedPresentation {
     [self willChange];
-    [_publishedPresentations release];
-    _publishedPresentations = [publishedPresentations retain];
+    [publishedPresentation retain];
+    [_publishedPresentation autorelease];
+    _publishedPresentation = publishedPresentation;
 }
 
 - (void)setTitle:(NSString *)title {
     [self willChange];
-    [_title release];
-    _title = [title copy];
+    NSString *newTitle = [title copy];
+    [_title autorelease];
+    _title = newTitle;
 }
 
 - (void)setReflections:(NSString *)reflections {
     [self willChange];
-    [_reflections release];
-    _reflections = [reflections copy];
+    NSString *newReflections = [reflections copy];
+    [_reflections autorelease];
+    _reflections = newReflections;
 }
 
 - (void)awakeFromInsertionInEditingContext:(EOEditingContext *)editingContext {
@@ -97,6 +103,7 @@
     [_journalEntryId release];
     [_observer release];
     [_observations release];
+    [_publishedPresentation release];
     [_title release];
     [_reflections release];
     [super dealloc];

@@ -48,56 +48,65 @@ NSUInteger const kFreeTierPhotoLimit = 50;
 
 - (void)setUid:(NSString *)uid {
     [self willChange];
-    [_uid release];
-    _uid = [uid copy];
+    id new_uid = [uid copy];
+    [_uid autorelease];
+    _uid = new_uid;
 }
 
 - (void)setName:(NSString *)name {
     [self willChange];
-    [_name release];
-    _name = [name copy];
+    id new_name = [name copy];
+    [_name autorelease];
+    _name = new_name;
 }
 
 - (void)setEmail:(NSString *)email {
     [self willChange];
-    [_email release];
-    _email = [email copy];
+    id new_email = [email copy];
+    [_email autorelease];
+    _email = new_email;
 }
 
 - (void)setAvatarUrl:(NSString *)avatarUrl {
     [self willChange];
-    [_avatarUrl release];
-    _avatarUrl = [avatarUrl copy];
+    id new_avatarUrl = [avatarUrl copy];
+    [_avatarUrl autorelease];
+    _avatarUrl = new_avatarUrl;
 }
 
 - (void)setToken:(NSString *)token {
     [self willChange];
-    [_token release];
-    _token = [token copy];
+    id new_token = [token copy];
+    [_token autorelease];
+    _token = new_token;
 }
 
 - (void)setIsPremium:(NSNumber *)isPremium {
     [self willChange];
-    [_isPremium release];
-    _isPremium = [isPremium retain];
+    [isPremium retain];
+    [_isPremium autorelease];
+    _isPremium = isPremium;
 }
 
 - (void)setSubscriptionExpiryDate:(NSDate *)subscriptionExpiryDate {
     [self willChange];
-    [_subscriptionExpiryDate release];
-    _subscriptionExpiryDate = [subscriptionExpiryDate retain];
+    [subscriptionExpiryDate retain];
+    [_subscriptionExpiryDate autorelease];
+    _subscriptionExpiryDate = subscriptionExpiryDate;
 }
 
 - (void)setPaymentProcessorCustomerId:(NSString *)paymentProcessorCustomerId {
     [self willChange];
-    [_paymentProcessorCustomerId release];
-    _paymentProcessorCustomerId = [paymentProcessorCustomerId copy];
+    id new_paymentProcessorCustomerId = [paymentProcessorCustomerId copy];
+    [_paymentProcessorCustomerId autorelease];
+    _paymentProcessorCustomerId = new_paymentProcessorCustomerId;
 }
 
 - (void)setJournalEntries:(NSMutableArray *)journalEntries {
     [self willChange];
-    [_journalEntries release];
-    _journalEntries = [journalEntries retain];
+    [journalEntries retain];
+    [_journalEntries autorelease];
+    _journalEntries = journalEntries;
 }
 
 - (NSUInteger)savedPhotoCountInEditingContext:(EOEditingContext *)ec {

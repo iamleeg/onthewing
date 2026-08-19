@@ -180,8 +180,9 @@ typedef NS_ENUM(NSInteger, SessionErrorCode) {
 }
 
 - (void)setUser:(Observer *)user {
+    [user retain];
     [_user autorelease];
-    _user = [user retain];
+    _user = user;
     if (_user && [_user uid]) {
         [self _loadPendingObservations];
     }

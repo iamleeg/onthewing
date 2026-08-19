@@ -40,7 +40,7 @@
 	reflections,
 	observer,
 	observations,
-	publishedPresentations
+	publishedPresentation
     );
     externalName = "journal_entries";
     name = JournalEntry;
@@ -65,16 +65,15 @@
 	{
 	    deleteRule = EODeleteRuleCascade;
 	    destination = PublishedPresentation;
-	    isToMany = Y;
+	    isToMany = N;
 	    joinSemantic = EOInnerJoin;
-	    ownsDestination = Y;
 	    joins = (
 		{
 		    destinationAttribute = entryForeignKey;
 		    sourceAttribute = journalEntryId;
 		}
 	    );
-	    name = publishedPresentations;
+	    name = publishedPresentation;
 	},
 	{
 	    destination = Observer;

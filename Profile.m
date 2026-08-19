@@ -95,8 +95,9 @@
 }
 
 - (void)setUpdatedName:(NSString *)name {
-    [_updatedName release];
-    _updatedName = [name copy];
+    NSString *newName = [name copy];
+    [_updatedName autorelease];
+    _updatedName = newName;
 }
 
 - (NSString *)updatedEmail {
@@ -108,8 +109,9 @@
 }
 
 - (void)setUpdatedEmail:(NSString *)email {
-    [_updatedEmail release];
-    _updatedEmail = [email copy];
+    NSString *newEmail = [email copy];
+    [_updatedEmail autorelease];
+    _updatedEmail = newEmail;
 }
 
 - (id)updateProfile {

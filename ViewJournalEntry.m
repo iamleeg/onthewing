@@ -31,8 +31,9 @@
 
 - (void)setCurrentEntry:(JournalEntry *)entry {
     [self willChange];
-    [_currentEntry release];
-    _currentEntry = [entry retain];
+    [entry retain];
+    [_currentEntry autorelease];
+    _currentEntry = entry;
     self.editedTitle = [entry title];
     self.editedReflections = [entry reflections];
 }
