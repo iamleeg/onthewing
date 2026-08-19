@@ -34,6 +34,10 @@
 	"-deleteEntry",
 	"-backToJournal",
 	"-hasLocations",
-	"-hasCurrentBearing"
+	"-hasCurrentBearing",
+	"-publishAction",
+	"-unpublishAction",
+	"-previewAction",
+	"-isPremium"
     );
 }

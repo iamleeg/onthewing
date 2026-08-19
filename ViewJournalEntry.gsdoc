@@ -70,6 +70,15 @@
             you should not use the variable in other code.
           </desc>
         </ivariable>
+        <ivariable type="NSString*" name="_publishedUrlId" validity="protected">
+          <desc>
+            <em>Warning</em> the underscore at the start of the
+            name of this instance variable indicates that, even
+            though it is not technically <em>private</em>, it is
+            intended for internal use within the package, and
+            you should not use the variable in other code.
+          </desc>
+        </ivariable>
         <method type="id">
           <sel>backToJournal</sel>
           <desc>
@@ -94,6 +103,12 @@
             <em>Description forthcoming.</em>
           </desc>
         </method>
+        <method type="BOOL">
+          <sel>isPremium</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
         <method type="NSArray*">
           <sel>observations</sel>
           <desc>
@@ -101,7 +116,25 @@
           </desc>
         </method>
         <method type="id">
+          <sel>previewAction</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>publishAction</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="id">
           <sel>saveChanges</sel>
+          <desc>
+            <em>Description forthcoming.</em>
+          </desc>
+        </method>
+        <method type="id">
+          <sel>unpublishAction</sel>
           <desc>
             <em>Description forthcoming.</em>
           </desc>

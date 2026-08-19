@@ -22,6 +22,7 @@
 	    "_editedTitle" = ViewJournalEntry;
 	    "_lastError" = ViewJournalEntry;
 	    "_photoStorageMover" = ViewJournalEntry;
+	    "_publishedUrlId" = ViewJournalEntry;
 	};
     };
     ivariable = {
@@ -50,6 +51,9 @@
 	};
 	"_photoStorageMover" = {
 	    BrowseJournal = BrowseJournal;
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"_publishedUrlId" = {
 	    ViewJournalEntry = ViewJournalEntry;
 	};
     };
@@ -102,6 +106,9 @@
 	"-isAppReady" = {
 	    Main = Main;
 	};
+	"-isPremium" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
 	"-journalEntries" = {
 	    BrowseJournal = BrowseJournal;
 	};
@@ -109,6 +116,12 @@
 	    Capture = Capture;
 	};
 	"-observations" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-previewAction" = {
+	    ViewJournalEntry = ViewJournalEntry;
+	};
+	"-publishAction" = {
 	    ViewJournalEntry = ViewJournalEntry;
 	};
 	"-reflectionsSnippet" = {
@@ -131,6 +144,9 @@
 	};
 	"-summaryPhotoURLString" = {
 	    BrowseJournal = BrowseJournal;
+	};
+	"-unpublishAction" = {
+	    ViewJournalEntry = ViewJournalEntry;
 	};
 	"-viewEntry" = {
 	    BrowseJournal = BrowseJournal;
@@ -212,8 +228,12 @@
 	    "-deleteEntry" = ViewJournalEntry;
 	    "-hasCurrentBearing" = ViewJournalEntry;
 	    "-hasLocations" = ViewJournalEntry;
+	    "-isPremium" = ViewJournalEntry;
 	    "-observations" = ViewJournalEntry;
+	    "-previewAction" = ViewJournalEntry;
+	    "-publishAction" = ViewJournalEntry;
 	    "-saveChanges" = ViewJournalEntry;
+	    "-unpublishAction" = ViewJournalEntry;
 	};
     };
 }
