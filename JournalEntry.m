@@ -25,6 +25,7 @@
 @synthesize journalEntryId = _journalEntryId;
 @synthesize observer = _observer;
 @synthesize observations = _observations;
+@synthesize publishedPresentations = _publishedPresentations;
 @synthesize title = _title;
 @synthesize reflections = _reflections;
 
@@ -49,6 +50,12 @@
     [self willChange];
     [_observations release];
     _observations = [observations retain];
+}
+
+- (void)setPublishedPresentations:(NSMutableArray *)publishedPresentations {
+    [self willChange];
+    [_publishedPresentations release];
+    _publishedPresentations = [publishedPresentations retain];
 }
 
 - (void)setTitle:(NSString *)title {

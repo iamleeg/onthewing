@@ -36,8 +36,11 @@
     className = JournalEntry;
     classProperties = (
 	journalEntryId,
+	title,
+	reflections,
 	observer,
-	observations
+	observations,
+	publishedPresentations
     );
     externalName = "journal_entries";
     name = JournalEntry;
@@ -58,6 +61,20 @@
 		}
 	    );
 	    name = observations;
+	},
+	{
+	    deleteRule = EODeleteRuleCascade;
+	    destination = PublishedPresentation;
+	    isToMany = Y;
+	    joinSemantic = EOInnerJoin;
+	    ownsDestination = Y;
+	    joins = (
+		{
+		    destinationAttribute = entryForeignKey;
+		    sourceAttribute = journalEntryId;
+		}
+	    );
+	    name = publishedPresentations;
 	},
 	{
 	    destination = Observer;

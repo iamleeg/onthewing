@@ -10,6 +10,7 @@
 #import "ObservationLocation.h"
 #import "PhotoStorageMover.h"
 #import "OTWFirebaseStorageURL.h"
+#import "PresentationService.h"
 #import <EOControl/EOControl.h>
 
 @implementation ViewJournalEntry
@@ -65,6 +66,8 @@
     EOEditingContext *ec = [[self session] editingContext];
     [ec lock];
     NS_DURING {
+        PresentationService *ps = [[[PresentationService alloc] initWithEditingContext:ec] autorelease];
+        [ps handleJournalEntryUpdate:[self.currentEntry journalEntryId]];
         [ec saveChanges];
         self.lastError = nil;
     }

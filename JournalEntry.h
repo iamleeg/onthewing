@@ -25,6 +25,7 @@
     NSString *_journalEntryId;
     Observer *_observer;
     NSMutableArray *_observations;
+    NSMutableArray *_publishedPresentations;
     NSString *_title;
     NSString *_reflections;
 }
@@ -34,6 +35,7 @@
 @property (nonatomic, readonly) NSDate *date;
 @property (nonatomic, retain) Observer *observer;
 @property (nonatomic, retain) NSMutableArray *observations;
+@property (nonatomic, retain) NSMutableArray *publishedPresentations;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *reflections;
 
