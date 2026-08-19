@@ -90,4 +90,14 @@
     XCTAssertEqual([resp status], 200);
 }
 
+- (void)testStripeWebhookSubscriptionUpdated {
+    NSString *bodyStr = @"{\"type\":\"customer.subscription.updated\",\"data\":{\"object\":{\"customer\":\"cus_123\",\"current_period_end\":1787146137}}}";
+    NSData *bodyData = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *headers = @{@"Stripe-Signature": @[@"t=1234567890,v1=3920aaa3ad5e600944f08a9ee3c4d6cefedc074ee0da056e176d531a4047275b"]};
+    WORequest *req = [[WORequest alloc] initWithMethod:@"POST" uri:@"/wa/stripeWebhookAction" httpVersion:@"HTTP/1.1" headers:headers content:bodyData userInfo:nil];
+    DirectAction *da = [[DirectAction alloc] initWithRequest:req];
+    WOResponse *resp = (WOResponse *)[da stripeWebhookAction];
+    XCTAssertEqual([resp status], 200);
+}
+
 @end

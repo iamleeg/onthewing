@@ -145,6 +145,22 @@
                     [ec saveChanges];
                 }
             }
+        } else if ([type isEqualToString:@"customer.subscription.created"] || [type isEqualToString:@"customer.subscription.updated"]) {
+            NSString *customerId = [dataObj objectForKey:@"customer"];
+            NSNumber *currentPeriodEnd = [dataObj objectForKey:@"current_period_end"];
+            if (customerId && currentPeriodEnd) {
+                EOQualifier *qual = [EOQualifier qualifierWithQualifierFormat:@"paymentProcessorCustomerId = %@", customerId];
+                EOFetchSpecification *fetchSpec = [EOFetchSpecification fetchSpecificationWithEntityName:@"Observer" qualifier:qual sortOrderings:nil];
+                NSArray *results = [ec objectsWithFetchSpecification:fetchSpec];
+                if ([results count] > 0) {
+                    Observer *observer = [results objectAtIndex:0];
+                    if ([currentPeriodEnd respondsToSelector:@selector(doubleValue)]) {
+                        NSDate *expiryDate = [NSDate dateWithTimeIntervalSince1970:[currentPeriodEnd doubleValue]];
+                        [observer setSubscriptionExpiryDate:expiryDate];
+                        [ec saveChanges];
+                    }
+                }
+            }
         }
         
         WOResponse *resp = [[[WOResponse alloc] init] autorelease];
