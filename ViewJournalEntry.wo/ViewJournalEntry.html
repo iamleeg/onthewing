@@ -74,6 +74,41 @@
         </div>
     </webobject>
 
+
+    <div class="presentation-section" style="margin-top: 2em; padding: 1em; background-color: #f9f9f9; border-radius: 8px;">
+        <h3>Public Presentation</h3>
+
+                <webobject name="IsPremium">
+            <webobject name="PublishForm">
+                <p>
+                    <webobject name="PreviewAction">Preview Presentation</webobject>
+                    <webobject name="NotPublished">
+                        <webobject name="PublishAction" />
+                    </webobject>
+                    <webobject name="HasPublishedUrl">
+                        <webobject name="UnpublishAction" />
+                    </webobject>
+                </p>
+            </webobject>
+            
+            <webobject name="HasPublishedUrl">
+                <div class="alert alert-success" style="margin-top: 1em; padding: 1em; background-color: #d4edda; border-radius: 4px;">
+                    <strong>Published!</strong> Your presentation is available at:
+                    <br />
+                    <a href="/wa/presentation?id=<webobject name="PublishedUrlString" />" target="_blank">/wa/presentation?id=<webobject name="PublishedUrlString" /></a>
+                </div>
+            </webobject>
+        </webobject>
+        
+        <webobject name="IsNotPremium">
+            <div class="alert alert-warning" style="margin-top: 1em; padding: 1em; background-color: #fff3cd; border-radius: 4px;">
+                <p><strong>Want to share this?</strong></p>
+                <p>Premium members can publish beautiful, shareable presentation pages for their journal entries.</p>
+                <p><webobject name="PreviewAction">Preview Presentation</webobject></p>
+            </div>
+        </webobject>
+
+    </div>
     <p style="margin-top: 2em; border-top: 1px solid #ccc; padding-top: 1em;">
         <webobject name="backLink">Back to Journal</webobject>
         <webobject name="deleteEntryLink">Delete Entry</webobject>

@@ -80,3 +80,46 @@ backLink: WOHyperlink {
     action = backToJournal;
     class = "btn btn-secondary";
 }
+IsPremium: WOConditional {
+    condition = isPremium;
+}
+
+IsNotPremium: WOConditional {
+    condition = isPremium;
+    negate = true;
+}
+
+PreviewAction: WOHyperlink {
+    action = previewAction;
+    class = "btn btn-info";
+    target = "_blank";
+}
+
+PublishAction: WOSubmitButton {
+    action = publishAction;
+    value = "Publish Presentation";
+    class = "btn btn-success";
+}
+
+HasPublishedUrl: WOConditional {
+    condition = publishedUrlId;
+}
+
+PublishedUrlString: WOString {
+    value = publishedUrlId;
+}
+
+PublishForm: WOForm {
+    multipleSubmit = true;
+}
+
+NotPublished: WOConditional {
+    condition = publishedUrlId;
+    negate = true;
+}
+
+UnpublishAction: WOSubmitButton {
+    action = unpublishAction;
+    value = "Unpublish Presentation";
+    class = "btn btn-outline-danger";
+}

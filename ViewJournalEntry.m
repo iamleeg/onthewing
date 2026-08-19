@@ -10,7 +10,9 @@
 #import "ObservationLocation.h"
 #import "PhotoStorageMover.h"
 #import "OTWFirebaseStorageURL.h"
+#import "OTWFlashMessage.h"
 #import "PresentationService.h"
+#import "PublishedPresentation.h"
 #import <EOControl/EOControl.h>
 
 @implementation ViewJournalEntry
@@ -20,6 +22,7 @@
 @synthesize editedTitle = _editedTitle;
 @synthesize editedReflections = _editedReflections;
 @synthesize lastError = _lastError;
+@synthesize publishedUrlId = _publishedUrlId;
 @synthesize photoStorageMover = _photoStorageMover;
 
 - (PhotoStorageMover *)photoStorageMover {
@@ -36,6 +39,24 @@
     _currentEntry = entry;
     self.editedTitle = [entry title];
     self.editedReflections = [entry reflections];
+    
+    EOEditingContext *ec = [[self session] editingContext];
+    EOFetchSpecification *fetch = [EOFetchSpecification fetchSpecificationWithEntityName:@"PublishedPresentation"
+                                                                               qualifier:[EOQualifier qualifierWithQualifierFormat:@"journalEntry = %@", entry]
+                                                                           sortOrderings:nil];
+    PublishedPresentation *pub = [[ec objectsWithFetchSpecification:fetch] lastObject];
+    self.publishedUrlId = pub ? [pub urlId] : nil;
+}
+
+- (void)setPublishedUrlId:(NSString *)publishedUrlId {
+    NSString *newId = [publishedUrlId copy];
+    [_publishedUrlId autorelease];
+    _publishedUrlId = newId;
+}
+
+- (BOOL)isPremium {
+    Observer *user = [(Session *)[self session] user];
+    return [[user isPremium] boolValue];
 }
 
 - (NSArray *)observations {
@@ -111,6 +132,47 @@
     return [self pageWithName:@"BrowseJournal"];
 }
 
+- (id)publishAction {
+    Observer *user = [(Session *)[self session] user];
+    if (![[user isPremium] boolValue]) {
+        OTWFlashMessage *flash = [[[OTWFlashMessage alloc] initWithStringValue:@"Only Premium members can publish presentations." severityLevel:OTWFlashMessageSeverityError] autorelease];
+        [(Session *)[self session] setFlashMessage:flash];
+        return nil;
+    }
+    
+    EOEditingContext *ec = [[self session] editingContext];
+    PresentationService *ps = [[[PresentationService alloc] initWithEditingContext:ec] autorelease];
+    NSString *urlId = [ps publishPresentationForEntryId:[self.currentEntry journalEntryId] observerId:[user uid]];
+    if (urlId) {
+        self.publishedUrlId = urlId;
+        OTWFlashMessage *flash = [[[OTWFlashMessage alloc] initWithStringValue:@"Presentation published successfully!" severityLevel:OTWFlashMessageSeverityInfo] autorelease];
+        [(Session *)[self session] setFlashMessage:flash];
+    } else {
+        OTWFlashMessage *flash = [[[OTWFlashMessage alloc] initWithStringValue:@"Failed to publish presentation." severityLevel:OTWFlashMessageSeverityError] autorelease];
+        [(Session *)[self session] setFlashMessage:flash];
+    }
+    return nil;
+}
+
+- (id)unpublishAction {
+    EOEditingContext *ec = [[self session] editingContext];
+    PresentationService *ps = [[[PresentationService alloc] initWithEditingContext:ec] autorelease];
+    [ps unpublishPresentationForEntryId:[self.currentEntry journalEntryId]];
+    self.publishedUrlId = nil;
+    
+    OTWFlashMessage *flash = [[[OTWFlashMessage alloc] initWithStringValue:@"Presentation unpublished." severityLevel:OTWFlashMessageSeverityInfo] autorelease];
+    [(Session *)[self session] setFlashMessage:flash];
+    return nil;
+}
+
+- (id)previewAction {
+    id page = [self pageWithName:@"PublicPresentationPage"];
+    PresentationService *ps = [[[PresentationService alloc] initWithEditingContext:[[self session] editingContext]] autorelease];
+    Observer *user = [(Session *)[self session] user];
+    [page performSelector:@selector(setPresentationView:) withObject:[ps previewPresentationForEntryId:[self.currentEntry journalEntryId] observerId:[user uid]]];
+    return page;
+}
+
 - (id)backToJournal {
     return [self pageWithName:@"BrowseJournal"];
 }
@@ -121,6 +183,7 @@
     [_editedTitle release];
     [_editedReflections release];
     [_lastError release];
+    [_publishedUrlId release];
     [_photoStorageMover release];
     [super dealloc];
 }

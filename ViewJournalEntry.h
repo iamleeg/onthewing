@@ -19,6 +19,7 @@
     NSString *_editedTitle;
     NSString *_editedReflections;
     NSError *_lastError;
+    NSString *_publishedUrlId;
     PhotoStorageMover *_photoStorageMover;
 }
 
@@ -27,6 +28,7 @@
 @property (nonatomic, copy) NSString *editedTitle;
 @property (nonatomic, copy) NSString *editedReflections;
 @property (nonatomic, retain) NSError *lastError;
+@property (nonatomic, copy) NSString *publishedUrlId;
 @property (nonatomic, retain) PhotoStorageMover *photoStorageMover;
 
 - (NSArray *)observations;
@@ -35,5 +37,9 @@
 - (id)backToJournal;
 - (BOOL)hasLocations;
 - (BOOL)hasCurrentBearing;
+- (id)publishAction;
+- (id)unpublishAction;
+- (id)previewAction;
+- (BOOL)isPremium;
 
 @end
