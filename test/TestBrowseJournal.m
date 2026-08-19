@@ -30,7 +30,7 @@
 #import "JournalEntry.h"
 #import "Observation.h"
 #import "PhotoStorageMover.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <EOAccess/EOUtilities.h>
@@ -102,7 +102,7 @@
 }
 
 - (void)setUp {
-    _app = [[OTWApp alloc] init];
+    _app = [[TestOTWApp alloc] init];
     _ctx = [[self dummyContext] retain];
     _browse = [[BrowseJournal alloc] initWithContext:_ctx];
 }

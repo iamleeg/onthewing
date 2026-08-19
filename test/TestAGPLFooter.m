@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #import "AGPLFooter.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <XCTest/XCTest.h>
 
 @interface TestAGPLFooter : XCTestCase
@@ -26,7 +26,7 @@
 @implementation TestAGPLFooter
 
 - (void)testRepoLink {
-  OTWApp *app = [[OTWApp alloc] init];
+  OTWApp *app = [[TestOTWApp alloc] init];
   WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
                                                  uri:@"/"
                                          httpVersion:@"HTTP/1.1"

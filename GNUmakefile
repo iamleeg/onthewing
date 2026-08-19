@@ -25,7 +25,7 @@ OnTheWing_PRINCIPAL_CLASS=OTWApp
 OnTheWing_GSWAPP_INFO_PLIST=Resources/Info-OTW.plist
 OnTheWing_RESOURCE_FILES=Resources/OnTheWing.eomodeld Resources/subscriptions.plist
 
-OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m OTWWebFont.m OTWLeafletScript.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m OTWFirebaseStorageURL.m PhotoStorageMover.m PhotoMigrator.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m BrowseJournal.m ViewJournalEntry.m FirebaseAuthUI.m PhotoCapture.m OTWRedisSessionStore.m OTWFlashMessage.m FlashMessage.m StripePaymentProcessor.m SimulatedPaymentProcessor.m PremiumSubscription.m OTWCurrency.m OTWRedirect.m ErrorPage.m
+OnTheWing_OBJC_FILES=OTW_main.m OTWApp.m Main.m Session.m DirectAction.m Capture.m AGPLFooter.m ObservationLocation.m LocationCapture.m ObservationMap.m OTWStyleSheet.m OTWWebFont.m OTWLeafletScript.m CompassSVGGenerator.m Compass.m Observation.m Observer.m JournalEntry.m OTWBearerToken.m OTWFirebaseStorageURL.m PhotoStorageMover.m PhotoMigrator.m OTWFirebaseScript.m FirebaseLogin.m FirebaseProfile.m Profile.m ReviewObservations.m BrowseJournal.m ViewJournalEntry.m FirebaseAuthUI.m PhotoCapture.m OTWRedisSessionStore.m OTWFlashMessage.m FlashMessage.m StripePaymentProcessor.m SimulatedPaymentProcessor.m PremiumSubscription.m OTWCurrency.m OTWRedirect.m ErrorPage.m PresentationView.m PublishedPresentation.m PresentationService.m
 OnTheWing_COMPONENTS=Main.wo Capture.wo Compass.wo AGPLFooter.wo LocationCapture.wo ObservationMap.wo OTWStyleSheet.wo OTWWebFont.wo OTWLeafletScript.wo OTWFirebaseScript.wo FirebaseLogin.wo FirebaseProfile.wo Profile.wo ReviewObservations.wo BrowseJournal.wo ViewJournalEntry.wo FirebaseAuthUI.wo PhotoCapture.wo FlashMessage.wo PremiumSubscription.wo OTWRedirect.wo ErrorPage.wo
 OnTheWing_WEBSERVER_RESOURCE_FILES=DeviceCapture.js ObservationMap.js FirebaseAuth.js PhotoCapture.js onthewing.css
 
@@ -44,6 +44,7 @@ BUNDLE_NAME = OTWTests
 OTWTests_RESOURCE_FILES = Resources/OnTheWing.eomodeld Resources/subscriptions.plist
 
 OTWTests_OBJC_FILES = \
+	test/TestOTWApp.m \
 	test/TestApp.m \
 	test/TestSession.m \
 	test/TestDirectAction.m \
@@ -75,6 +76,7 @@ OTWTests_OBJC_FILES = \
 	test/TestSimulatedPaymentProcessor.m \
 	test/TestPremiumSubscription.m \
 	test/TestErrorPage.m \
+	test/TestPresentationService.m \
 	test/MockURLProtocol.m \
 	OTWApp.m \
 	Session.m \
@@ -114,7 +116,10 @@ OTWTests_OBJC_FILES = \
 	PremiumSubscription.m \
 	OTWCurrency.m \
 	OTWRedirect.m \
-	ErrorPage.m
+	ErrorPage.m \
+	PresentationView.m \
+	PublishedPresentation.m \
+	PresentationService.m
 
 OTWTests_BUNDLE_LIBS = \
 	-lXCTest \

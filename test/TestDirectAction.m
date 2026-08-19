@@ -18,7 +18,7 @@
 //
 
 #import "DirectAction.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import "Main.h"
 #import <XCTest/XCTest.h>
 
@@ -38,7 +38,7 @@
 }
 
 - (void)testDefaultActionReturnsMainPage {
-  OTWApp *app = [[OTWApp alloc] init];
+  OTWApp *app = [[TestOTWApp alloc] init];
   (void)app;
   WORequest *req = [[WORequest alloc] initWithMethod:@"GET"
                                                   uri:@"/"

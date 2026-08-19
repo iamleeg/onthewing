@@ -5,7 +5,7 @@
 //
 
 #import "OTWStyleSheet.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <WebObjects/WebObjects.h>
 #import <XCTest/XCTest.h>
 
@@ -56,7 +56,7 @@
 - (WOContext *)dummyContext {
     OTWApp *app = (OTWApp *)[WOApplication application];
     if (app == nil) {
-        app = [[OTWApp alloc] init];
+        app = [[TestOTWApp alloc] init];
         [WOApplication _setApplication:app];
     }
     WORequest *req = [[WORequest alloc] initWithMethod:@"GET"

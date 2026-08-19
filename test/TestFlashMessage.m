@@ -10,7 +10,7 @@
 
 #import "FlashMessage.h"
 #import "OTWFlashMessage.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <XCTest/XCTest.h>
 #import <WebObjects/WebObjects.h>
 
@@ -35,7 +35,7 @@
 @implementation TestFlashMessage
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
   _req = [[WORequest alloc] initWithMethod:@"GET"
                                        uri:@"/"
                                httpVersion:@"HTTP/1.1"

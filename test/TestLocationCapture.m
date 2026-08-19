@@ -20,7 +20,7 @@
 #import "ObservationLocation.h"
 #import "Session.h"
 #import "Capture.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <XCTest/XCTest.h>
 
 @interface TestLocationCapture : XCTestCase
@@ -36,7 +36,7 @@
 @implementation TestLocationCapture
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
   _req = [[WORequest alloc] initWithMethod:@"GET"
                                        uri:@"/"
                                httpVersion:@"HTTP/1.1"

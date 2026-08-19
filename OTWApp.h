@@ -25,4 +25,6 @@
 // Whether the DB is connected and the schema has been verified/created successfully. 
 @property (nonatomic, assign, getter=isDatabaseSchemaReady) BOOL databaseSchemaReady;
 
+- (void)updateDatabaseColumnsForAdaptorChannel:(id)adaptorChannel expectedTableNames:(NSArray *)expectedTableNames;
+
 @end

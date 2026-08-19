@@ -13,6 +13,10 @@
 	{
 	    className = Observer;
 	    name = Observer;
+	},
+	{
+	    className = PublishedPresentation;
+	    name = PublishedPresentation;
 	}
     );
     storedProcedures = (

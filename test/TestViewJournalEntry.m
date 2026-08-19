@@ -9,7 +9,7 @@
 #import "Observation.h"
 #import "ObservationLocation.h"
 #import "PhotoStorageMover.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOControl/EOControl.h>
 #import <XCTest/XCTest.h>
 
@@ -34,7 +34,7 @@
 }
 
 - (void)setUp {
-    _app = [[OTWApp alloc] init];
+    _app = [[TestOTWApp alloc] init];
     _ctx = [[self dummyContext] retain];
     _viewPage = [[ViewJournalEntry alloc] initWithContext:_ctx];
 }

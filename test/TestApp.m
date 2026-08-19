@@ -5,7 +5,7 @@
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
+// by the Free Software Foundation, either version 4 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
 
@@ -29,7 +29,7 @@
 @implementation TestApp
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
 }
 
 - (void)tearDown {
@@ -62,10 +62,10 @@
                  (NSStringEncoding)NSUTF8StringEncoding);
 }
 
-- (void)testModelHasThreeEntities {
+- (void)testModelHasFourEntities {
   EOModel *model = [[EOModelGroup defaultGroup] modelNamed:@"OnTheWing"];
   XCTAssertNotNil(model);
-  XCTAssertEqual([[model entities] count], (NSUInteger)3);
+  XCTAssertEqual([[model entities] count], (NSUInteger)4);
   XCTAssertNotNil([model entityNamed:@"Observer"]);
   XCTAssertNotNil([model entityNamed:@"Observation"]);
   XCTAssertNotNil([model entityNamed:@"JournalEntry"]);
@@ -154,4 +154,9 @@
   XCTAssertNoThrow([_app attemptSchemaInitialization]);
 }
 
+@end
+@interface TestApp (GDL2Bug)
+
+@end
+@implementation TestApp (GDL2Bug)
 @end

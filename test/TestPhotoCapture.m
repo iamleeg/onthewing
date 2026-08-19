@@ -7,7 +7,7 @@
 #import "PhotoCapture.h"
 #import "Observation.h"
 #import "Session.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <XCTest/XCTest.h>
 
 @interface TestPhotoCapture : XCTestCase
@@ -31,7 +31,7 @@
 }
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
   _ctx = [[self dummyContext] retain];
   _photoCapture = [[PhotoCapture alloc] initWithContext:_ctx];
 }

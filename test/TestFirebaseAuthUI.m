@@ -19,7 +19,7 @@
 #import "FirebaseAuthUI.h"
 #import "Session.h"
 #import "Observer.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <XCTest/XCTest.h>
 
 @interface TestFirebaseAuthUI : XCTestCase
@@ -44,7 +44,7 @@
 }
 
 - (void)setUp {
-    _app = [[OTWApp alloc] init];
+    _app = [[TestOTWApp alloc] init];
     _ctx = [[self dummyContext] retain];
     _s = (Session *)[_ctx session];
     _authUI = [[FirebaseAuthUI alloc] initWithContext:_ctx];

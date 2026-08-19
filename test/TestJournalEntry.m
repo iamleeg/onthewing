@@ -19,7 +19,7 @@
 #import "JournalEntry.h"
 #import "Observer.h"
 #import "Observation.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
@@ -121,7 +121,7 @@
 // through an explicit EOFetchSpecification workaround. Skips its assertions
 // (but not the test) when no DB is reachable, matching the rest of the suite.
 - (void)testToManyRelationshipsFaultCorrectlyAfterFreshFetch {
-    OTWApp *app = [[OTWApp alloc] init];
+    OTWApp *app = [[TestOTWApp alloc] init];
     EOEditingContext *ec1 = [[[EOEditingContext alloc] init] autorelease];
 
     NSString *uid = [[NSUUID UUID] UUIDString];

@@ -9,7 +9,7 @@
 #import "Profile.h"
 #import "Session.h"
 #import "Observer.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import "Main.h"
 #import <XCTest/XCTest.h>
 
@@ -25,7 +25,7 @@
 @implementation TestAuthActions
 
 - (void)setUp {
-    _app = [[OTWApp alloc] init];
+    _app = [[TestOTWApp alloc] init];
     _req = [[WORequest alloc] initWithMethod:@"GET"
                                          uri:@"/"
                                  httpVersion:@"HTTP/1.1"

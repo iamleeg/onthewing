@@ -22,7 +22,7 @@
 #import "JournalEntry.h"
 #import "Observation.h"
 #import "PhotoStorageMover.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
@@ -93,7 +93,7 @@
 }
 
 - (void)setUp {
-    _app = [[OTWApp alloc] init];
+    _app = [[TestOTWApp alloc] init];
     _ctx = [[self dummyContext] retain];
     _profile = [[Profile alloc] initWithContext:_ctx];
 }

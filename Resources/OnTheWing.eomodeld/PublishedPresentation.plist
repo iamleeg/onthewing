@@ -1,0 +1,45 @@
+{
+    attributes = (
+	{
+	    columnName = "url_id";
+	    externalType = varchar;
+	    name = urlId;
+	    valueClassName = NSString;
+	    width = 64;
+	},
+	{
+	    columnName = "entry_id";
+	    externalType = varchar;
+	    name = entryForeignKey;
+	    valueClassName = NSString;
+	    width = 64;
+	}
+    );
+    attributesUsedForLocking = (
+	urlId
+    );
+    className = PublishedPresentation;
+    classProperties = (
+	urlId,
+	journalEntry
+    );
+    externalName = "published_presentations";
+    name = PublishedPresentation;
+    primaryKeyAttributes = (
+	urlId
+    );
+    relationships = (
+	{
+	    destination = JournalEntry;
+	    isToMany = N;
+	    joinSemantic = EOInnerJoin;
+	    joins = (
+		{
+		    destinationAttribute = journalEntryId;
+		    sourceAttribute = entryForeignKey;
+		}
+	    );
+	    name = journalEntry;
+	}
+    );
+}

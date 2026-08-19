@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #import "Session.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import "OTWFlashMessage.h"
 
 #import "Observation.h"
@@ -38,7 +38,7 @@
 @implementation TestSession
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
   _s = [[Session alloc] init];
 }
 

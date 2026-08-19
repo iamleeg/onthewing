@@ -21,7 +21,7 @@
 #import "Observation.h"
 #import "ReviewObservations.h"
 #import "BrowseJournal.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import "Session.h"
 #import <XCTest/XCTest.h>
 
@@ -38,7 +38,7 @@
 @implementation TestMain
 
 - (void)setUp {
-  _app = [[OTWApp alloc] init];
+  _app = [[TestOTWApp alloc] init];
   _req = [[WORequest alloc] initWithMethod:@"GET"
                                        uri:@"/"
                                httpVersion:@"HTTP/1.1"

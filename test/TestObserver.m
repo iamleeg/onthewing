@@ -8,7 +8,7 @@
 #import "Session.h"
 #import "JournalEntry.h"
 #import "Observation.h"
-#import "OTWApp.h"
+#import "TestOTWApp.h"
 #import <EOControl/EOControl.h>
 #import <EOAccess/EOAccess.h>
 #import <XCTest/XCTest.h>
@@ -56,7 +56,7 @@
 - (void)testRemainingPhotoQuotaForNeverSeenObserverIsFullLimit {
     // A never-before-seen uid has zero saved photos whether or not a real DB
     // is reachable, so this is meaningful in both environments.
-    OTWApp *app = [[OTWApp alloc] init];
+    OTWApp *app = [[TestOTWApp alloc] init];
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
     Observer *user = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString]
                                                 name:@"Jane"
@@ -71,7 +71,7 @@
 }
 
 - (void)testSavedPhotoCountOnlyCountsSavedObservationsWithAPhotoWhenDataAvailable {
-    OTWApp *app = [[OTWApp alloc] init];
+    OTWApp *app = [[TestOTWApp alloc] init];
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
 
     NSError *error = nil;
@@ -129,7 +129,7 @@
 }
 
 - (void)testRemainingPhotoQuotaIsUnlimitedForPremiumUser {
-    OTWApp *app = [[OTWApp alloc] init];
+    OTWApp *app = [[TestOTWApp alloc] init];
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
     Observer *user = [[[Observer alloc] initWithUid:[[NSUUID UUID] UUIDString]
                                                 name:@"Premium"
@@ -143,7 +143,7 @@
 }
 
 - (void)testRemainingPhotoQuotaAtBoundaryCondition {
-    OTWApp *app = [[OTWApp alloc] init];
+    OTWApp *app = [[TestOTWApp alloc] init];
     EOEditingContext *ec = [[[EOEditingContext alloc] init] autorelease];
 
     NSError *error = nil;
